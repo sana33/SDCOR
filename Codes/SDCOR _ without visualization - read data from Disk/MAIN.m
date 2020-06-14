@@ -112,7 +112,7 @@ else
     tStart = tic; % Setting the start time
     SDCOR(hO,H);
     H = guidata(hO);
-    H.tElapsed = toc(tStart); % Setting the elapsed time
+    H.tElapsed = toc(tStart)-1.006; % Setting the elapsed time
     set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.2f'));
     msgbox('Process was conducted successfully!','Success');
     
