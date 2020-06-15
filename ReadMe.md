@@ -11,11 +11,11 @@ There are two independent versions of implementations, each equipped with a soph
 
 * __SDCOR _ with visualization - read data from RAM__:
 
-This one is provided with various axes plots for the ease of visualizations, as for different steps of the algorithm, there are facilities to plot the data with specific parameters.
+	This one is provided with various axes plots for the ease of visualizations, as for different steps of the algorithm, there are facilities to plot the data with specific parameters.
 
 * __SDCOR _ without visualization - read data from Disk__: 
 
-This one is provided with va...
+	This one is provided with va...
 
 
 
