@@ -21,12 +21,17 @@ There are two independent versions of implementations, each equipped with a soph
 
 	This one is provided with various kinds of plots for the ease of visualizations, as for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI is represented as follows:
 			
-			
+	
+
+	![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
+	
 
 * __SDCOR _ without visualization - read data from Disk__: 
 
 	This one is provided with va...
-
+	
+	
+	![SDCOR without visualizations](/images/SDCOR_DiskVersion.png)
 
 
 
