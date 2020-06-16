@@ -25,7 +25,7 @@ There are two independent versions of implementations, each equipped with a soph
 
 ![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
 	
-	This one is provided with various kinds of plots for the ease of visualizations, as for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI is represented as follows:
+This one is provided with various kinds of plots for the ease of visualizations, as for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI is represented as follows:
 			
 	
 
@@ -35,7 +35,7 @@ There are two independent versions of implementations, each equipped with a soph
 
 ![SDCOR without visualizations](/images/SDCOR_DiskVersion.png)
 
-	This one is provided with va...
+This one is provided with va...
 	
 	
 					
