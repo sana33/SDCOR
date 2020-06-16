@@ -9,7 +9,7 @@ Note that, in the whole scalable clustering procedure, our endeavor is aimed to 
 
 At last, in the third phase of the proposed approach, w.r.t. the final clustering model gained out of the second phase, once again, we process the entire dataset in chunks, to give each object an outlying score, according to the same Mahalanobis distance criterion. The following figure, illustrates the software architecture of the approach.
 
-![Software Architecture](/images/softAppr.pdf)
+![Software Architecture](/images/SoftArch.jpg)
 
 ## Implementations Description
 
