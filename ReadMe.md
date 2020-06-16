@@ -23,7 +23,7 @@ There are two independent versions of implementations, each equipped with a soph
 
 * __SDCOR _ with visualization - read data from RAM__:
 
-![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
+	![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
 	
 	This one is provided with various kinds of plots for the ease of visualizations, as for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI is represented as follows:
 			
