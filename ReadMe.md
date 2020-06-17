@@ -25,9 +25,9 @@ There are two independent versions of implementations, each equipped with a soph
 
 ![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
 
-In this version, the input data along with the anomaly labels are loaded into memory, and various kinds of plots are provided for the ease of visualizations. Moreover, for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
+In this version, for the ease of visualizations, the input data along with the anomaly labels are totally loaded into memory. Therefore, various kinds of plots could be provided and moreover, for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
 
-* ### "SDCOR Params" panel:
+* ### "SDCOR Params" panel
 
   * **ChunkSize:** Number of objects in each chunk.
   * **PCvarRatio(%):** PC total variance ratio (in percentage terms).
@@ -185,14 +185,39 @@ In this version, the input data along with the anomaly labels are loaded into me
 
 ![SDCOR without visualizations](/images/SDCOR_DiskVersion.png)
 
-In this version, the input data is directly read from the disk, and hence, any arbitrary size of dataset could be 
+In this version, the input data is directly read from the disk, and hence, any arbitrary size of dataset could be employed by the proposed method. Therefore, the facilities for visualizing the different steps of the scalable clustering algorithm are removed from the GUI; and instead, some text fields are added to better describe the detection accuracy outcomes. The new parts added to the GUI are characterized as follows:
 
-   the facilities for visualizing the different steps of the scalable clustering algorithm are removed from the GUI; and instead, some text fields are added to better describe the detection accuracy outcomes. The new parts added to the GUI are characterized as follows:
+* **MaxRun:** This field is added to the *SDCOR Params* panel, and stands for the maximum number of times that SDCOR will be executed on the input data. The final accuracy outcome will be an aggregate value of the total independent runs.
+  
+* ### "Progression Status" panel
 
-  * **MaxRun:** 
+  * #### "Progress by Chunk/Block:" static text box
+  
+    This field shows the gradual progress of the scalable clustering algorithm or the density-based anomaly algorithms, in terms of successive chunks or blocks of data, respectively.
+	
+  * #### "Temp AUC:" static text box
+  
+    This field displays the AUC outcome obtained through the last run of the proposed method, out of the _MaxRun_ number of execution times.
+	
+  * #### "Temp Time(sec):" static text box
 
+    This field displays the execution time (in seconds) of the last run of the proposed method, out of the _MaxRun_ number of execution times.
+	
+  * #### "Total Runs:" static text box
+  
+    The total number of runs of SDCOR per the maximum number of execution times (_MaxRun_) is depicted in this field.
+	
+* ### "Final Results" panel
 
+  * #### "Final AUC:" static text box
+  
+    This field shows the average AUC outcome attained through the _MaxRun_ number of execution times of SDCOR.
+	
+  * #### "AUC std:" static text box
 
-
-
-
+    This field shows the standard deviation of AUC outcomes gained out of the _MaxRun_ number of SDCOR runs.
+	
+  * #### "Time(sec):" static text box
+  
+    The average execution time (in seconds) acquired through the _MaxRun_ number of SDCOR runs.
+	
