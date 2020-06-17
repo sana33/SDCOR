@@ -40,11 +40,11 @@ This one is provided with various kinds of plots for the ease of visualizations,
 
   * **BlckSzLim:** This parameter is just for expediting the process of the DBSCAN algorithm which is employed in SDCOR. As MATLAB 9 does not support the DBSCAN algorithm with a fast built-in C++ function, like K-means; and more importantly, because MATLAB is seriously slow in loops (like 'for' and 'while' loops), thus we decided to implement DBSCAN with a code of our own.
   
-    However, this version might not be so efficient, it works pretty well on large datasets. DBSCAN has [two ways](https://en.wikipedia.org/wiki/DBSCAN) to be implemented. One is the query-based version which needs to be done in multiple iterations, and is like a poison to MATLAB!; and the other one is based on the *Neighbor Graph* which is gained out of the *n-by-n* distance matrix of the entire data (*n* stands for the cardinality of the input data), which shall be calculated at the first place. We choose the second way, as there is a fast C++-based built-in function in MATLAB, named pdist2(), for computing the pairwise distances of the whole objects in data.
+    However, this version might not be so efficient, it works pretty well on large datasets. DBSCAN has [two ways](https://en.wikipedia.org/wiki/DBSCAN) to be implemented. One is the query-based version which needs to be done in multiple iterations, and is like a poison to MATLAB!; and the other one is based on the *Neighbor Graph* which is gained out of the *n-by-n* distance matrix of the entire data (*n* stands for the cardinality of the input data), which shall be calculated at the first place. We choose the second way, as there is a fast C++-based built-in function in MATLAB, named *pdist2()*, for computing the pairwise distances of the whole objects in data.
   
     Although when the size of the input data goes so high, then the output distance matrix will become too large which even sometimes can not be fit into memory. Moreover, we need not the entire distance matrix to be created at first, and then go for obtaining the Neighbor Graph; but we can acquire the distance matrix in small blocks, and then convert each block to the corresponding block of the Neighbor Graph. This could be done by changing each element of the distance block, which has a distance value less than or equal to *Eps* parameter of the DBSCAN, to 1, and to 0 otherwise.
   
-    The blocks are in square shape, and the *BlckSzLim* is the length of the square side. Besides, there is no need for *n* to be divisible by *BlckSzLim*, as our devised algorithm can handle it. Finally, as each element of the distance block is of the double type, which is equal to 8 bytes in MATLAB; hence, you should consider the *usual* free space of your RAM buffer and then set a reasonable value for this parameter. For example, if the free space in memory is equal to 1 GB, then it would be better to consider e.g. 0.7 GB for the distance block, which leads to _BlckSzLim = √(0.7×2^30)/8 ≈ 9692_, and leave some space for other operations. The bigger size for the _BlckSzLim_, the faster the density-based clustering process will be carries out.
+    The blocks are in square shape, and the *BlckSzLim* is the length of the square side. Besides, there is no need for *n* to be divisible by *BlckSzLim*, as our devised algorithm can handle it. Finally, as each element of the distance block is of the double type, which is equal to 8 bytes in MATLAB; hence, you should consider the *usual* free space of your RAM buffer and then set a reasonable value for this parameter. For example, if the free space in memory is equal to 1 GB, then it would be better to consider e.g. 0.7 GB for the distance block, which leads to _BlckSzLim = sqrt((0.7×2^30)/8) ≈ 9692_, and leave some space for other operations. The bigger size for the _BlckSzLim_, the faster the density-based clustering process will be carries out.
 	
 * ### "DBSCAN Param Choosing" panel
 	
@@ -56,6 +56,7 @@ This one is provided with various kinds of plots for the ease of visualizations,
   * #### "Initial Params" sub-panel
 
     * **dimCoef:, particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of PSO algorithm, which you can leave them as default.
+	  **Note:** You can even modify the source code and change the current cost function of PSO algorithm to a better one.
 
     * **manuEps:** The manual value for the *Eps* parameter of DBSCAN, set by the user.
     * **manuMnPt:** The manual value for the *MinPts* parameter of DBSCAN, set by the user.
@@ -75,10 +76,25 @@ This one is provided with various kinds of plots for the ease of visualizations,
 
     After DBSCAN is applied to the sampled data, the distinct value for the number of the original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
 
+* ### "Final Results" panel
 
+  * #### "Accuracy per Chunk" plot
+  
+    This plot shows the gradual progress of the scalable clustering algorithm in terms of distinguishing outliers in each memory process. The progression is represented w.r.t. various accuracy measures, namely _AUC_, _Precision_, _Recall_ and _F1-Measure_. After processing each chunk of data, we expect the number of inliers in the retained set to become decreased, and on the other side, the number of true outliers become increased. Thus, the mentioned accuracy measures should rise gradually after processing each memory load of points and reach to the perfect condition, iff the parameters are correctly set and also, the input data follows the predefined strong assumptions of the proposed method. However, after processing the whole chunks, there could be some inliers still sustained in buffer, because of the established membership and density-based clustering restrictions; and moreover, some of the outliers might be absorbed to some created mini-clusters during the scalable clustering. Finally, all the undecided points in memory are cleared from the buffer, while only the structural information of the temporary clusters is maintained in it.	
+	
+  * #### "Final AUC" static text box
+  
+    This field shows the final AUC obtained out of the "Scoring" phase of the proposed method.
+  
+  * #### "Time(sec)" static text box
+  
+    The execution time of SDCOR, regardless of the time spent on visualization matters, is displayed in this field.
+  
+* ### "SDCOR various states" panel
 
-
-
+  * #### "DispPlot" checkbox
+    
+	
 
 
 
