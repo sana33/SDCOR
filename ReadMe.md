@@ -21,7 +21,7 @@ The code is implemented using MATLAB 9, and all the experiments are executed on 
 
 There are two independent versions of implementations, each equipped with a sophisticated GUI:
 
-* ## __*SDCOR _ with visualization - read data from RAM*__:
+* ### __*SDCOR _ with visualization - read data from RAM*__:
 
 ![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
 	
@@ -92,15 +92,26 @@ This one is provided with various kinds of plots for the ease of visualizations,
   
 * ### "SDCOR various states" panel
 
+  * #### Main plot
+    
+	In this axes plot, different states of the proposed method will be displayed.
+
   * #### "DispPlot" checkbox
     
+	If this checkbox is on, then various states of SDCOR are displayed in the main plot.
 	
+  * #### "AuxiFig" checkbox
+
+    If this checkbox is on, then each state will be plotted in a specific auxiliary Figure window, instead of the main plot.
+	
+  * #### "LabelDS" button
+
+    This button displays the input data 
 
 
 
 
-
-* ## __*SDCOR _ without visualization - read data from Disk*__: 
+* ### __*SDCOR _ without visualization - read data from Disk*__: 
 
 ![SDCOR without visualizations](/images/SDCOR_DiskVersion.png)
 
