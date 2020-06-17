@@ -45,35 +45,35 @@ This one is provided with various kinds of plots for the ease of visualizations,
 	
 ##### "DBSCAN Param Choosing" panel
 	
-	###### "Mode" sub-panel
-		
-		**PSO** Set PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data.
-		**Manual** Set the DBSCAN parameters manually to operate on the sampled data.
-		
-	###### "Initial Params" sub-panel
-	
-		**dimCoef:, particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of PSO algorithm, which you can leave them as default.
-		
-		**manuEps:** The manual value for the *Eps* parameter of DBSCAN, set by the user.
-		**manuMnPt:** The manual value for the *MinPts* parameter of DBSCAN, set by the user.
-		
-		**epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution. You can leave it as suggested by the author.
-		**MinPtsCoef:** The coefficient value for the *MinPts* parameter to be used while clustering the original distribution. You can leave it as suggested by the author.
-		
-	###### Axes Plot
-	
-		This plot is for showing the variations of the cost function employed by the PSO algorithm.
-		
-	###### "Make Manu" button
-	
-		This button is active when the **Mode** is set to *PSO*. By pressing this button, the optimal parameter values obtained out of PSO algorithm will be set as manual; and thus, in the next run of the proposed method, there will no time spent on finding the optimal values for DBSCAN parameters, to be used for the sampled data.
-		
-	###### "origK" static text box
-	
-		After DBSCAN is applied to the sampled data, the distinct value for the number of the original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
-		
-	
-	
+###### "Mode" sub-panel
+
+**PSO** Set PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data.
+**Manual** Set the DBSCAN parameters manually to operate on the sampled data.
+
+###### "Initial Params" sub-panel
+
+**dimCoef:, particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of PSO algorithm, which you can leave them as default.
+
+**manuEps:** The manual value for the *Eps* parameter of DBSCAN, set by the user.
+**manuMnPt:** The manual value for the *MinPts* parameter of DBSCAN, set by the user.
+
+**epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution. You can leave it as suggested by the author.
+**MinPtsCoef:** The coefficient value for the *MinPts* parameter to be used while clustering the original distribution. You can leave it as suggested by the author.
+
+###### Axes Plot
+
+This plot is for showing the variations of the cost function employed by the PSO algorithm.
+
+###### "Make Manu" button
+
+This button is active when the **Mode** is set to *PSO*. By pressing this button, the optimal parameter values obtained out of PSO algorithm will be set as manual; and thus, in the next run of the proposed method, there will no time spent on finding the optimal values for DBSCAN parameters, to be used for the sampled data.
+
+###### "origK" static text box
+
+After DBSCAN is applied to the sampled data, the distinct value for the number of the original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
+
+
+
 
 
 
