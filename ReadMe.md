@@ -27,7 +27,7 @@ There are two independent versions of implementations, each equipped with a soph
 	
 This one is provided with various kinds of plots for the ease of visualizations, as for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
 
-##### "SDCOR Params" panel:
+### "SDCOR Params" panel:
 
 **ChunkSize:** Number of objects in each chunk.
 **PCvarRatio(%):** PC total variance ratio (in percentage terms).
@@ -43,14 +43,14 @@ However, this version might not be so efficient, it works pretty well on large d
 Although when the size of the input data goes so high, then the output distance matrix will become too large which even sometimes can not be fit into memory. Moreover, we need not the entire distance matrix to be created at first, and then go for obtaining the Neighbor Graph; but we can acquire the distance matrix in small blocks, and then convert each block to the corresponding block of the Neighbor Graph. This could be done by changing each element of the distance block, which has a distance value less than or equal to *Eps* parameter of the DBSCAN, to 1, and to 0 otherwise.
 The blocks are in square shape, and the *BlckSzLim* is the length of the square side. Besides, there is no need for *n* to be divisible by *BlckSzLim*, as our devised algorithm can handle it. Finally, as each element of the distance block is of the double type, which is equal to 8 bytes in MATLAB; hence, you should consider the *usual* free space of your RAM buffer and then set a reasonable value for this parameter. For example, if the free space in memory is equal to 1 GB, then it would be better to consider e.g. 0.7 GB for the distance block, which leads to _BlckSzLim = √(0.7×2^30)/8 ≈ 9692_, and leave some space for other operations. The bigger size for the _BlckSzLim_, the faster the density-based clustering process will be carries out.
 	
-##### "DBSCAN Param Choosing" panel
+### "DBSCAN Param Choosing" panel
 	
-###### "Mode" sub-panel
+#### "Mode" sub-panel
 
 **PSO** Set PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data.
 **Manual** Set the DBSCAN parameters manually to operate on the sampled data.
 
-###### "Initial Params" sub-panel
+#### "Initial Params" sub-panel
 
 **dimCoef:, particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of PSO algorithm, which you can leave them as default.
 
@@ -60,15 +60,15 @@ The blocks are in square shape, and the *BlckSzLim* is the length of the square 
 **epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution. You can leave it as suggested by the author.
 **MinPtsCoef:** The coefficient value for the *MinPts* parameter to be used while clustering the original distribution. You can leave it as suggested by the author.
 
-###### Axes Plot
+#### Axes Plot
 
 This plot is for showing the variations of the cost function employed by the PSO algorithm.
 
-###### "Make Manu" button
+#### "Make Manu" button
 
 This button is active when the **Mode** is set to *PSO*. By pressing this button, the optimal parameter values obtained out of PSO algorithm will be set as manual; and thus, in the next run of the proposed method, there will no time spent on finding the optimal values for DBSCAN parameters, to be used for the sampled data.
 
-###### "origK" static text box
+#### "origK" static text box
 
 After DBSCAN is applied to the sampled data, the distinct value for the number of the original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
 
