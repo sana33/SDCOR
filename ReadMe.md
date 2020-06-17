@@ -71,9 +71,9 @@ This one is provided with various kinds of plots for the ease of visualizations,
 
     This button is active when the **Mode** is set to *PSO*. By pressing this button, the optimal parameter values obtained out of PSO algorithm will be set as manual; and thus, in the next run of the proposed method, there will no time spent on finding the optimal values for DBSCAN parameters, to be used for the sampled data.
 
-	* #### "origK" static text box
+  * #### "origK" static text box
 
-		After DBSCAN is applied to the sampled data, the distinct value for the number of the original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
+    After DBSCAN is applied to the sampled data, the distinct value for the number of the original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
 
 
 
