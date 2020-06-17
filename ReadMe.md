@@ -21,7 +21,7 @@ The code is implemented using MATLAB 9, and all the experiments are executed on 
 
 There are two independent versions of implementations, each equipped with a sophisticated GUI:
 
-* __SDCOR _ with visualization - read data from RAM__:
+* ## __SDCOR _ with visualization - read data from RAM__:
 
 ![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
 	
@@ -100,7 +100,7 @@ This one is provided with various kinds of plots for the ease of visualizations,
 
 
 
-* __SDCOR _ without visualization - read data from Disk__: 
+* ## __SDCOR _ without visualization - read data from Disk__: 
 
 ![SDCOR without visualizations](/images/SDCOR_DiskVersion.png)
 
