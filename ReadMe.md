@@ -83,7 +83,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
 * ### "Final Results" panel
 
-  * #### "Accuracy per Chunk" plot
+  * #### "Accuracy per Chunk" Plot
   
     This plot shows the gradual progress of the scalable clustering algorithm in terms of distinguishing outliers in each memory process. The progression is represented w.r.t. various accuracy measures, namely _AUC_, _Precision_, _Recall_ and _F1-Measure_. After processing each chunk of data, we expect the number of inliers in the retained set to become decreased, and on the other side, the number of true outliers become increased. Thus, the mentioned accuracy measures should rise gradually after processing each memory load of points and reach to the perfect condition, iff the parameters are correctly set and also, the input data follows the predefined strong assumptions of the proposed method. However, after processing the whole chunks, there could be some inliers still sustained in buffer, because of the established membership and density-based clustering restrictions; and moreover, some of the outliers might be absorbed to some created mini-clusters during the scalable clustering. Finally, all the undecided points in memory are cleared from the buffer, while only the structural information of the temporary clusters is maintained in it.
 	
