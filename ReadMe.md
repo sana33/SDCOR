@@ -53,13 +53,15 @@ In this version, for the ease of visualizations, the input data along with the a
   * #### "Mode" sub-panel
 
     * **PSO** Set PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data. Note that in this mode, the spent time on locating the optimal parameters is taken into account for the total runtime of SDCOR.
-    * **Manual** Set the DBSCAN parameters manually to operate on the sampled data. Beware that w.r.t. the pre-known structural characteristics of the utilized input data, it is possible to acquire the optimal parameters of DBSCAN manually.
+    * **Manual** Set the DBSCAN parameters manually to operate on the sampled data.
+	
+	    _**Note:**_ Beware that w.r.t. the pre-known structural characteristics of the utilized input data, it is possible to acquire the optimal parameters of DBSCAN manually.
 
   * #### "Initial Params" sub-panel
 
     * **dimCoef:, particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of PSO algorithm, which you can leave them as default.
 	  
-	  **Note:** You can even modify the source code and change the current cost function of PSO algorithm to a better one.
+	  _**Note:**_  You can even modify the source code and change the current cost function of PSO algorithm to a better one.
 
     * **manuEps:** The manual value for the *Eps* parameter of DBSCAN, set by the user.
     * **manuMnPt:** The manual value for the *MinPts* parameter of DBSCAN, set by the user.
@@ -133,7 +135,7 @@ In this version, for the ease of visualizations, the input data along with the a
   
     This button colorfully illustrates the outcome of "Scoring" phase of the proposed method, based on the local Mahalanobis distance. Considering the final clustering model attained out of the second phase of SDCOR, each point regardless of being an inlier or outlier is denoted as a dot with the color of the closest final cluster, and with a size equal to the corresponding local Mahalanobis distance.
 	
-	**Note:** The *ScorDSszCoef* input parameter in the *SDCOR Params* panel of the GUI can be employed here to better visualize the scored data points. The bigger this coefficient, the larger the scored points are represented.
+	_**Note:**_  The *ScorDSszCoef* input parameter in the *SDCOR Params* panel of the GUI can be employed here to better visualize the scored data points. The bigger this coefficient, the larger the scored points are represented.
   
   * #### "Top-n OLs" button
   
