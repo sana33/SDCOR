@@ -58,6 +58,7 @@ In this version, the input data along with the anomaly labels are loaded into me
   * #### "Initial Params" sub-panel
 
     * **dimCoef:, particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of PSO algorithm, which you can leave them as default.
+	  
 	  **Note:** You can even modify the source code and change the current cost function of PSO algorithm to a better one.
 
     * **manuEps:** The manual value for the *Eps* parameter of DBSCAN, set by the user.
@@ -96,7 +97,7 @@ In this version, the input data along with the anomaly labels are loaded into me
   
 * ### "SDCOR various states" panel
 
-  * #### Main plot
+  * #### Main Plot
     
 	In this axes plot, different states of the proposed method will be displayed.
 
@@ -131,6 +132,7 @@ In this version, the input data along with the anomaly labels are loaded into me
   * #### "ScoredDS" button
   
     This button colorfully illustrates the outcome of "Scoring" phase of the proposed method, based on the local Mahalanobis distance. Considering the final clustering model attained out of the second phase of SDCOR, each point regardless of being an inlier or outlier is denoted as a dot with the color of the closest final cluster, and with a size equal to the corresponding local Mahalanobis distance.
+	
 	**Note:** The *ScorDSszCoef* input parameter in the *SDCOR Params* panel of the GUI can be employed here to better visualize the scored data points. The bigger this coefficient, the larger the scored points are represented.
   
   * #### "Top-n OLs" button
