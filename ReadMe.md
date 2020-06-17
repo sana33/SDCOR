@@ -24,8 +24,8 @@ There are two independent versions of implementations, each equipped with a soph
 ### &#x1F537; __*SDCOR _ with visualization - read data from RAM*__:
 
 ![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
-	
-This one is provided with various kinds of plots for the ease of visualizations, as for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
+
+In this version, the input data along with the anomaly labels are loaded into memory, and various kinds of plots are provided for the ease of visualizations. Moreover, for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
 
 * ### "SDCOR Params" panel:
 
@@ -35,8 +35,8 @@ This one is provided with various kinds of plots for the ease of visualizations,
   * **Beta:** Pruning threshold.
   * **SampRate(%):** Random sampling rate (in percentage terms).
 
-  * **Top-n OLs:** Number of top-n outliers for being shown in the main axes plot.
-  * **ScorDSszCoef:** The coefficient for the obtained outlierness scores to be represented more viewable in the main axes plot.
+  * **Top-n OLs:** Number of top-n outliers for being depicted in the main axes plot.
+  * **ScorDSszCoef:** The coefficient value for the obtained outlierness scores to be represented more viewable in the main axes plot.
 
   * **BlckSzLim:** This parameter is just for expediting the process of the DBSCAN algorithm which is employed in SDCOR. As MATLAB 9 does not support the DBSCAN algorithm with a fast built-in C++ function, like K-means; and more importantly, because MATLAB is seriously slow in loops (like 'for' and 'while' loops), thus we decided to implement DBSCAN with a code of our own.
   
@@ -46,12 +46,14 @@ This one is provided with various kinds of plots for the ease of visualizations,
   
     The blocks are in square shape, and the *BlckSzLim* is the length of the square side. Besides, there is no need for *n* to be divisible by *BlckSzLim*, as our devised algorithm can handle it. Finally, as each element of the distance block is of the double type, which is equal to 8 bytes in MATLAB; hence, you should consider the *usual* free space of your RAM buffer and then set a reasonable value for this parameter. For example, if the free space in memory is equal to 1 GB, then it would be better to consider e.g. 0.7 GB for the distance block, which leads to _BlckSzLim = sqrt((0.7×2^30)/8) ≈ 9692_, and leave some space for other operations. The bigger size for the _BlckSzLim_, the faster the density-based clustering process will be carries out.
 	
+	Furthermore, for the materialization matrix required by LOF and LoOP, this parameter is used in a slightly different manner.
+	
 * ### "DBSCAN Param Choosing" panel
 	
   * #### "Mode" sub-panel
 
-    * **PSO** Set PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data.
-    * **Manual** Set the DBSCAN parameters manually to operate on the sampled data.
+    * **PSO** Set PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data. Note that in this mode, the spent time on locating the optimal parameters is taken into account for the total runtime of SDCOR.
+    * **Manual** Set the DBSCAN parameters manually to operate on the sampled data. Beware that w.r.t. the pre-known structural characteristics of the utilized input data, it is possible to acquire the optimal parameters of DBSCAN manually.
 
   * #### "Initial Params" sub-panel
 
@@ -61,8 +63,8 @@ This one is provided with various kinds of plots for the ease of visualizations,
     * **manuEps:** The manual value for the *Eps* parameter of DBSCAN, set by the user.
     * **manuMnPt:** The manual value for the *MinPts* parameter of DBSCAN, set by the user.
 
-    * **epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution. You can leave it as suggested by the author.
-    * **MinPtsCoef:** The coefficient value for the *MinPts* parameter to be used while clustering the original distribution. You can leave it as suggested by the author.
+    * **epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution. You can leave it as suggested.
+    * **MinPtsCoef:** The coefficient value for the *MinPts* parameter to be used while clustering the original distribution. You can leave it as suggested.
 
   * #### Axes Plot
 
@@ -72,7 +74,7 @@ This one is provided with various kinds of plots for the ease of visualizations,
 
     This button is active when the **Mode** is set to *PSO*. By pressing this button, the optimal parameter values obtained out of PSO algorithm will be set as manual; and thus, in the next run of the proposed method, there will no time spent on finding the optimal values for DBSCAN parameters, to be used for the sampled data.
 
-  * #### "origK" static text box
+  * #### "origK:" static text box
 
     After DBSCAN is applied to the sampled data, the distinct value for the number of the original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
 
@@ -80,13 +82,15 @@ This one is provided with various kinds of plots for the ease of visualizations,
 
   * #### "Accuracy per Chunk" plot
   
-    This plot shows the gradual progress of the scalable clustering algorithm in terms of distinguishing outliers in each memory process. The progression is represented w.r.t. various accuracy measures, namely _AUC_, _Precision_, _Recall_ and _F1-Measure_. After processing each chunk of data, we expect the number of inliers in the retained set to become decreased, and on the other side, the number of true outliers become increased. Thus, the mentioned accuracy measures should rise gradually after processing each memory load of points and reach to the perfect condition, iff the parameters are correctly set and also, the input data follows the predefined strong assumptions of the proposed method. However, after processing the whole chunks, there could be some inliers still sustained in buffer, because of the established membership and density-based clustering restrictions; and moreover, some of the outliers might be absorbed to some created mini-clusters during the scalable clustering. Finally, all the undecided points in memory are cleared from the buffer, while only the structural information of the temporary clusters is maintained in it.	
+    This plot shows the gradual progress of the scalable clustering algorithm in terms of distinguishing outliers in each memory process. The progression is represented w.r.t. various accuracy measures, namely _AUC_, _Precision_, _Recall_ and _F1-Measure_. After processing each chunk of data, we expect the number of inliers in the retained set to become decreased, and on the other side, the number of true outliers become increased. Thus, the mentioned accuracy measures should rise gradually after processing each memory load of points and reach to the perfect condition, iff the parameters are correctly set and also, the input data follows the predefined strong assumptions of the proposed method. However, after processing the whole chunks, there could be some inliers still sustained in buffer, because of the established membership and density-based clustering restrictions; and moreover, some of the outliers might be absorbed to some created mini-clusters during the scalable clustering. Finally, all the undecided points in memory are cleared from the buffer, while only the structural information of the temporary clusters is maintained in it.
 	
-  * #### "Final AUC" static text box
+	For the density-based anomaly detection algorithms, namely LOF and LoOP, this axes plot will show the progress as a bar chart which is updated after processing each block of pairwise distances.
+	
+  * #### "Final AUC:" static text box
   
     This field shows the final AUC obtained out of the "Scoring" phase of the proposed method.
   
-  * #### "Time(sec)" static text box
+  * #### "Time(sec):" static text box
   
     The execution time of SDCOR, regardless of the time spent on visualization matters, is displayed in this field.
   
@@ -106,17 +110,84 @@ This one is provided with various kinds of plots for the ease of visualizations,
 	
   * #### "LabelDS" button
 
-    This button displays the input data 
+    This button colorfully displays the input data including both inliers and outliers.
+	
+  * #### "SampleDS" button
+  
+    This button depicts the result of DBSCAN on the sampled data (including noise points) in colors.
+	
+  * #### "RetSetRed" button
+  
+    This button illustrates inliers and outliers in different colors, while those points sustained in the retained set after processing the entire chunks and before building the final clustering model, are represented in red color. Besides, the temporary centroids of the temporary clustering model are denoted as magenta square points.
+  
+  * #### "FinalMeans" button
+  
+    This button demonstrates both temporary means and final means, represented by solid circles and triangles respectively, with a different color for each final cluster.
+  
+  * #### "RegenDS" button
+  
+    This button colorfully demonstrates pruned regenerated data points for every final cluster besides the final means, denoted as dots and triangles respectively.
+  
+  * #### "ScoredDS" button
+  
+    This button colorfully illustrates the outcome of "Scoring" phase of the proposed method, based on the local Mahalanobis distance. Considering the final clustering model attained out of the second phase of SDCOR, each point regardless of being an inlier or outlier is denoted as a dot with the color of the closest final cluster, and with a size equal to the corresponding local Mahalanobis distance.
+	**Note:** The *ScorDSszCoef* input parameter in the *SDCOR Params* panel of the GUI can be employed here to better visualize the scored data points. The bigger this coefficient, the larger the scored points are represented.
+  
+  * #### "Top-n OLs" button
+  
+    This button displays the Top-n outliers regarding the acquired outlierness scores out of SDCOR, as red dots. Any other point is represented with a blue dot. The value for _n_ could be modified through the _Top-n OLs_ input parameter.
+	
+* ### "LOF & LoOP Params" panel
 
+  * #### "LOF" checkbox
+    
+    If this checkbox is on, then the LOF algorithm will be applied to the input data, considering the corresponding input parameters.
+    
+  * #### "LoOP" checkbox
 
+    If this checkbox is on, then the LoOP algorithm will be applied to the input data, considering the corresponding input parameters.
+	
+  * **MinPts Intv.:** This parameter is modifies w.r.t. the selected density-based outlier algorithm, namely LOF or LoOP. The default established values are set as suggested. For LOF, it is an interval, and for LoOP, it becomes a scalar value.
 
+  * **k StepLength:** Step-length for the MinPts interval utilized by LOF.
+
+  * **Lambda:** Lambda parameter of the LoOP algorithm.
+
+* ### Main Buttons of the GUI
+
+  * #### "LOAD" button
+  
+    This button loads the input _n-by-p_ matrix of dataset _X_, along with the _n-by-1_ vector _y_ of outlier labels, all together as a single binary MAT-file. The name of the chosen dataset is depicted in the bold red box, positioned right below the main buttons.
+	
+  * #### "START" button
+  
+    This button starts the operations of the selected algorithm. If _LOF_ or _LoOP_ checkboxes are not checked, then the SDCOR algorithm will be commenced. After pressing this button, any active element of the GUI is disabled, and when the process finishes, all of them will be re-enabled.
+  
+  * #### "CLEAR AXES" button
+  
+    This button clears all the axes plots along with the static text fields dedicated to depict a property or the outputs of the selected algorithm.
+  
+  * #### "RESET BTNS" button
+  
+    If during the operation, any error happens and the process is halted, then all the disabled elements remain inactive. This button activates them again.
+  
+  * #### "SAVE WORKSPACE" button
+  
+    This button saves the whole workspace including the output results of the selected algorithm to a single MAT-file, with a suggested file name while saving the workspace.
+  
+  * #### "LOAD WORKSPACE" button
+  
+    This button loads a saved workspace from before into the GUI.
 
 ### &#x1F537; __*SDCOR _ without visualization - read data from Disk*__: 
 
 ![SDCOR without visualizations](/images/SDCOR_DiskVersion.png)
 
-This one is provided with va...
+In this version, the input data is directly read from the disk, and hence, any arbitrary size of dataset could be 
 
+   the facilities for visualizing the different steps of the scalable clustering algorithm are removed from the GUI; and instead, some text fields are added to better describe the detection accuracy outcomes. The new parts added to the GUI are characterized as follows:
+
+  * **MaxRun:** 
 
 
 
