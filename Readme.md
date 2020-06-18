@@ -55,7 +55,7 @@ In this version, for the ease of visualizations, the input data along with the a
     * **PSO** Set PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data. Note that in this mode, the spent time on locating the optimal parameters is taken into account for the total runtime of SDCOR.
     * **Manual** Set the DBSCAN parameters manually to operate on the sampled data.
 	
-	  _**Note:**_ Beware that w.r.t. the pre-known structural characteristics of the utilized input data, it is possible to acquire the optimal parameters of DBSCAN manually.
+	  _**Note:**_ Beware that if the structural characteristics of the utilized input data is available, then it would be possible to acquire the optimal parameters of DBSCAN manually.
 
   * #### "Initial Params" sub-panel
 
