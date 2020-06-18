@@ -79,7 +79,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
   * #### "origK:" static text box
 
-    After DBSCAN is applied to the sampled data, the distinct value for the number of the original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
+    After DBSCAN is applied to the sampled data, the distinct value for the number of original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
 
 * ### "Final Results" panel
 
