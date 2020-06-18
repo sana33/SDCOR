@@ -223,9 +223,9 @@ In this version, the input data is directly read from the disk, and hence, any a
   
     The average execution time (in seconds) acquired through the _MaxRun_ number of SDCOR runs.
 	
-### &#x1F53A; Some Notes:
+### &#x1F34F; Some Notes:
 
-* #### For the better experience of working with the GUI files, righ-click on the FIG-file and select "Open in GUIDE".
+* #### For the better experience of working with the GUI files, right-click on the FIG-file and select "Open in GUIDE".
 
-* #### There are some commented scripts in the code that are embedded for tracking the performance of the proposed method.
+* #### There are some commented scripts in the code that could be uncommented if necessary, in the case of tracking the performance of the proposed method.
 
