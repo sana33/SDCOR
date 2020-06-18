@@ -227,7 +227,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 * #### For the better experience of working with the GUI files, right-click the FIG-file in MATLAB and select "Open in GUIDE".
 
-* #### There are some commented scripts (followed by *@-- debugging script --@*) in the code that could be uncommented if necessary, in the case of tracking the performance of the proposed method.
+* #### There are some commented scripts (followed by _"@-- debugging script --@"_) in the code that could be uncommented if necessary, in the case of tracking the performance of the proposed method.
 
 * #### There are two videos for both [RAM version](/videos/SDCOR_RAMversion.mp4) and [Disk version](/videos/SDCOR_DiskVersion.mp4), which demonstrate a test run of the corresponding implementations.
 
