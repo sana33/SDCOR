@@ -219,7 +219,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 
     This field shows the standard deviation of AUC outcomes gained out of the _MaxRun_ number of SDCOR runs.
 	
-  * #### "Time(sec):" static text box
+  * #### ``Time(sec):'' static text box
   
     The average execution time (in seconds) acquired through the _MaxRun_ number of SDCOR runs.
 	
