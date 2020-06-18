@@ -1,3 +1,10 @@
+
+% Author: Sayyed-Ahmad Naghavi-Nozad, M.Sc., Artificial Intelligence
+% AmirKabir University of Technology, Department of Computer Engineering
+% Email Address: sa_na33@aut.ac.ir, ahmad.naghavi.aut@gmail.com
+% Website: https://ceit.aut.ac.ir/~sann_cv/
+% June 2020
+
 function plotOptional(H,data,option)
 
 if isfield(H,'p') && isfield(H,'dispOn')
@@ -6,26 +13,27 @@ if isfield(H,'p') && isfield(H,'dispOn')
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
             if H.p>2 && H.dispOn
                 gscatter(H.DS_PCA(:,1),H.DS_PCA(:,2),H.labFin,'gb');
-            elseif H.p<=2 && H.dispOn
+                legend('inliers','outliers','location','best');
+                xlim(H.xLim); ylim(H.yLim); grid on;
+            elseif H.p==2 && H.dispOn
                 gscatter(H.DS(:,1),H.DS(:,2),H.labFin,'gb');
+                legend('inliers','outliers','location','best');
+                xlim(H.xLim); ylim(H.yLim); grid on;
             elseif ~H.dispOn
                 h = msgbox('Sorry! Nothing has been saved to display!','Failure','error');
             end
-            grid on;
-            xlim(H.xLim); ylim(H.yLim);
             
         case 'sampDS'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
             if H.p>2 && H.dispOn
                 gscatter(H.sampData_PCA(:,1),H.sampData_PCA(:,2),H.idxSamp);
-            elseif H.p<=2 && H.dispOn
+                xlim(H.xLim); ylim(H.yLim); grid on; pause(1);
+            elseif H.p==2 && H.dispOn
                 gscatter(H.sampData(:,1),H.sampData(:,2),H.idxSamp);
+                xlim(H.xLim); ylim(H.yLim); grid on; pause(1);
             elseif ~H.dispOn
                 h = msgbox('Sorry! Nothing has been saved to display!','Failure','error');
             end
-            grid on;
-            xlim(H.xLim); ylim(H.yLim);
-            pause(1);
             
         case 'retSetDS'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
@@ -42,7 +50,7 @@ if isfield(H,'p') && isfield(H,'dispOn')
                     sprintf('retainSet=%d',numel(H.retIdx)),'location','best');
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p<=2 && H.dispOn
+            elseif H.p==2 && H.dispOn
                 gscatter(H.DS(:,1),H.DS(:,2),H.labFin,'gb');
                 grid on; hold on;
                 plot(H.means(:,1),H.means(:,2),'Marker','s','MarkerSize',7,'MarkerFaceColor','m', ...
@@ -73,7 +81,7 @@ if isfield(H,'p') && isfield(H,'dispOn')
                 hold off;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p<=2 && H.dispOn
+            elseif H.p==2 && H.dispOn
                 cMap = hsv(H.origK);
                 gscatter(H.means(:,1),H.means(:,2),H.idxMeans,cMap);
                 grid on; hold on;
@@ -103,7 +111,7 @@ if isfield(H,'p') && isfield(H,'dispOn')
                 hold off;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p<=2 && H.dispOn
+            elseif H.p==2 && H.dispOn
                 cMap = hsv(H.origK);
                 gscatter(H.regenDS(:,1),H.regenDS(:,2),H.idxRegenDS,cMap);
                 grid on; hold on;
@@ -132,7 +140,7 @@ if isfield(H,'p') && isfield(H,'dispOn')
                 grid on;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p<=2 && H.dispOn
+            elseif H.p==2 && H.dispOn
                 cMap = hsv(H.origK);
                 hm1 = gscatter(H.DS(:,1),H.DS(:,2),H.idxFin,cMap(H.idxFin,:),'.',H.mahalScores.*H.scorDSszCoef,'on');
                 %             hm1 = gscatter(H.DS(:,1),H.DS(:,2),H.idxFin,cMap(H.idxFin,:),'.',ones(H.n,1).*H.scorDSszCoef,'on');
@@ -155,7 +163,7 @@ if isfield(H,'p') && isfield(H,'dispOn')
                 grid on;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p<=2 && H.dispOn
+            elseif H.p==2 && H.dispOn
                 gscatter(H.DS(:,1),H.DS(:,2),H.topNol,'br','.',[5 10]);
                 grid on;
                 xlim(H.xLim); ylim(H.yLim);

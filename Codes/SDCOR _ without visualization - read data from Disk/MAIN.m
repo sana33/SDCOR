@@ -1,3 +1,10 @@
+
+% Author: Sayyed-Ahmad Naghavi-Nozad, M.Sc., Artificial Intelligence
+% AmirKabir University of Technology, Department of Computer Engineering
+% Email Address: sa_na33@aut.ac.ir, ahmad.naghavi.aut@gmail.com
+% Website: https://ceit.aut.ac.ir/~sann_cv/
+% June 2020
+
 function varargout = MAIN(varargin)
 
 gui_Singleton = 1;
@@ -68,6 +75,7 @@ H.PCvarRat = str2double(get(H.PCvarRat_editText,'String'))/100;
 H.alphaMemb = str2double(get(H.alphaMemb_editText,'String'));
 H.betaPrun = str2double(get(H.betaPrun_editText,'String'));
 H.sampRate = str2double(get(H.sampRate_editText,'String'))/100;
+H.maxRun = str2double(get(H.maxRun_editText,'String'));
 BLK_SZ_LIM = str2double(get(H.blckSzlim_editText,'String'));
 
 H.minPtsIntv = str2num(get(H.minPtsIntv_editText,'String'));
@@ -93,7 +101,7 @@ if get(H.LOF_checkBox,'Value')
     H = rmfield(H,'labDS'); % Clearing labeled data from RAM for GUI becoming refreshed!
     
     set(H.finalAUCbyScores_statText,'String',num2str(H.finalAUC,'%0.3f'));
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.2f'));
+    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
     msgbox('Process was conducted successfully!','Success');
     
     hOact(hO,eventdata,H,0);
@@ -103,17 +111,32 @@ elseif get(H.LoOP_checkBox,'Value')
     H = rmfield(H,'labDS'); % Clearing labeled data from RAM for GUI becoming refreshed!
     
     set(H.finalAUCbyScores_statText,'String',num2str(H.finalAUC,'%0.3f'));
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.2f'));
+    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
     msgbox('Process was conducted successfully!','Success');
     
     hOact(hO,eventdata,H,0);
 else
     H.apprType = 'SDCOR';
-    tStart = tic; % Setting the start time
-    SDCOR(hO,H);
-    H = guidata(hO);
-    H.tElapsed = toc(tStart); % Setting the elapsed time
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.2f'));
+    tEarr = [];
+    AUCarr = [];
+    H.runLevl_statText.String = [num2str(0) '/' num2str(H.maxRun)]; pause(.001);
+    for c1 = 1:H.maxRun
+        SDCOR(hO,H);
+        H = guidata(hO);
+        AUCarr = [AUCarr H.finalAUC];
+        tEarr = [tEarr H.tElapsed];
+        
+        H.runLevl_statText.String = [num2str(c1) '/' num2str(H.maxRun)]; pause(.001);
+        set(H.tempAUC_statText,'String',num2str(H.finalAUC,'%0.3f'));
+        set(H.tempTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
+    end
+    H.finalAUC = mean(AUCarr);
+    H.AUCstd = std(AUCarr);
+    H.tElapsed = mean(tEarr);
+    
+    set(H.finalAUCbyScores_statText,'String',num2str(H.finalAUC,'%0.3f'));
+    set(H.AUCstd_statText,'String',num2str(H.AUCstd,'%0.3f'));
+    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
     msgbox('Process was conducted successfully!','Success');
     
     hOact(hO,eventdata,H,0);
@@ -142,19 +165,31 @@ if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundC
     set(hO,'BackgroundColor','white');
 end
 
+function maxRun_editText_CreateFcn(hObject, eventdata, handles)
+
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
 function clearAxes_pushBtn_Callback(hO,eventdata,H)
 
 cla(H.axes1); legend(H.axes1,'off');
 
 H.dsName_statText.String = '';
 H.progLevl_statText.String = '';
+H.tempAUC_statText.String = '';
+H.tempTime_statText.String = '';
+H.runLevl_statText.String = '';
 H.finalAUCbyScores_statText.String = '';
+H.AUCstd_statText.String = '';
 H.runTime_statText.String = '';
 H.origK_val_statText.String = '';
 
 guidata(hO,H);
 
 function sampRate_editText_Callback(hO,eventdata,H)
+
+function maxRun_editText_Callback(hO,eventdata,H)
 
 function PCvarRat_editText_Callback(hO,eventdata,H)
 
@@ -188,12 +223,12 @@ if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundC
     set(hO,'BackgroundColor','white');
 end
 
-function maxIter_editText_Callback(hO,eventdata,H)
+function maxIter_editText_Callback(hObject, eventdata, handles)
 
-function maxIter_editText_CreateFcn(hO,eventdata,H)
+function maxIter_editText_CreateFcn(hObject, eventdata, handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
 function W_editText_Callback(hO,eventdata,H)
@@ -275,7 +310,8 @@ if isfield(H,'finalAUC')
             resType = 'LoOP(noVisDsk)_';
     end
     
-    uisave({'Hsave'},['..\results\',resType,'result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',num2str(H.tElapsed,'%0.2f')]);
+    uisave({'Hsave'},['..\results\',resType,'result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_std=',num2str(H.AUCstd,'%0.3f'),...
+        '_maxRun=',num2str(H.maxRun),'_Time=',num2str(H.tElapsed,'%0.3f')]);
     msgbox('File was saved successfully!','Success');
 else
     msgbox('Sorry! There is not any clear run inf. to be saved!','Failure','error');
@@ -299,11 +335,12 @@ global BLK_SZ_LIM
 switch H.apprType
     case 'SDCOR'
         Hsave = struct('dsName',H.dsName,'apprType',H.apprType,'chunkSz',H.chunkSz,'PCvarRat',str2double(get(H.PCvarRat_editText,'String')),...
-            'alphaMemb',H.alphaMemb,'betaPrun',H.betaPrun,'sampRate',str2double(get(H.sampRate_editText,'String')),'BLK_SZ_LIM',BLK_SZ_LIM,...
-            'PCM',H.PCM,'dimCoef',H.dimCoef,'PSO_particleNo',H.PSO_particleNo,'PSO_maxIter',H.PSO_maxIter,'PSO_W',H.PSO_W,'PSO_C1',H.PSO_C1,...
-            'PSO_C2',H.PSO_C2,'PSO_alpha',H.PSO_alpha,'manuEps',H.manuEps,'manuMnPt',H.manuMnPt,'epsCoeff',H.epsCoeff,'MinPtsCoeff',H.MinPtsCoeff,...
-            'paramSampDS',H.paramSampDS,'paramCostArrSamp',{H.paramCostArrSamp},'epsilonFin',H.epsilonFin,'MinPtsFin',H.MinPtsFin,'origK',H.origK,...
-            'mahalScores',H.mahalScores,'idxFin',H.idxFin,'finalAUC',H.finalAUC,'tElapsed',H.tElapsed);
+            'alphaMemb',H.alphaMemb,'betaPrun',H.betaPrun,'sampRate',str2double(get(H.sampRate_editText,'String')),'maxRun',H.maxRun,...
+            'BLK_SZ_LIM',BLK_SZ_LIM,'PCM',H.PCM,'dimCoef',H.dimCoef,'PSO_particleNo',H.PSO_particleNo,'PSO_maxIter',H.PSO_maxIter,...
+            'PSO_W',H.PSO_W,'PSO_C1',H.PSO_C1,'PSO_C2',H.PSO_C2,'PSO_alpha',H.PSO_alpha,'manuEps',H.manuEps,'manuMnPt',H.manuMnPt,...
+            'epsCoeff',H.epsCoeff,'MinPtsCoeff',H.MinPtsCoeff,'paramSampDS',H.paramSampDS,'paramCostArrSamp',{H.paramCostArrSamp},...
+            'epsilonFin',H.epsilonFin,'MinPtsFin',H.MinPtsFin,'origK',H.origK,'sampIdx',H.sampIdx,'idxSamp',H.idxSamp,...
+            'mahalScores',H.mahalScores,'idxFin',H.idxFin,'finalAUC',H.finalAUC,'AUCstd',H.AUCstd,'tElapsed',H.tElapsed);
     case 'LOF'
         Hsave = struct('apprType',H.apprType,'dsName',H.dsName,'BLK_SZ_LIM',BLK_SZ_LIM,'minPtsIntv',H.minPtsIntv,'kStepLngth',H.kStepLngth,...
             'lofVals',H.lofVals,'lofKmat',H.lofKmat,'finalAUC',H.finalAUC,'tElapsed',H.tElapsed);
@@ -328,6 +365,7 @@ switch Hsave.apprType
         H.alphaMemb_editText.String = num2str(Hsave.alphaMemb);
         H.betaPrun_editText.String = num2str(Hsave.betaPrun);
         H.sampRate_editText.String = num2str(Hsave.sampRate);
+        H.maxRun_editText.String = num2str(Hsave.maxRun);
         BLK_SZ_LIM = Hsave.BLK_SZ_LIM;
         H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
         
@@ -361,14 +399,18 @@ switch Hsave.apprType
         H.paramSampDS = Hsave.paramSampDS;
         H.epsilonFin = Hsave.epsilonFin;
         H.MinPtsFin = Hsave.MinPtsFin;
-        
         H.origK = Hsave.origK;
+        H.sampIdx = Hsave.sampIdx;
+        H.idxSamp = Hsave.idxSamp;
+        
         H.mahalScores = Hsave.mahalScores;
         H.idxFin = Hsave.idxFin;
         H.finalAUC = Hsave.finalAUC;
+        H.AUCstd = Hsave.AUCstd;
         H.tElapsed = Hsave.tElapsed;
         H.finalAUCbyScores_statText.String = num2str(H.finalAUC,'%0.3f');
-        H.runTime_statText.String = num2str(Hsave.tElapsed,'%0.2f');
+        H.AUCstd_statText.String = num2str(H.AUCstd,'%0.3f');
+        H.runTime_statText.String = num2str(Hsave.tElapsed,'%0.3f');
         H.origK_val_statText.String = num2str(Hsave.origK);
         
     case 'LOF'
@@ -501,6 +543,7 @@ if ~actCond
     H.alphaMemb_editText.Enable = 'off';
     H.betaPrun_editText.Enable = 'off';
     H.sampRate_editText.Enable = 'off';
+    H.maxRun_editText.Enable = 'off';
     H.blckSzlim_editText.Enable = 'off';
     
 else
@@ -509,6 +552,7 @@ else
     H.alphaMemb_editText.Enable = 'on';
     H.betaPrun_editText.Enable = 'on';
     H.sampRate_editText.Enable = 'on';
+    H.maxRun_editText.Enable = 'on';
     H.blckSzlim_editText.Enable = 'on';
     
 end
@@ -566,6 +610,13 @@ else
 end
    
 function PSO_pcm_radioBtn_Callback(hO,eventdata,H)
+
+CreateStruct.Interpreter = 'tex';
+CreateStruct.WindowStyle = 'modal';
+msgCont = ['\fontsize{10}For excluding the execution time of PSO, after finding the optimal parameters, ' ...
+    'press the {\bf{Make Manu}} button to set them as manual, and then run the algorithm again.'];
+h = msgbox(msgCont,'Memory Error','error',CreateStruct);
+uiwait(h)
 
 PCMact(hO,eventdata,H);
 

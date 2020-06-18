@@ -1,3 +1,10 @@
+
+% Author: Sayyed-Ahmad Naghavi-Nozad, M.Sc., Artificial Intelligence
+% AmirKabir University of Technology, Department of Computer Engineering
+% Email Address: sa_na33@aut.ac.ir, ahmad.naghavi.aut@gmail.com
+% Website: https://ceit.aut.ac.ir/~sann_cv/
+% June 2020
+
 function [LoOPvals,AUC_LoOP,tElapsed] = LoOP(H)
 
 global BLK_SZ_LIM
@@ -52,7 +59,7 @@ tElapsed = toc(tStart); % Set end time
             msgCont = {'\fontsize{10}There is not {\bf{enough memory}} to compute the {\bf{materialization matrix}} for LoOP!, due to the incorrect input neighborhood parameter {\bf{minPts}}.'; '\fontsize{10}Thus, please {\color{red}\bf{stop}} the execution and run it again with the true optimal parameters, or even just free up some memory space! ;-)'; '\newline{\color{red}\bf{Note:}} Consider the {\bf{BlckSzLim}} value in GUI as a parameter too!'};
             h = msgbox(msgCont,'Memory Error','error',CreateStruct);
             uiwait(h)
-            keyboard
+            keyboard % Stop the operation from here, because of lack of memory
         end
         %-----------------------------%
         

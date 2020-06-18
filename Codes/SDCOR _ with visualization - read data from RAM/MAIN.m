@@ -1,3 +1,10 @@
+
+% Author: Sayyed-Ahmad Naghavi-Nozad, M.Sc., Artificial Intelligence
+% AmirKabir University of Technology, Department of Computer Engineering
+% Email Address: sa_na33@aut.ac.ir, ahmad.naghavi.aut@gmail.com
+% Website: https://ceit.aut.ac.ir/~sann_cv/
+% June 2020
+
 function varargout = MAIN(varargin)
 
 gui_Singleton = 1;
@@ -130,7 +137,7 @@ if get(H.LOF_checkBox,'Value')
     H.apprType = 'LOF';
     [H.lofVals,H.lofKmat,H.finalAUC,H.tElapsed] = LOF(H);
     set(H.finalAUCbyScores_statText,'String',num2str(H.finalAUC,'%0.3f'));
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.2f'));
+    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
     msgbox('Process was conducted successfully!','Success');
     
     hOact(hO,eventdata,H,0);
@@ -138,17 +145,15 @@ elseif get(H.LoOP_checkBox,'Value')
     H.apprType = 'LoOP';
     [H.LoOPvals,H.finalAUC,H.tElapsed] = LoOP(H);
     set(H.finalAUCbyScores_statText,'String',num2str(H.finalAUC,'%0.3f'));
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.2f'));
+    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
     msgbox('Process was conducted successfully!','Success');
     
     hOact(hO,eventdata,H,0);
 else
     H.apprType = 'SDCOR';
-    tStart = tic; % Setting the start time
     SDCOR(hO,H);
     H = guidata(hO);
-    H.tElapsed = toc(tStart); % Setting the elapsed time
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.2f'));
+    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
     msgbox('Process was conducted successfully!','Success');
     
     hOact(hO,eventdata,H,0);
@@ -371,7 +376,7 @@ if isfield(H,'finalAUC')
             resType = 'LoOP(visRAM)_';
     end
     
-    uisave({'Hsave'},['..\results\',resType,'result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',num2str(H.tElapsed,'%0.2f')]);
+    uisave({'Hsave'},['..\results\',resType,'result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',num2str(H.tElapsed,'%0.3f')]);
     msgbox('File was saved successfully!','Success');
 else
     msgbox('Sorry! There is not any clear run inf. to be saved!','Failure','error');
@@ -417,7 +422,7 @@ end
 
 qOptions.Interpreter = 'tex';
 qOptions.Default = 'No';
-qstring = 'Would you like to save the input DataSet along other objects?';
+qstring = 'Would you like to save the input dataset along with the other objects?';
 saveChoice = questdlg(qstring,'Save Option','Yes','No',qOptions);
 switch saveChoice
     case 'Yes'
@@ -531,7 +536,7 @@ switch Hsave.apprType
         H.finalAUC = Hsave.finalAUC;
         H.tElapsed = Hsave.tElapsed;
         H.finalAUCbyScores_statText.String = num2str(H.finalAUC,'%0.3f');
-        H.runTime_statText.String = num2str(Hsave.tElapsed,'%0.2f');
+        H.runTime_statText.String = num2str(Hsave.tElapsed,'%0.3f');
         H.origK_val_statText.String = num2str(Hsave.origK);
         
     case 'LOF'
@@ -771,6 +776,13 @@ else
 end
    
 function PSO_pcm_radioBtn_Callback(hO,eventdata,H)
+
+CreateStruct.Interpreter = 'tex';
+CreateStruct.WindowStyle = 'modal';
+msgCont = ['\fontsize{10}For excluding the execution time of PSO, after finding the optimal parameters, ' ...
+    'press the {\bf{Make Manu}} button to set them as manual, and then run the algorithm again.'];
+h = msgbox(msgCont,'Memory Error','error',CreateStruct);
+uiwait(h)
 
 PCMact(hO,eventdata,H);
 

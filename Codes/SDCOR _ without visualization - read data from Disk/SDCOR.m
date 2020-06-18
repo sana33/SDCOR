@@ -1,14 +1,23 @@
+
+% Author: Sayyed-Ahmad Naghavi-Nozad, M.Sc., Artificial Intelligence
+% AmirKabir University of Technology, Department of Computer Engineering
+% Email Address: sa_na33@aut.ac.ir, ahmad.naghavi.aut@gmail.com
+% Website: https://ceit.aut.ac.ir/~sann_cv/
+% June 2020
+
 function [] = SDCOR(hO,H)
+
+SDCORstrt = tic; % Execution time for SDCOR
 
 global DBDS CLUSTS CLUST_MODF_ARR CHNK_MEMB_COND
 
 %------- displaying progress -------%
-H.progLevl_statText.FontSize = 14;
+H.progLevl_statText.FontSize = 13;
 H.progLevl_statText.String = 'Sampling phase started!'; pause(.001);
 %-----------------------------------%
 
 % tSt = tic; % Setting start time for sampling phase @-- debugging script --@
-while true
+while true    
     rndSmp_Maker();
     
     sampPrmChosMthd();
@@ -21,6 +30,7 @@ while true
         fprintf('Singularity happened during "Sampling" phase! The procedure will be conducted again\n');
         beep
     end
+    
 end
 % tElp0 = toc(tSt); % Setting elapsed time for sampling phase @-- debugging script --@
 % fprintf('\n\nRandSamp:\t%0.2fe-4 sec\n\n',tElp0*1e4); % @-- debugging script --@
@@ -33,7 +43,7 @@ H.origK_val_statText.String = num2str(H.origK);
 H.sampDetArr = cell2mat(CLUSTS(8,:));
 H.sampDetArr(H.sampDetArr<=0) = 1; % Error handling
 
-H = rmfield(H,{'sampData','sampIdx','idxSamp'}); % Clearing RAM from unnecessary data
+H = rmfield(H,{'sampData'}); % Clearing RAM from unnecessary data
 
 %------- displaying progress -------%
 H.progLevl_statText.String = 'Sampling phase finished!'; pause(.5);
@@ -48,7 +58,7 @@ maxIter = ceil(H.n/H.chunkSz);
 
 %------- displaying progress -------%
 H.progLevl_statText.String = '';
-H.progLevl_statText.FontSize = 30;
+H.progLevl_statText.FontSize = 15;
 H.progLevl_statText.String = [num2str(0) '/' num2str(maxIter)]; pause(.001);
 %-----------------------------------%
 
@@ -96,7 +106,7 @@ for c1 = 1:maxIter
         
     end
 	
-%     fprintf('ChunkMemb:\t%0.2fe-4 sec;\tretSetMemb.1:\t%0.2fe-4 sec;\tretSetClust.:\t%0.2fe-4 sec;\tretSetMemb.2:\t%0.2fe-4 sec\n',... @-- debugging script --@
+%     fprintf('ChunkMemb:\t%0.2fe-4 sec;\tretSetMemb.1:\t%0.2fe-4 sec;\tretSetClust.:\t%0.2fe-4 sec;\tretSetMemb.2:\t%0.2fe-4 sec\n',...
 %         tElp1*1e4,tElp2*1e4,tElp3*1e4,tElp4*1e4); % Printing elapsed times for various stages @-- debugging script --@
     
 %     % Demonstrating the number and ratio of sustained objects in RAM belonging to current chunk @-- debugging script --@
@@ -114,33 +124,33 @@ clearvars chunk DBDS retainSet retIdx clustBestArr % Clearing RAM from unnecessa
 
 %------- displaying progress -------%
 H.progLevl_statText.String = '';
-H.progLevl_statText.FontSize = 14;
-H.progLevl_statText.String = 'Building final clustering model!'; pause(.5);
+H.progLevl_statText.FontSize = 10;
+H.progLevl_statText.String = 'Building the final clustering model!'; pause(.5);
 %-----------------------------------%
 
-% tSt = tic; % @-- debugging script --@
+% tSt = tic; % Setting start time for building the final clustering model @-- debugging script --@
 [~,H.finalClusts] = finalClustsMaker(H);
-% tElp5 = toc(tSt); % @-- debugging script --@
+% tElp5 = toc(tSt); % Setting elapsed time for building the final clustering model @-- debugging script --@
 % fprintf('FinClstMakr:\t%0.2fe-4 sec\n',tElp5*1e4); % @-- debugging script --@
 
 clearvars CLUSTS % Clearing RAM from unnecessary data
 
 %------- displaying progress -------%
-H.progLevl_statText.String = 'Calculating outlierness scores!'; pause(.001);
+H.progLevl_statText.String = 'Calculating the outlierness scores!'; pause(.001);
 %-----------------------------------%
 
-% tSt = tic; % @-- debugging script --@
+% tSt = tic; % Setting start time for the scoring phase @-- debugging script --@
 [H.mahalScores,H.idxFin,H.finalAUC] = OLscoreMaker(H);
-% tElp6 = toc(tSt); % @-- debugging script --@
+% tElp6 = toc(tSt); % Setting elapsed time for the scoring phase @-- debugging script --@
 % fprintf('OLscrMakr:\t%0.2fe-4 sec\n',tElp6*1e4); % @-- debugging script --@
 
 %------- displaying progress -------%
 H.progLevl_statText.String = '';
-H.progLevl_statText.FontSize = 30;
+H.progLevl_statText.FontSize = 15;
 H.progLevl_statText.String = 'D O N E !'; pause(.001);
 %-----------------------------------%
 
-H = rmfield(H,{'labDS','finalClusts'}); % Clearing RAM from unnecessary data
+H = rmfield(H,{'finalClusts'}); % Clearing RAM from unnecessary data
 
 %% Nested functions here!
 
@@ -189,6 +199,8 @@ H = rmfield(H,{'labDS','finalClusts'}); % Clearing RAM from unnecessary data
                     ceil(mean(sustObjOfCurrChnkArr(1,:))),mean(sustObjOfCurrChnkArr(2,:)));
         end
     end
+
+H.tElapsed = toc(SDCORstrt)-1-(maxIter+4)*0.001; % Setting the elapsed time for SDCOR
 
 guidata(hO,H);
 
@@ -814,8 +826,6 @@ end
 [mahalScores,idxFin] = min(mahalScorKarr,[],2);
 
 [~,~,~,finalAUC] = perfcurve(H.labDS.y,mahalScores,1);
-
-set(H.finalAUCbyScores_statText,'String',num2str(finalAUC,'%0.3f'));
 
 end
 

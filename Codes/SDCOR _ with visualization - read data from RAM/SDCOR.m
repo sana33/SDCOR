@@ -1,7 +1,17 @@
+
+% Author: Sayyed-Ahmad Naghavi-Nozad, M.Sc., Artificial Intelligence
+% AmirKabir University of Technology, Department of Computer Engineering
+% Email Address: sa_na33@aut.ac.ir, ahmad.naghavi.aut@gmail.com
+% Website: https://ceit.aut.ac.ir/~sann_cv/
+% June 2020
+
 function [] = SDCOR(hO,H)
+
+SDCORstrt = tic; % Execution time for SDCOR
 
 global DBDS CLUSTS CLUST_MODF_ARR CHNK_MEMB_COND
 
+timWast = 0; % Calculating the wasted time for visualization
 % tSt = tic; % Setting start time for sampling phase @-- debugging script --@
 while true
     rndSmp_Maker();
@@ -20,9 +30,11 @@ end
 % tElp0 = toc(tSt); % Setting elapsed time for sampling phase @-- debugging script --@
 % fprintf('\n\nRandSamp:\t%0.2fe-4 sec\n\n',tElp0*1e4); % @-- debugging script --@
 
+tic
 if H.dispOn
     plotOptional(H,{},'sampDS');
 end
+timWast = timWast+toc; % Adding up the wasted time for visualization
 
 CLUSTS = cell(0);
 clustInfMaker(H,{H.sampData,H.idxSamp});
@@ -85,44 +97,54 @@ for c1 = 1:maxIter
         
     end
 	
-%     fprintf('ChunkMemb:\t%0.2fe-4 sec;\tretSetMemb.1:\t%0.2fe-4 sec;\tretSetClust.:\t%0.2fe-4 sec;\tretSetMemb.2:\t%0.2fe-4 sec\n',... @-- debugging script --@
+%     fprintf('ChunkMemb:\t%0.2fe-4 sec;\tretSetMemb.1:\t%0.2fe-4 sec;\tretSetClust.:\t%0.2fe-4 sec;\tretSetMemb.2:\t%0.2fe-4 sec\n',...
 %         tElp1*1e4,tElp2*1e4,tElp3*1e4,tElp4*1e4); % Printing elapsed times for various stages @-- debugging script --@
     
 %     % Demonstrating the number and ratio of sustained objects in RAM belonging to current chunk @-- debugging script --@
 %     sustObjNoRAM(1); % @-- debugging script --@
     
+    tic
     [accResArr] = accReport(H,accResArr,retIdx);
+    timWast = timWast+toc; % Adding up the wasted time for visualization
 end
 
 % % Demonstrating the mean value of numbers and ratios of sustained objects in RAM belonging to all processed chunks @-- debugging script --@
 % sustObjNoRAM(2); % @-- debugging script --@
 
+tic
 H.accFinCond = 1;
 H.accResArr = accResArr;
 plotOptional(H,{accResArr},'accPerChunk');
+timWast = timWast+toc; % Adding up the wasted time for visualization
 
 H.clusts = CLUSTS;
 H.retIdx = retIdx;
 
 H.means = cell2mat(transpose(CLUSTS(1,:)));
 
+tic
 retSetDisp();
+timWast = timWast+toc; % Adding up the wasted time for visualization
 
-% tSt = tic; % @-- debugging script --@
+% tSt = tic; % Setting start time for building the final clustering model @-- debugging script --@
 [H.idxMeans,H.finalClusts,H.meansMeans,H.regenDS,H.idxRegenDS] = finalClustsMaker(H);
-% tElp5 = toc(tSt); % @-- debugging script --@
+% tElp5 = toc(tSt); % Setting elapsed time for building the final clustering model @-- debugging script --@
 % fprintf('FinClstMakr:\t%0.2fe-4 sec\n',tElp5*1e4); % @-- debugging script --@
 
+tic
 finMnsRegDS_Disp();
+timWast = timWast+toc; % Adding up the wasted time for visualization
 
-% tSt = tic; % @-- debugging script --@
+% tSt = tic; % Setting start time for the scoring phase @-- debugging script --@
 [H.mahalScores,H.idxFin,H.finalAUC] = OLscoreMaker(H);
-% tElp6 = toc(tSt); % @-- debugging script --@
+% tElp6 = toc(tSt); % Setting elapsed time for the scoring phase @-- debugging script --@
 % fprintf('OLscrMakr:\t%0.2fe-4 sec\n',tElp6*1e4); % @-- debugging script --@
 
+tic
 if H.dispOn
     plotOptional(H,{},'scorDS');
 end
+timWast = timWast+toc; % Adding up the wasted time for visualization
 
 
 %% Nested functions here!
@@ -222,6 +244,8 @@ end
                     ceil(mean(sustObjOfCurrChnkArr(1,:))),mean(sustObjOfCurrChnkArr(2,:)));
         end
     end
+
+H.tElapsed = toc(SDCORstrt)-timWast; % Setting the elapsed time for SDCOR
 
 guidata(hO,H);
 
