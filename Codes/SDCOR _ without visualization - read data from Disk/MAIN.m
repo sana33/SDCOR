@@ -303,15 +303,15 @@ if isfield(H,'finalAUC')
     
     switch H.apprType
         case 'SDCOR'
-            resType = 'SDCOR(noVisDsk)_';
+            uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_std=',...
+                num2str(H.AUCstd,'%0.3f'),'_maxRun=',num2str(H.maxRun),'_Time=',num2str(H.tElapsed,'%0.3f')]);
         case 'LOF'
-            resType = 'LOF(noVisDsk)_';
+            uisave({'Hsave'},['..\results\','LOF(noVisDsk)_result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',...
+                num2str(H.tElapsed,'%0.3f')]);
         case 'LoOP'
-            resType = 'LoOP(noVisDsk)_';
+            uisave({'Hsave'},['..\results\','LoOP(noVisDsk)_result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',...
+                num2str(H.tElapsed,'%0.3f')]);
     end
-    
-    uisave({'Hsave'},['..\results\',resType,'result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_std=',num2str(H.AUCstd,'%0.3f'),...
-        '_maxRun=',num2str(H.maxRun),'_Time=',num2str(H.tElapsed,'%0.3f')]);
     msgbox('File was saved successfully!','Success');
 else
     msgbox('Sorry! There is not any clear run inf. to be saved!','Failure','error');
