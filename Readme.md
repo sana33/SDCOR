@@ -145,11 +145,11 @@ In this version, for the ease of visualizations, the input data along with the a
 
   * #### "LOF" checkbox
     
-    If this checkbox is on, then the LOF algorithm will be applied to the input data, considering the corresponding input parameters. By clicking this checkbox, all of the other elements of the GUI associated to other competing methods will be disabled.
+    If this checkbox is on, then the LOF algorithm will be applied to the input data, considering the corresponding input parameters. By clicking this checkbox, all of the other elements of the GUI associated with other competing methods will be disabled.
     
   * #### "LoOP" checkbox
 
-    If this checkbox is on, then the LoOP algorithm will be applied to the input data, considering the corresponding input parameters. By clicking this checkbox, all of the other elements of the GUI associated to other competing methods will be disabled.
+    If this checkbox is on, then the LoOP algorithm will be applied to the input data, considering the corresponding input parameters. By clicking this checkbox, all of the other elements of the GUI associated with other competing methods will be disabled.
 	
   * **MinPts Intv.:** This parameter is modifies w.r.t. the selected density-based outlier algorithm, namely LOF or LoOP. The default established values are set as suggested. For LOF, it is an interval, and for LoOP, it becomes a scalar value.
 
