@@ -195,7 +195,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 
   * #### "Progress by Chunk/Block:" static text box
   
-    This field shows the gradual progress of the scalable clustering algorithm or the chosen density-based anomaly algorithms, in terms of successive chunks or blocks of data, respectively.
+    This field shows the gradual progress of the scalable clustering algorithm or the chosen density-based anomaly algorithm, in terms of successive chunks or blocks of data, respectively.
 	
   * #### "Temp AUC:" static text box
   
