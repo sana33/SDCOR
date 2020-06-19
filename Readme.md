@@ -173,7 +173,7 @@ In this version, for the ease of visualizations, the input data along with the a
   
   * #### "RESET BTNS" button
   
-    If during the operation, any error happens and the process is halted, then all the disabled elements remain inactive. This button activates them again.
+    If during the operation, any error happens and the process is halted, or it is stopped intentionally, then all the disabled elements remain inactive. This button activates them again.
   
   * #### "SAVE WORKSPACE" button
   
