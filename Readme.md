@@ -1,7 +1,7 @@
 # SDCOR
 ## Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets
 
-##### Table of Contents
+#### Table of Contents
 
 1. [Abstract](#abstract)
 2. [Framework](#framework)
