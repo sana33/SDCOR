@@ -207,7 +207,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 	
   * #### "Total Runs:" static text box
   
-    The total number of runs of SDCOR per the maximum number of execution times (_MaxRun_) is depicted in this field.
+    The total number of runs of SDCOR per the allowed maximum number of execution times (_MaxRun_) is depicted in this field.
 	
 * ### "Final Results" panel
 
