@@ -5,21 +5,21 @@
 
 #### Table of Contents
 
-1. [Abstract](#abstract)
-2. [Framework](#framework)
-3. [Implementations Description](#implementations-description)
-   1. [SDCOR _ with visualization - read data from RAM](#-sdcor-_-with-visualization---read-data-from-ram)
-      1. ["SDCOR Params" panel](#sdcor-params-panel)
-      2. ["DBSCAN Param Choosing" panel](#dbscan-param-choosing-panel)
-      3. ["Final Results" panel](#final-results-panel)
-      4. ["SDCOR various states" panel](#sdcor-various-states-panel)
-      5. ["LOF & LoOP Params" panel](#lof--loop-params-panel)
-      6. [Main buttons of the GUI](#main-buttons-of-the-gui)
-   2. [SDCOR _ without visualization - read data from Disk](#-sdcor-_-without-visualization---read-data-from-disk)
-      1. ["MaxRun" parameter](#maxrun-parameter)
-      1. ["Progression Status" panel](#progression-status-panel)
-      2. ["Final Results" panel](#final-results-panel-1)
-4. [Some Notes](#-some-notes)
+* [Abstract](#abstract)
+* [Framework](#framework)
+* [Implementations Description](#implementations-description)
+  * [SDCOR _ with visualization - read data from RAM](#-sdcor-_-with-visualization---read-data-from-ram)
+    * ["SDCOR Params" panel](#sdcor-params-panel)
+    * ["DBSCAN Param Choosing" panel](#dbscan-param-choosing-panel)
+    * ["Final Results" panel](#final-results-panel)
+    * ["SDCOR various states" panel](#sdcor-various-states-panel)
+    * ["LOF & LoOP Params" panel](#lof--loop-params-panel)
+    * [Main buttons of the GUI](#main-buttons-of-the-gui)
+  * [SDCOR _ without visualization - read data from Disk](#-sdcor-_-without-visualization---read-data-from-disk)
+    * ["MaxRun" parameter](#maxrun-parameter)
+    * ["Progression Status" panel](#progression-status-panel)
+    * ["Final Results" panel](#final-results-panel-1)
+* [Some Notes](#-some-notes)
 
 #### Abstract:
 
