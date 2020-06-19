@@ -207,7 +207,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
 In this version, the input data is directly read from the disk, and hence, any arbitrary size of dataset could be employed by the proposed method. Therefore, the dedicated facilities for visualizing different steps of the scalable clustering algorithm are removed from the GUI; and instead, some text fields are added to simply demonstrate the algorithm progression and detection accuracy outcomes. The new parts added to the GUI are characterized as follows:
 
-* ### **MaxRun:** This field is added to the *SDCOR Params* panel, and stands for the maximum number of times that SDCOR will be executed on the input data. The final accuracy outcome will be an aggregate value of the total independent runs.
+* ### __MaxRun:__ This field is added to the *SDCOR Params* panel, and stands for the maximum number of times that SDCOR will be executed on the input data. The final accuracy outcome will be an aggregate value of the total independent runs.
   
 * ### "Progression Status" panel
 
