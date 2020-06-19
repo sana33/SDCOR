@@ -139,7 +139,7 @@ In this version, for the ease of visualizations, the input data along with the a
   
   * #### "Top-n OLs" button
   
-    This button displays the Top-n outliers regarding the acquired outlierness scores out of SDCOR, as red dots. Any other point is represented with a blue dot. The value for _n_ could be modified through the _Top-n OLs_ input parameter.
+    This button displays the Top-n outliers regarding the acquired outlierness scores out of SDCOR, as red dots. Any other point is represented with a blue dot. The value for _n_ could be modified through the _Top-n OLs_ input parameter in the *SDCOR Params* panel.
 	
 * ### "LOF & LoOP Params" panel
 
