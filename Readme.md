@@ -1,6 +1,81 @@
 # SDCOR
 ## Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets
 
+##### Table of Contents
+
+1. Abstract
+2. Framework
+3. Implementations Description
+   1. SDCOR _ with visualization - read data from RAM
+      1. "SDCOR Params" panel
+	     1. ChunkSize:
+         2. PCvarRatio(%):
+         3. Alpha:
+         4. Beta:
+         5. SampRate(%):
+         6. Top-n OLs:
+         7. ScorDSszCoef:
+         8. BlckSzLim:
+      2. "DBSCAN Param Choosing" panel
+	     1. "Mode" sub-panel
+	        1. PSO
+		    2. Manual
+	     2. "Initial Params" sub-panel
+		    1. dimCoef:
+			2. particleNo:
+			3. maxIter:
+			4. W:
+			5. C1:
+			6. C2:
+			7. Alpha:
+			8. manuEps:
+			9. manuMnPt:
+			10. epsCoef:
+			11. MinPtsCoef:
+         3. Axes plot
+         4. "Make Manu" button
+         5. "origK:" static text box
+      3. "Final Results" panel
+         1. "Accuracy per Chunk" plot
+         2. "Final AUC:" static text box
+         3. "Time(sec):" static text box
+      4. "SDCOR various states" panel
+         1. Main plot
+         2. "DispPlot" checkbox
+         3. "AuxiFig" checkbox
+         4. "LabelDS" button
+         5. "SampleDS" button
+         6. "RetSetRed" button
+         7. "FinalMeans" button
+         8. "RegenDS" button
+         9. "ScoredDS" button
+         10. "Top-n OLs" button
+      5. "LOF & LoOP Params" panel
+         1. "LOF" checkbox
+         2. "LoOP" checkbox
+         3. MinPts Intv.:
+         4. k StepLength:
+         5. Lambda:
+      6. Main buttons of the GUI
+         1. "LOAD" button
+         2. "START" button
+         3. "CLEAR AXES" button
+         4. "RESET BTNS" button
+         5. "SAVE WORKSPACE" button
+         6. "LOAD WORKSPACE" button
+   2. SDCOR _ without visualization - read data from Disk
+      1. MaxRun:
+      1. "Progression Status" panel
+         1. "Progress by Chunk/Block:" static text box	
+         2. "Temp AUC:" static text box
+         3. "Temp Time(sec):" static text box	
+         4. "Total Runs:" static text box
+      2. "Final Results" panel
+         1. "Final AUC:" static text box
+         2. "AUC std:" static text box
+         3. "Time(sec):" static text box
+4. Some Notes
+
 #### Abstract:
 
 This paper presents a batch-wise density-based clustering approach for local outlier detection in massive-scale datasets. Differently from well-known traditional algorithms, which assume that all the data is memory-resident, our proposed method is scalable and processes the data chunk-by-chunk within the confines of a limited memory buffer. At first, a temporary clustering model is built, then it is incrementally updated by analyzing consecutive memory loads of points. Ultimately, the proposed algorithm will give an outlying score to each object, which is named SDCOR (Scalable Density-based Clustering Outlierness Ratio). Evaluations on real-life and synthetic datasets demonstrate that the proposed method has a low linear time complexity and is more effective and efficient compared to best-known conventional density-based methods, which need to load all the data into memory; and also some fast distance-based methods which can perform on the data resident in the disk.
@@ -21,7 +96,7 @@ The code is implemented using MATLAB 9, and all the experiments are executed on 
 
 There are two independent versions of implementations, each equipped with a sophisticated GUI:
 
-### &#x1F537; __*SDCOR _ with visualization - read data from RAM*__:
+### &#x1F537; __*SDCOR _ with visualization - read data from RAM*__
 
 ![SDCOR with visualizations](https://github.com/sana33/SDCOR/blob/master/images/SDCOR_RAMversion.png)
 
@@ -183,7 +258,7 @@ In this version, for the ease of visualizations, the input data along with the a
   
     This button loads a saved workspace from before into the GUI.
 
-### &#x1F537; __*SDCOR _ without visualization - read data from Disk*__: 
+### &#x1F537; __*SDCOR _ without visualization - read data from Disk*__
 
 ![SDCOR without visualizations](https://github.com/sana33/SDCOR/blob/master/images/SDCOR_DiskVersion.png)
 
@@ -223,7 +298,7 @@ In this version, the input data is directly read from the disk, and hence, any a
   
     The average execution time (in seconds) acquired through the _MaxRun_ number of SDCOR runs.
 	
-### &#x1F34F; **_Some Notes:_**
+### &#x1F34F; **_Some Notes_**
 
 * #### For the better experience of working with the GUI files, right-click the FIG-file in MATLAB and select "Open in GUIDE".
 
