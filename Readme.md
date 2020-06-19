@@ -13,7 +13,7 @@ Note that, in the whole scalable clustering procedure, our endeavor is aimed to 
 
 At last, in the third phase of the proposed approach, w.r.t. the final clustering model gained out of the second phase, once again, we process the entire dataset in chunks, to give each object an outlying score, according to the same Mahalanobis distance criterion. The following figure, illustrates the software architecture of the approach.
 
-![Software Architecture](/images/SoftArch.jpg)
+![Software Architecture](https://github.com/sana33/SDCOR/blob/master/images/SoftArch.jpg)
 
 ## Implementations Description
 
@@ -23,7 +23,7 @@ There are two independent versions of implementations, each equipped with a soph
 
 ### &#x1F537; __*SDCOR _ with visualization - read data from RAM*__:
 
-![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
+![SDCOR with visualizations](https://github.com/sana33/SDCOR/blob/master/images/SDCOR_RAMversion.png)
 
 In this version, for the ease of visualizations, the input data along with the anomaly labels are totally loaded into memory. Therefore, various kinds of plots could be provided and moreover, for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
 
@@ -185,7 +185,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
 ### &#x1F537; __*SDCOR _ without visualization - read data from Disk*__: 
 
-![SDCOR without visualizations](/images/SDCOR_DiskVersion.png)
+![SDCOR without visualizations](https://github.com/sana33/SDCOR/blob/master/images/SDCOR_DiskVersion.png)
 
 In this version, the input data is directly read from the disk, and hence, any arbitrary size of dataset could be employed by the proposed method. Therefore, the dedicated facilities for visualizing different steps of the scalable clustering algorithm are removed from the GUI; and instead, some text fields are added to simply demonstrate the algorithm progression and detection accuracy outcomes. The new parts added to the GUI are characterized as follows:
 
