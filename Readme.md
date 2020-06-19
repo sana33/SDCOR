@@ -101,7 +101,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
   * #### Main plot
     
-	In this axes plot, different states of the proposed method will be displayed.
+	In this axes plot, different states of the proposed method are illustrated.
 
   * #### "DispPlot" checkbox
     
