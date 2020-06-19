@@ -229,7 +229,6 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 * #### There are some commented scripts (each followed by _"@-- debugging script --@"_) in the code that could be uncommented if necessary, in the case of tracking the performance of the proposed method.
 
-* #### There are two videos for both [RAM version](/videos/SDCOR_RAMversion.wmv) and [Disk version](/videos/SDCOR_DiskVersion.wmv), which each of them demonstrates a test run of the corresponding implementation.
+* #### There are two videos for both [RAM version](https://github.com/sana33/SDCOR/blob/master/videos/SDCOR_RAMversion.wmv) and [Disk version](https://github.com/sana33/SDCOR/blob/master/videos/SDCOR_DiskVersion.wmv), which each of them demonstrates a test run of the corresponding implementation.
 
 * #### If the process of a GUI gets so long and intolerable, or if for any kind of reason you want to cease the operation, you can click in the _Command Window_ of MATLAB and press _Ctrl+C_ or _Ctrl+Break_.
-
