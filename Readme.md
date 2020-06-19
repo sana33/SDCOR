@@ -4,77 +4,20 @@
 ##### Table of Contents
 
 1. [Abstract](#abstract)
-2. Framework
-3. Implementations Description
-   1. SDCOR _ with visualization - read data from RAM
-      1. "SDCOR Params" panel
-	     1. ChunkSize:
-         2. PCvarRatio(%):
-         3. Alpha:
-         4. Beta:
-         5. SampRate(%):
-         6. Top-n OLs:
-         7. ScorDSszCoef:
-         8. BlckSzLim:
-      2. "DBSCAN Param Choosing" panel
-	     1. "Mode" sub-panel
-	        1. PSO
-		    2. Manual
-	     2. "Initial Params" sub-panel
-		    1. dimCoef:
-			2. particleNo:
-			3. maxIter:
-			4. W:
-			5. C1:
-			6. C2:
-			7. Alpha:
-			8. manuEps:
-			9. manuMnPt:
-			10. epsCoef:
-			11. MinPtsCoef:
-         3. Axes plot
-         4. "Make Manu" button
-         5. "origK:" static text box
-      3. "Final Results" panel
-         1. "Accuracy per Chunk" plot
-         2. "Final AUC:" static text box
-         3. "Time(sec):" static text box
-      4. "SDCOR various states" panel
-         1. Main plot
-         2. "DispPlot" checkbox
-         3. "AuxiFig" checkbox
-         4. "LabelDS" button
-         5. "SampleDS" button
-         6. "RetSetRed" button
-         7. "FinalMeans" button
-         8. "RegenDS" button
-         9. "ScoredDS" button
-         10. "Top-n OLs" button
-      5. "LOF & LoOP Params" panel
-         1. "LOF" checkbox
-         2. "LoOP" checkbox
-         3. MinPts Intv.:
-         4. k StepLength:
-         5. Lambda:
-      6. Main buttons of the GUI
-         1. "LOAD" button
-         2. "START" button
-         3. "CLEAR AXES" button
-         4. "RESET BTNS" button
-         5. "SAVE WORKSPACE" button
-         6. "LOAD WORKSPACE" button
-   2. SDCOR _ without visualization - read data from Disk
-      1. MaxRun:
-      1. "Progression Status" panel
-         1. "Progress by Chunk/Block:" static text box	
-         2. "Temp AUC:" static text box
-         3. "Temp Time(sec):" static text box	
-         4. "Total Runs:" static text box
-      2. "Final Results" panel
-         1. "Final AUC:" static text box
-         2. "AUC std:" static text box
-         3. "Time(sec):" static text box
-4. Some Notes
+2. [Framework](#framework)
+3. [Implementations Description](#implementations-description)
+   1. [SDCOR _ with visualization - read data from RAM](#-sdcor-_-with-visualization---read-data-from-ram)
+      1. ["SDCOR Params" panel](#sdcor-params-panel)
+      2. ["DBSCAN Param Choosing" panel](#dbscan-param-choosing-panel)
+      3. ["Final Results" panel](#final-results-panel)
+      4. ["SDCOR various states" panel](#sdcor-various-states-panel)
+      5. ["LOF & LoOP Params" panel](#lof--loop-params-panel)
+      6. [Main buttons of the GUI](#main-buttons-of-the-gui)
+   2. [SDCOR _ without visualization - read data from Disk](#-sdcor-_-without-visualization---read-data-from-disk)
+      1. [MaxRun:]()
+      1. ["Progression Status" panel]()
+      2. ["Final Results" panel]()
+4. [Some Notes]()
 
 #### Abstract:
 
@@ -264,7 +207,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
 In this version, the input data is directly read from the disk, and hence, any arbitrary size of dataset could be employed by the proposed method. Therefore, the dedicated facilities for visualizing different steps of the scalable clustering algorithm are removed from the GUI; and instead, some text fields are added to simply demonstrate the algorithm progression and detection accuracy outcomes. The new parts added to the GUI are characterized as follows:
 
-* **MaxRun:** This field is added to the *SDCOR Params* panel, and stands for the maximum number of times that SDCOR will be executed on the input data. The final accuracy outcome will be an aggregate value of the total independent runs.
+* ### **MaxRun:** This field is added to the *SDCOR Params* panel, and stands for the maximum number of times that SDCOR will be executed on the input data. The final accuracy outcome will be an aggregate value of the total independent runs.
   
 * ### "Progression Status" panel
 
