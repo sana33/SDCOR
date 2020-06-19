@@ -14,7 +14,7 @@
       5. ["LOF & LoOP Params" panel](#lof--loop-params-panel)
       6. [Main buttons of the GUI](#main-buttons-of-the-gui)
    2. [SDCOR _ without visualization - read data from Disk](#-sdcor-_-without-visualization---read-data-from-disk)
-      1. [MaxRun:](#maxrun)
+      1. ["MaxRun" parameter](#maxrun-parameter)
       1. ["Progression Status" panel](#progression-status-panel)
       2. ["Final Results" panel](#final-results-panel-1)
 4. [Some Notes](#-some-notes)
