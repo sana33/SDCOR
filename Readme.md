@@ -183,7 +183,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
   * #### "LOAD" button
   
-    This button loads the input _n-by-p_ matrix of dataset _X_, along with the _n-by-1_ vector _y_ of outlier labels, all together as a single binary MAT-file. The name of the chosen dataset is depicted in the bold red box, positioned right below the main buttons.
+    This button loads the input _n-by-p_ matrix of dataset _X_, along with the _n-by-1_ vector _y_ of outlier labels (0 for inliers and 1 for outliers), all together as a single binary MAT-file. The name of the chosen dataset is depicted in the bold red box, positioned right below the main buttons.
 	
   * #### "START" button
   
