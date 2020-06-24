@@ -351,7 +351,7 @@ if n^2+BLK_SZ_LIM^2*8 > sysView.PhysicalMemory.Available
     msgCont = {'\fontsize{10}There is not {\bf{enough memory}} to run {\bf{DBSCAN}} on data available in RAM!, regarding the {\it{array-based implementation}} of MATLAB codes, and due to the {\it{incorrect input parameters}}, including random sampling rate {\bf{eta}}, and especially clustering parameters, {\bf{eps}} and {\bf{minPts}}.'; '\fontsize{10}Thus, please {\color{red}\bf{stop}} the execution and run it again with the true optimal parameters, or even just free up some memory space! ;-)'; '\newline{\color{red}\bf{Note:}} Consider the {\bf{BlckSzLim}} value in GUI as a parameter too!'};
     h = msgbox(msgCont,'Memory Error','error',CreateStruct);
     uiwait(h)
-    keyboard
+    keyboard % Stop the operation from here, because of lack of memory
 end
 %-----------------------------%
 
