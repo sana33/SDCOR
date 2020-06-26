@@ -3,7 +3,7 @@
 
 [![arXiv e-print](https://img.shields.io/badge/arXiv-e--print-blue?style=for-the-badge&logo=arXiv&logoColor=violet)](https://arxiv.org/pdf/2006.07616.pdf)
 
-[![license](https://img.shields.io/github/license/DAVFoundation/captain-n3m0.svg?style=plastic)](https://github.com/sana33/SDCOR/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/DAVFoundation/captain-n3m0.svg?style=flat-square)](https://github.com/sana33/SDCOR/blob/master/LICENSE)
 
 #### Table of Contents
 
