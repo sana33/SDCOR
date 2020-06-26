@@ -1,7 +1,5 @@
 # SDCOR
-## Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets
-
-![arXiv e-print](https://img.shields.io/badge/arXiv-e--print-blue?style=for-the-badge&logo=arXiv&logoColor=violet&link=https://arxiv.org/pdf/2006.07616.pdf&link=https://arxiv.org/pdf/2006.07616.pdf)
+## Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets [![arXiv e-print](https://img.shields.io/badge/arXiv-e--print-blue?style=for-the-badge&logo=arXiv&logoColor=violet&link=https://arxiv.org/pdf/2006.07616.pdf&link=https://arxiv.org/pdf/2006.07616.pdf)](https://arxiv.org/pdf/2006.07616.pdf)
 
 [![license](https://img.shields.io/github/license/DAVFoundation/captain-n3m0.svg?style=flat-square)](https://github.com/sana33/SDCOR/blob/master/LICENSE)
 
