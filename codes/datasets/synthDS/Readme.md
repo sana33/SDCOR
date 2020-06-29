@@ -4,4 +4,4 @@
 
 The data provided are synthetic datasets created artificially through MATLAB 9 for various experimental purposes. There are four datasets for the experiment of "Accuracy and Stability Analysis", eleven datasets for "Tolerance to a High Number of Outliers" experiment, and finally ten datasets for the "Scalability test". In all these artificial datasets, there are different types of Gaussian clusters along with some specific amount of outliers injected around every individual Normal cluster.
 
-More information on the artificially generated datasets is available on the link above (Mendeley badge).
+More information on the artificially generated datasets is available on the link above (MENDELEY DATA badge).
