@@ -253,7 +253,7 @@ In this version, the input data is directly read from the disk, and hence, any a
   
     The average execution time (in seconds) acquired through the _MaxRun_ number of SDCOR runs.
 	
-### &#x1F34F; **_Some Notes_**
+## &#x1F34F; Some Notes
 
 * #### For the better experience of working with the GUI files, right-click the FIG-file in MATLAB and select "Open in GUIDE".
 
@@ -263,7 +263,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 * #### If the process of a GUI gets so long and intolerable, or if for any kind of reason you want to cease the operation, you can click in the _Command Window_ of MATLAB and press _Ctrl+C_ or _Ctrl+Break_.
 
-### &#x1F4D8; **_Citation_**
+## &#x1F4D8; Citation
 
 If you use this code or idea for your research, please cite our paper:
 
