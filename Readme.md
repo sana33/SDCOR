@@ -23,6 +23,7 @@
     * ["Progression Status" panel](#progression-status-panel)
     * ["Final Results" panel](#final-results-panel-1)
 * [Some Notes](#-some-notes)
+* [Citation](#-citation)
 
 #### Abstract:
 
@@ -261,3 +262,14 @@ In this version, the input data is directly read from the disk, and hence, any a
 * #### There are two training videos for both [RAM version](/videos/SDCOR_RAMversion.wmv) and [Disk version](/videos/SDCOR_DiskVersion.wmv), which each of them demonstrates a test run of the corresponding implementation.
 
 * #### If the process of a GUI gets so long and intolerable, or if for any kind of reason you want to cease the operation, you can click in the _Command Window_ of MATLAB and press _Ctrl+C_ or _Ctrl+Break_.
+
+### &#x1F4D8; **_Citation_**
+
+If you use this code or idea for your research, please cite this paper.
+
+@article{naghavi2020sdcor,
+  title={SDCOR: Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets},
+  author={Naghavi-Nozad, Sayyed-Ahmad and Haeri, Maryam Amir and Folino, Gianluigi},
+  journal={arXiv preprint arXiv:2006.07616},
+  year={2020}
+}
