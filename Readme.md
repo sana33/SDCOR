@@ -265,7 +265,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 ### &#x1F4D8; **_Citation_**
 
-If you use this code or idea for your research, please cite this paper.
+If you use this code or idea for your research, please cite this paper:
 
 @article{naghavi2020sdcor,
   title={SDCOR: Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets},
@@ -273,3 +273,5 @@ If you use this code or idea for your research, please cite this paper.
   journal={arXiv preprint arXiv:2006.07616},
   year={2020}
 }
+
+Thanks a lot ...
