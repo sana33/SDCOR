@@ -10,7 +10,7 @@
 
 * [Abstract](#abstract)
 * [Framework](#framework)
-* [Implementations Description](#implementations-description)
+* [Implementations Description](#-implementations-description)
   * [SDCOR _ with visualization - read data from RAM](#-sdcor-_-with-visualization---read-data-from-ram)
     * ["SDCOR Params" panel](#sdcor-params-panel)
     * ["DBSCAN Param Choosing" panel](#dbscan-param-choosing-panel)
