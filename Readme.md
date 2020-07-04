@@ -2,7 +2,7 @@
 
 ## Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets
 
-[![arXiv e-print](https://img.shields.io/badge/arXiv-e--print-blue?style=for-the-badge&logo=arXiv&logoColor=violet)](https://arxiv.org/pdf/2006.07616.pdf)
+[![arXiv e-print](https://img.shields.io/badge/arXiv-e--print-blue?style=for-the-badge&logo=arXiv&logoColor=violet)](https://arxiv.org/pdf/2006.07616.pdf) &emsp; [![Elsevier e-print](https://img.shields.io/badge/Elsevier-e--print-red?style=for-the-badge&logo=Elsevier&logoColor=blueviolet)]()
 
 [![license](https://img.shields.io/github/license/DAVFoundation/captain-n3m0.svg?style=flat-square)](https://github.com/sana33/SDCOR/blob/master/LICENSE)
 
