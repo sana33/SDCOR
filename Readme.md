@@ -211,7 +211,7 @@ In this version, for the ease of visualizations, the input data along with the a
   
     This button loads a saved workspace from before into the GUI.
 
-### &#x1F537; __*SDCOR _ without visualization - read data from Disk*__
+### &#x1F536; __*SDCOR _ without visualization - read data from Disk*__
 
 ![SDCOR without visualizations](/images/SDCOR_DiskVersion.png)
 
