@@ -267,7 +267,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 If you use this code or idea for your research, please cite this paper:
 
-```bibtex
+```
 @article{naghavi2020sdcor,
   title={SDCOR: Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets},
   author={Naghavi-Nozad, Sayyed-Ahmad and Haeri, Maryam Amir and Folino, Gianluigi},
