@@ -40,7 +40,7 @@ varargout{1} = H.output;
 
 function load_pushBtn_Callback(hO,eventdata,H)
 
-[FileName,PathName] = uigetfile('*.mat', 'Select the dataset with outlier labels','..\datasets\');
+[FileName,PathName] = uigetfile('*.mat', 'Select the dataset along with outlier labels, all as a single MAT-file','..\datasets\');
 if ~FileName
     msgbox('Sorry! No file was loaded!','Failure','error');
 else
