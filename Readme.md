@@ -39,7 +39,7 @@ At last, in the third phase of the proposed approach, w.r.t. the final clusterin
 
 ![Software Architecture](/images/SoftArch.jpg)
 
-## &#x1F53B; Implementations Description
+## &#9998; Implementations Description
 
 The code is implemented using MATLAB 9, and all the experiments are executed on a laptop having a 2.5 GHz Intel Core i5 processor and 6 GB of memory. The implementations of the two state-of-the-art density-based outlier detection methods, namely LOF and LoOP, are included in this code too.
 
