@@ -255,9 +255,9 @@ In this version, the input data is directly read from the disk, and hence, any a
 	
 ## &#x1F34F; Some Notes
 
-* #### For the better experience of working with the GUI files, right-click the FIG-file in MATLAB and select "Open in GUIDE".
+* #### For the better experience of working with MATLAB GUI, right-click the FIG-file and select "Open in GUIDE", instead of double-clicking on it.
 
-* #### There are some commented scripts (each followed by _"@-- debugging script --@"_) in the code that could be uncommented if necessary, in the case of tracking the performance of the proposed method.
+* #### There are some commented scripts (each followed by _"@-- debugging script --@"_) in the code that could be uncommented if necessary, in the case of tracking the functionality of the proposed method.
 
 * #### There are two training videos for both [RAM version](/videos/SDCOR_RAMversion.wmv) and [Disk version](/videos/SDCOR_DiskVersion.wmv), which each of them demonstrates a test run of the corresponding implementation.
 
