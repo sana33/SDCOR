@@ -2,7 +2,7 @@
 
 ## Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets
 
-Authors: Sayyed-Ahmad Naghavi-Nozad, Maryam~Amir Haeri and Gianluigi Folino
+Authors: Sayyed-Ahmad Naghavi-Nozad, Maryam Amir Haeri and Gianluigi Folino
 
 [![arXiv e-print](https://img.shields.io/badge/arXiv-e--print-blue?style=for-the-badge&logo=arXiv&logoColor=white)](https://arxiv.org/pdf/2006.07616.pdf) &emsp; [![Elsevier e-print](https://img.shields.io/badge/Elsevier-e--print-red?style=for-the-badge&logo=Elsevier&logoColor=white)]()
 
