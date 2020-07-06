@@ -2,7 +2,7 @@
 % Author: Sayyed-Ahmad Naghavi-Nozad, M.Sc., Artificial Intelligence
 % AmirKabir University of Technology, Department of Computer Engineering
 % Email Address: sa_na33@aut.ac.ir, ahmad.naghavi.aut@gmail.com
-% Website: https://ceit.aut.ac.ir/~sann_cv/
+% Website: https://ce.aut.ac.ir/~sann_cv/
 % June 2020
 
 function plotOptional(H,data,option)
