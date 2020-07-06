@@ -376,7 +376,7 @@ if isfield(H,'finalAUC')
             resType = 'LoOP(visRAM)_';
     end
     
-    uisave({'Hsave'},['..\results\',resType,'result_',fileName,'_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',num2str(H.tElapsed,'%0.3f')]);
+    uisave({'Hsave'},['..\results\',resType,'result_$',fileName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',num2str(H.tElapsed,'%0.3f')]);
     msgbox('File was saved successfully!','Success');
 else
     msgbox('Sorry! There is not any clear run inf. to be saved!','Failure','error');
