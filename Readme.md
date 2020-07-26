@@ -267,7 +267,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 ## &#x1F4D8; Citation
 
-If you use this code or idea for your research, please cite our paper:
+If you use this code or idea for your research, please cite our paper as:
 
 ```
 @article{naghavi2020sdcor,
