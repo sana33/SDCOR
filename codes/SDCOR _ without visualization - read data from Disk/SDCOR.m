@@ -524,8 +524,8 @@ currK = size(CLUSTS,2);
 idxUnq = unique(idx(idx~=0));
 K = numel(idxUnq);
 for c1 = currK+1:currK+K
-    idxKli = idx==idxUnq(c1-currK);
-    Y = X(idxKli,:);
+    idxKgi = idx==idxUnq(c1-currK);
+    Y = X(idxKgi,:);
     n = size(Y,1);
     CLUSTS{1,c1} = mean(Y);
     CLUSTS{2,c1} = transpose(Y-repmat(CLUSTS{1,c1},n,1))*(Y-repmat(CLUSTS{1,c1},n,1));
@@ -537,7 +537,7 @@ for c1 = currK+1:currK+K
     CLUSTS{5,c1} = sqrt(transpose(latent(1:numComp)));
     CLUSTS{6,c1} = n;
     CLUSTS{7,c1} = numComp;
-    CLUSTS{8,c1} = unique(Kind(idxKli));
+    CLUSTS{8,c1} = unique(Kind(idxKgi));
 end
 
 end
@@ -639,8 +639,8 @@ end
         idxRetUnq = unique(idxRet(idxRet~=0));
         K = numel(idxRetUnq);
         for c1 = 1:K
-            idxRetKli = idxRet==idxRetUnq(c1);
-            Z = retainSet(idxRetKli,:);
+            idxRetKgi = idxRet==idxRetUnq(c1);
+            Z = retainSet(idxRetKgi,:);
             Zmean = mean(Z);
             Zdet = det(cov(Z));
             
@@ -650,7 +650,7 @@ end
                     CLUSTS{5,c2}).^2));
             end
             [~,nrstInitClstIdx] = min(MDarr);
-            Kind(idxRetKli) = nrstInitClstIdx;
+            Kind(idxRetKgi) = nrstInitClstIdx;
             
             if Zdet>H.sampDetArr(nrstInitClstIdx)
                 
@@ -660,14 +660,14 @@ end
                 [trueK,idxTrue] = findRetSetCorrK(Z,H.sampDetArr(nrstInitClstIdx),H.epsilonFin,H.MinPtsFin);
                 
                 if trueK~=1
-                    idxRet(idxRetKli) = idxRetUnq(c1)+idxTrue/(trueK+1);
+                    idxRet(idxRetKgi) = idxRetUnq(c1)+idxTrue/(trueK+1);
                     
 %                     fprintf('Kmeans for irregular minicluster is utilized!\n'); % @-- debugging script --@
 %                     beep % @-- debugging script --@
                     
                 else
-                    idxRet(idxRetKli) = 0;
-                    Kind(idxRetKli) = 0;
+                    idxRet(idxRetKgi) = 0;
+                    Kind(idxRetKgi) = 0;
                     
 %                     fprintf('Kmeans for irregular minicluster failed!\n'); % @-- debugging script --@
 %                     beep % @-- debugging script --@
