@@ -36,12 +36,17 @@ if H.dispOn
 end
 timWast = timWast+toc; % Adding up the wasted time for visualization
 
+% Initializing the temporary clustering model
 CLUSTS = cell(0);
-clustInfMaker(H,{H.sampData,H.idxSamp});
+clustInfMaker(H,{H.sampData,H.idxSamp,H.idxSamp});
 H.origK = size(CLUSTS,2);
 H.origK_val_statText.String = num2str(H.origK);
 
-H.sampDetArr = cell2mat(CLUSTS(8,:));
+% Building the initial determinant array
+H.sampDetArr = zeros(1,H.origK);
+for d1 = 1:H.origK
+    H.sampDetArr(d1) = det((1/(CLUSTS{6,d1}-1))*CLUSTS{2,d1});
+end
 H.sampDetArr(H.sampDetArr<=0) = 1; % Error handling
 
 retainSet = [];
@@ -545,12 +550,14 @@ global CLUSTS
 
 X = data{1};
 idx = data{2};
+Kind = data{3};
 
 currK = size(CLUSTS,2);
 idxUnq = unique(idx(idx~=0));
 K = numel(idxUnq);
 for c1 = currK+1:currK+K
-    Y = X(idx==idxUnq(c1-currK),:);
+    idxKli = idx==idxUnq(c1-currK);
+    Y = X(idxKli,:);
     n = size(Y,1);
     CLUSTS{1,c1} = mean(Y);
     CLUSTS{2,c1} = transpose(Y-repmat(CLUSTS{1,c1},n,1))*(Y-repmat(CLUSTS{1,c1},n,1));
@@ -562,7 +569,7 @@ for c1 = currK+1:currK+K
     CLUSTS{5,c1} = sqrt(transpose(latent(1:numComp)));
     CLUSTS{6,c1} = n;
     CLUSTS{7,c1} = numComp;
-    CLUSTS{8,c1} = det((1/(n-1))*CLUSTS{2,c1});
+    CLUSTS{8,c1} = unique(Kind(idxKli));
 end
 
 end
@@ -575,8 +582,8 @@ K = numel(CLUST_MODF_ARR);
 
 mahalDistKarr = zeros(size(X,1),K);
 for c1 = 1:K
-    mahalDistKarr(:,c1) = sqrt(sum(((X*cell2mat(CLUSTS(3,CLUST_MODF_ARR(c1)))-cell2mat(CLUSTS(4,CLUST_MODF_ARR(c1))))./ ...
-        cell2mat(CLUSTS(5,CLUST_MODF_ARR(c1)))).^2,2));
+    mahalDistKarr(:,c1) = sqrt(sum(((X*CLUSTS{3,CLUST_MODF_ARR(c1)}-CLUSTS{4,CLUST_MODF_ARR(c1)})./ ...
+        CLUSTS{5,CLUST_MODF_ARR(c1)}).^2,2));
 end
 
 numCompArr = transpose(cell2mat(CLUSTS(7,CLUST_MODF_ARR)));
@@ -647,36 +654,35 @@ global CLUSTS
 retSz = size(retainSet,1);
 if retSz~=0
     [idxRet,~] = DBSCAN(H.epsilonFin,H.MinPtsFin);
-    [idxRetFin] = clustAccpDBSCAN();
+    Kind = zeros(numel(idxRet),1);
+    clustAccpDBSCAN();
     
-    clustInfMaker(H,{retainSet,idxRetFin});
+    clustInfMaker(H,{retainSet,idxRet,Kind});
     
-    retainSet = retainSet(idxRetFin==0,:);
-    retIdx = retIdx(idxRetFin==0);
+    retainSet = retainSet(idxRet==0,:);
+    retIdx = retIdx(idxRet==0);
 end
 
 % Nested function for verifying DBSCAN output clusters
-%     function [idxRetFin,unqFinLength] = clustAccpDBSCAN()
-    function [idxRetFin] = clustAccpDBSCAN()
+    function clustAccpDBSCAN()
         
         [idxRet,~] = posSemiDefCheck(retainSet,idxRet);
         
         idxRetUnq = unique(idxRet(idxRet~=0));
         K = numel(idxRetUnq);
-        
-        idxRetFin = idxRet;
         for c1 = 1:K
-            Z = retainSet(idxRet==idxRetUnq(c1),:);
+            idxRetKli = idxRet==idxRetUnq(c1);
+            Z = retainSet(idxRetKli,:);
             Zmean = mean(Z);
             Zdet = det(cov(Z));
             
             MDarr = zeros(1,H.origK);
             for c2 = 1:H.origK
-                MDarr(c2) = sqrt(sum(((Zmean*cell2mat(CLUSTS(3,c2))-cell2mat(CLUSTS(4,c2)))./ ...
-                    cell2mat(CLUSTS(5,c2))).^2));
+                MDarr(c2) = sqrt(sum(((Zmean*CLUSTS{3,c2}-CLUSTS{4,c2})./ ...
+                    CLUSTS{5,c2}).^2));
             end
             [~,nrstInitClstIdx] = min(MDarr);
-            
+            Kind(idxRetKli) = nrstInitClstIdx;
             
             if Zdet>H.sampDetArr(nrstInitClstIdx)
                 
@@ -686,13 +692,14 @@ end
                 [trueK,idxTrue] = findRetSetCorrK(Z,H.sampDetArr(nrstInitClstIdx),H.epsilonFin,H.MinPtsFin);
                 
                 if trueK~=1
-                    idxRetFin(idxRetFin==idxRetUnq(c1)) = idxRetUnq(c1)+idxTrue/(trueK+1);
+                    idxRet(idxRetKli) = idxRetUnq(c1)+idxTrue/(trueK+1);
                     
 %                     fprintf('Kmeans for irregular minicluster is utilized!\n'); % @-- debugging script --@
 %                     beep % @-- debugging script --@
                     
                 else
-                    idxRetFin(idxRetFin==idxRetUnq(c1)) = 0;
+                    idxRet(idxRetKli) = 0;
+                    Kind(idxRetKli) = 0;
                     
 %                     fprintf('Kmeans for irregular minicluster failed!\n'); % @-- debugging script --@
 %                     beep % @-- debugging script --@
@@ -787,8 +794,7 @@ function [idxMeans,finalClusts,meansMeans,regenDS,idxRegenDS] = finalClustsMaker
 global CLUSTS
 
 finalClusts = cell(0);
-
-[idxMeans] = kmeans(H.means,H.origK,'Replicates',5);
+idxMeans = cell2mat(CLUSTS(8,:));
 [~,idxMeansFreq,~] = idxFreqCalc(idxMeans);
 
 for c1 = 1:H.origK
@@ -906,8 +912,8 @@ for c1 = 1:maxIter
     end
     
     for c2 = 1:K
-        mahalScorKarr(indStart:indEnd,c2) = sqrt(sum(((H.DS(indStart:indEnd,:)*cell2mat(H.finalClusts(3,c2))-cell2mat(H.finalClusts(4,c2)))./ ...
-            cell2mat(H.finalClusts(5,c2))).^2,2));
+        mahalScorKarr(indStart:indEnd,c2) = sqrt(sum(((H.DS(indStart:indEnd,:)*H.finalClusts{3,c2}-H.finalClusts{4,c2})./...
+            H.finalClusts{5,c2}).^2,2));
     end
 end
 

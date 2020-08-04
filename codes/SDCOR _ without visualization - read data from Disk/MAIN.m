@@ -47,8 +47,7 @@ else
     H.labDS = matfile([PathName FileName]);
     [H.n,H.p] = size(H.labDS,'X');
     
-    [~,fileName,~] = fileparts(FileName);
-    H.dsName = [fileName '_(' num2str(H.n) 'by' num2str(H.p) ')'];
+    [~,H.dsName,~] = fileparts(FileName);
     H.dsName_statText.String = H.dsName;
     
     msgbox('File was loaded successfully!','Success');
@@ -298,18 +297,17 @@ end
 function saveWork_pushBtn_Callback(hO,eventdata,H)
 
 if isfield(H,'finalAUC')
-    [~,fileName,~] = fileparts(H.dsName);
     Hsave = saveWork(hO,eventdata,H);
     
     switch H.apprType
         case 'SDCOR'
-            uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_$',fileName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_std=',...
+            uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_$',H.dsName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_std=',...
                 num2str(H.AUCstd,'%0.3f'),'_maxRun=',num2str(H.maxRun),'_Time=',num2str(H.tElapsed,'%0.3f')]);
         case 'LOF'
-            uisave({'Hsave'},['..\results\','LOF(noVisDsk)_result_$',fileName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',...
+            uisave({'Hsave'},['..\results\','LOF(noVisDsk)_result_$',H.dsName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',...
                 num2str(H.tElapsed,'%0.3f')]);
         case 'LoOP'
-            uisave({'Hsave'},['..\results\','LoOP(noVisDsk)_result_$',fileName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',...
+            uisave({'Hsave'},['..\results\','LoOP(noVisDsk)_result_$',H.dsName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',...
                 num2str(H.tElapsed,'%0.3f')]);
     end
     msgbox('File was saved successfully!','Success');

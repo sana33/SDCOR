@@ -54,8 +54,7 @@ else
     H.OLno = sum(H.labFin==1);
     [H.n,H.p] = size(H.DS);
     
-    [~,fileName,~] = fileparts(FileName);
-    H.dsName = [fileName '_(' num2str(H.n) 'by' num2str(H.p) ')'];
+    [~,H.dsName,~] = fileparts(FileName);
     H.dsName_statText.String = H.dsName;
     
     if H.dispOn
@@ -364,7 +363,6 @@ end
 function saveWork_pushBtn_Callback(hO,eventdata,H)
 
 if isfield(H,'finalAUC')
-    [~,fileName,~] = fileparts(H.dsName);
     Hsave = saveWork(hO,eventdata,H);
     
     switch H.apprType
@@ -376,7 +374,7 @@ if isfield(H,'finalAUC')
             resType = 'LoOP(visRAM)_';
     end
     
-    uisave({'Hsave'},['..\results\',resType,'result_$',fileName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',num2str(H.tElapsed,'%0.3f')]);
+    uisave({'Hsave'},['..\results\',resType,'result_$',H.dsName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',num2str(H.tElapsed,'%0.3f')]);
     msgbox('File was saved successfully!','Success');
 else
     msgbox('Sorry! There is not any clear run inf. to be saved!','Failure','error');
