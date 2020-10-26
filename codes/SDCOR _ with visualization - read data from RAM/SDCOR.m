@@ -731,14 +731,15 @@ while true
     idxArr = [idxArr idx];
     
     for c1 = 1:k
-        PCDviol = det(cov(X(idx==c1,:)))>deltaDet;
-        [~,singChck] = posSemiDefCheck(X(idx==c1,:),idx(idx==c1));
-        
         DBDS = X(idx==c1,:);
         [idxKmns,~] = DBSCAN(epsilon,MinPts);
         DBSCANichr = numel(unique(idxKmns(idxKmns~=0)))>1;
         
-        rejCond = PCDviol | singChck | DBSCANichr;
+		[~,singChck] = posSemiDefCheck(X(idx==c1,:),idx(idx==c1));
+        
+		PCDviol = det(cov(X(idx==c1,:)))>deltaDet;
+        
+        rejCond = DBSCANichr | singChck | PCDviol;
         
         if rejCond
             break;
