@@ -703,9 +703,9 @@ while true
         [idxKmns,~] = DBSCAN(epsilon,MinPts);
         DBSCANichr = numel(unique(idxKmns(idxKmns~=0)))>1;
         
-	[~,singChck] = posSemiDefCheck(X(idx==c1,:),idx(idx==c1));
+		[~,singChck] = posSemiDefCheck(X(idx==c1,:),idx(idx==c1));
         
-	PCDviol = det(cov(X(idx==c1,:)))>deltaDet;
+		PCDviol = det(cov(X(idx==c1,:)))>deltaDet;
         
         rejCond = DBSCANichr | singChck | PCDviol;
         
