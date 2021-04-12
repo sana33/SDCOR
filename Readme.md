@@ -48,11 +48,11 @@ The code is implemented using MATLAB R2016b (version 9.1), and all the experimen
 
 ![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
 
-In this version, for the ease of visualizations, the input data along with the anomaly labels are totally loaded into memory. Therefore, various kinds of plots could be provided, and moreover, for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
+In this version, for the ease of visualizations, the input data along with the anomaly labels are totally loaded into memory. Therefore, various kinds of plots could be provided, and moreover, for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are presented as follows:
 
 * ### "SDCOR Params" panel
 
-  * **ChunkSize:** Number of objects in each chunk.
+  * **ChunkSize:** Maximum number of objects in each chunk.
   * **PCvarRatio(%):** PC total variance ratio (in percentage terms).
   * **Alpha:** Membership threshold.
   * **Beta:** Pruning threshold.
@@ -61,15 +61,13 @@ In this version, for the ease of visualizations, the input data along with the a
   * **Top-n OLs:** Number of top-n outliers for being depicted in the main axes plot.
   * **ScorDSszCoef:** The coefficient value for the obtained outlierness scores to be represented more viewable in the main axes plot.
 
-  * **BlckSzLim:** This parameter is just for expediting the process of the DBSCAN algorithm which is employed in SDCOR. As MATLAB 9 does not support the DBSCAN algorithm with a fast built-in C++ function, like K-means; and more importantly, because MATLAB is seriously slow in loops (like 'for' and 'while' loops), thus we decided to implement DBSCAN with a code of our own.
+  * **BlckSzLim:** This parameter is just for expediting the process of the DBSCAN algorithm which is employed in SDCOR. As MATLAB R2016b does not support DBSCAN with a fast built-in C++ function, like for K-means, and more importantly, because MATLAB performs considerably slower than the other programming frameworks in the case of the FOR/WHILE loops, thus we decided to implement our own version of the DBSCAN algorithm.
   
-    This version of DBSCAN implementation might not be so efficient, though it works pretty well on large datasets. DBSCAN has [two ways](https://en.wikipedia.org/wiki/DBSCAN) to be implemented. One is the query-based version which needs to be done in multiple iterations, and hence, is like a poison to MATLAB!; and the other one is based on the *Neighbor Graph* which is gained out of the *n-by-n* distance matrix of the entire data (*n* stands for the cardinality of the input data), which shall be calculated at the first place. We choose the second way, as there is a fast C++-based built-in function in MATLAB, named *pdist2()*, for computing the pairwise distances of the whole objects in data.
+    This version of the DBSCAN implementation might not be so efficient, though it works pretty well on large datasets. DBSCAN has [two ways](https://en.wikipedia.org/wiki/DBSCAN) to be implemented. One is the query-based version which needs to be done in multiple iterations, and hence, is like a poison to MATLAB!; the other one is based on the *Neighbor Graph* gained out of the *n-by-n* distance matrix of the entire data (*n* stands for the cardinality of the input data), which shall be calculated at the first place. We choose the second way, as there is a fast C++-based built-in function in MATLAB, named *pdist2()*, for computing the pairwise distances of the whole objects in data.
   
-    Although when the size of the input data goes so high, then the output distance matrix will become too large which even sometimes can not be fit into memory. Moreover, we need not the entire distance matrix to be created at first, and then go for obtaining the *Neighbor Graph*; but we can acquire the distance matrix in small blocks, and then convert each distance block to the corresponding graph block. This could be done by changing each element of the distance block, which has a distance value less than or equal to the *Eps* parameter of DBSCAN, to 1, and otherwise to 0.
+    Although when the size of the input data goes so high, then the output distance matrix will become too large which even sometimes can not be fit into memory. Moreover, we need not the entire distance matrix to be created at first, and then go for obtaining the *Neighbor Graph*, but we can acquire the distance matrix in small blocks, and then convert each distance block to the corresponding graph block. This could be done by turning each element of the distance block which has a value less than or equal to the *Eps* parameter of DBSCAN to 1, and 0 otherwise.
   
-    The blocks are in square shape, and the *BlckSzLim* is the length of the square side. Besides, there is no need for *n* to be divisible by *BlckSzLim*, as our devised algorithm can handle it. Finally, as each element of the distance block is of double type, which is equal to 8 bytes in MATLAB; hence, you should consider the *usual* free space of your RAM buffer and then set a reasonable value for this parameter. For example, if the free space in memory is equal to 1 GB, then it would be better to consider e.g. 0.7 GB for the distance block, which leads to _BlckSzLim = sqrt((0.7×2^30)/8) ≈ 9692_, and leave some space for other operations. The bigger size for _BlckSzLim_, the faster the density-based clustering process will be carried out.
-	
-	Furthermore, for the materialization matrix required by LOF and LoOP, this parameter is used in a slightly different manner.
+    The blocks are in square shape, and the *BlckSzLim* is the length of the square side. Besides, there is no need for *n* to be divisible by *BlckSzLim*, as our devised algorithm can handle it. Finally, as every element of the distance block is of the "double" type equal to 8 bytes in MATLAB, hence you should consider the *usual* free space of your RAM buffer and then set a reasonable value for this parameter. For example, if the memory free space is equal to 1 GB, then it would be better to consider, e.g., 0.7 GB, for the distance block, which leads to _BlckSzLim = sqrt((0.7×2^30)/8) ≈ 9692_, and leave some space for other operations. The bigger size for _BlckSzLim_, the faster the density-based clustering process will be carried out.
 	
 * ### "DBSCAN Param Choosing" panel
 	
@@ -85,7 +83,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
   * #### "Initial Params" sub-panel
 
-    * **dimCoef:, particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of PSO algorithm, which you can leave them as default.
+    * **particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of the PSO algorithm that you can leave them as default.
 	  
 	  _**Note:**_  You can even modify the source code and change the current cost function of PSO algorithm to a better one.
 
@@ -93,7 +91,6 @@ In this version, for the ease of visualizations, the input data along with the a
     * **manuMnPt:** The manual value for the *MinPts* parameter of DBSCAN, set by the user.
 
     * **epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution. You can leave it as suggested.
-    * **MinPtsCoef:** The coefficient value for the *MinPts* parameter to be used while clustering the original distribution. You can leave it as suggested.
 
   * #### Axes plot
 
@@ -179,7 +176,7 @@ In this version, for the ease of visualizations, the input data along with the a
 	
   * #### "START" button
   
-    This button starts the operations of the selected algorithm. If _LOF_ or _LoOP_ checkboxes are not checked, then the SDCOR algorithm will be commenced. After pressing this button, any active element of the GUI is disabled, and when the process finishes, all of them will be re-enabled.
+    This button starts the SDCOR algorithm. After pressing this button, any active element of the GUI is disabled, and when the process finishes, all of them will be re-enabled.
   
   * #### "CLEAR AXES" button
   
