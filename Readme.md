@@ -18,7 +18,6 @@
     * ["DBSCAN Param Choosing" panel](#dbscan-param-choosing-panel)
     * ["Final Results" panel](#final-results-panel)
     * ["SDCOR various states" panel](#sdcor-various-states-panel)
-    * ["LOF & LoOP Params" panel](#lof--loop-params-panel)
     * [Main buttons of the GUI](#main-buttons-of-the-gui)
   * [SDCOR _ without visualization - read data from Disk](#-sdcor-_-without-visualization---read-data-from-disk)
     * ["MaxRun" parameter](#maxrun-parameter)
@@ -43,9 +42,7 @@ At last, in the third phase of the proposed approach, w.r.t. the final clusterin
 
 ## &#10002; Implementations Description
 
-The code is implemented using MATLAB 9, and all the experiments are executed on a laptop having a 2.5 GHz Intel Core i5 processor and 6 GB of memory. The implementations of the two state-of-the-art density-based outlier detection methods, namely LOF and LoOP, are included in this code too.
-
-There are two independent versions of implementations, each equipped with a sophisticated GUI:
+The code is implemented using MATLAB 9, and all the experiments are executed on a laptop having a 2.5 GHz Intel Core i5 processor and 6 GB of memory. There are two independent versions of implementations, each equipped with a sophisticated GUI:
 
 ### &#x1F537; __*SDCOR _ with visualization - read data from RAM*__
 
@@ -168,22 +165,6 @@ In this version, for the ease of visualizations, the input data along with the a
   * #### "Top-n OLs" button
   
     This button displays the Top-n outliers regarding the acquired outlierness scores out of SDCOR, as red dots. Any other point is represented with a blue dot. The value for _n_ could be modified through the _Top-n OLs_ input parameter in the *SDCOR Params* panel.
-	
-* ### "LOF & LoOP Params" panel
-
-  * #### "LOF" checkbox
-    
-    If this checkbox is on, then the LOF algorithm will be applied to the input data, considering the corresponding input parameters. By clicking this checkbox, all of the other elements of the GUI associated with other competing methods will be disabled.
-    
-  * #### "LoOP" checkbox
-
-    If this checkbox is on, then the LoOP algorithm will be applied to the input data, considering the corresponding input parameters. By clicking this checkbox, all of the other elements of the GUI associated with other competing methods will be disabled.
-	
-  * **MinPts Intv.:** This parameter is modified w.r.t. the selected density-based outlier algorithm, namely LOF or LoOP. The default established values are set as suggested. For LOF, it is an interval, and for LoOP, it becomes a scalar value.
-
-  * **k StepLength:** Step-length for the MinPts interval utilized by LOF.
-
-  * **Lambda:** Lambda parameter of the LoOP algorithm.
 
 * ### Main buttons of the GUI
 
