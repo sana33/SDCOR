@@ -75,22 +75,22 @@ In this version, for the ease of visualizations, the input data along with the a
   
 	* **Kgraph** Use the _k_-distance graph introduced in the original paper of DBSCAN to locate the optimal parameters.
 
-    * **PSO** Set the PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data.
+    * **PSO** Set the PSO evolutionary algorithm for finding the optimal parameters of DBSCAN to operate on the sampled data.
 	
     * **Manual** Set the DBSCAN parameters manually to operate on the sampled data.
 	
-	  _**Note:**_ Beware that if the structural characteristics of the utilized input data is available, then it would be possible to acquire the optimal parameters of DBSCAN manually.
+	  _**Note:**_ Please beware that if the structural characteristics of the input data is available, then it would be possible to acquire the optimal parameters of DBSCAN manually. However, such a state is out of our concern here.
 
   * #### "Initial Params" sub-panel
 
     * **particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of the PSO algorithm that you can leave them as default.
 	  
-	  _**Note:**_  You can even modify the source code and change the current cost function of PSO algorithm to a better one.
+	  _**Note:**_  You can even modify the source code and change the current cost function of the PSO algorithm to an arbitrary one.
 
     * **manuEps:** The manual value for the *Eps* parameter of DBSCAN, set by the user.
     * **manuMnPt:** The manual value for the *MinPts* parameter of DBSCAN, set by the user.
 
-    * **epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution. You can leave it as suggested.
+    * **epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution; you can leave it as suggested.
 
   * #### Axes plot
 
