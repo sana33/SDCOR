@@ -42,13 +42,13 @@ At last, in the third phase of the proposed approach, w.r.t. the final clusterin
 
 ## &#10002; Implementations Description
 
-The code is implemented using MATLAB 9, and all the experiments are executed on a laptop having a 2.5 GHz Intel Core i5 processor and 6 GB of memory. There are two independent versions of implementations, each equipped with a sophisticated GUI:
+The code is implemented using MATLAB R2016b (version 9.1), and all the experiments are executed on a laptop having a 2.5 GHz Intel Core i5 processor, 6 GB of memory, and a Windows 7 Ultimate (Service Pack 1) operating system. There are two independent versions of implementations, each equipped with a sophisticated GUI:
 
 ### &#x1F537; __*SDCOR _ with visualization - read data from RAM*__
 
 ![SDCOR with visualizations](/images/SDCOR_RAMversion.png)
 
-In this version, for the ease of visualizations, the input data along with the anomaly labels are totally loaded into memory. Therefore, various kinds of plots could be provided and moreover, for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
+In this version, for the ease of visualizations, the input data along with the anomaly labels are totally loaded into memory. Therefore, various kinds of plots could be provided, and moreover, for different steps of the algorithm, there are facilities to plot the data with specific parameters. The details of the GUI are represented as follows:
 
 * ### "SDCOR Params" panel
 
@@ -74,8 +74,11 @@ In this version, for the ease of visualizations, the input data along with the a
 * ### "DBSCAN Param Choosing" panel
 	
   * #### "Mode" sub-panel
+  
+	* **Kgraph** Use the _k_-distance graph introduced in the original paper of DBSCAN to locate the optimal parameters.
 
-    * **PSO** Set PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data. Note that in this mode, the spent time on locating the optimal parameters is taken into account for the total runtime of SDCOR.
+    * **PSO** Set the PSO evolutionary algorithm for finding the optimal parameters of DBSCAN algorithm to operate on the sampled data.
+	
     * **Manual** Set the DBSCAN parameters manually to operate on the sampled data.
 	
 	  _**Note:**_ Beware that if the structural characteristics of the utilized input data is available, then it would be possible to acquire the optimal parameters of DBSCAN manually.
@@ -238,7 +241,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 	
 ## &#x1F34F; Some Notes
 
-* #### For the better experience of working with MATLAB GUI, right-click the FIG-file and select "Open in GUIDE", instead of double-clicking on it.
+* #### For the better experience of working with MATLAB GUI, right-click on the FIG-file and select "Open in GUIDE", instead of double-clicking on it.
 
 * #### There are some commented scripts (each followed by _"@-- debugging script --@"_) in the code that could be uncommented if necessary, in the case of tracking the functionality of the proposed method.
 
