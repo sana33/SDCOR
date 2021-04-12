@@ -17,20 +17,17 @@ H.progLevl_statText.String = 'Sampling phase started!'; pause(.001);
 %-----------------------------------%
 
 % tSt = tic; % Setting start time for sampling phase @-- debugging script --@
-while true    
-    rndSmp_Maker();
-    
+rndSmp_Maker();
+while true
     sampPrmChosMthd();
-    
     [H.idxSamp,singChck] = posSemiDefCheck(H.sampData,H.idxSamp);
     
     if ~singChck
         break;
     else
-        fprintf('Singularity happened during "Sampling" phase! The procedure will be conducted again\n');
-        beep
+        fprintf('Singularity happened during "Sampling" phase! The procedure requires to be conducted again.\n'); beep
+        keyboard
     end
-    
 end
 % tElp0 = toc(tSt); % Setting elapsed time for sampling phase @-- debugging script --@
 % fprintf('\n\nRandSamp:\t%0.2fe-4 sec\n\n',tElp0*1e4); % @-- debugging script --@
@@ -145,7 +142,7 @@ H.progLevl_statText.String = 'Calculating the outlierness scores!'; pause(.001);
 %-----------------------------------%
 
 % tSt = tic; % Setting start time for the scoring phase @-- debugging script --@
-[H.mahalScores,H.idxFin,H.finalAUC] = OLscoreMaker(H);
+[H.mahalScores,H.idxFin,H.ROC,H.PR] = OLscoreMaker(H);
 % tElp6 = toc(tSt); % Setting elapsed time for the scoring phase @-- debugging script --@
 % fprintf('OLscrMakr:\t%0.2fe-4 sec\n',tElp6*1e4); % @-- debugging script --@
 
@@ -161,33 +158,57 @@ H = rmfield(H,{'finalClusts'}); % Clearing RAM from unnecessary data
 
 % Nested function for random sampling
     function rndSmp_Maker()
-        H.sampIdx = transpose(1:floor(1/H.sampRate):H.n);
-        H.sampData = H.labDS.X(H.sampIdx,:);
+        % fix-step sampling with variation on the starting point. matfile()
+        % function does not support randperm() indexing
+        stepLeng = floor(1/H.sampRate);
+        H.sampInd = transpose(randi(stepLeng):stepLeng:H.n);
+        
+        H.sampData = H.labDS.X(H.sampInd,:);
     end
 
 % Nested function for selecting the type of DBSCAN parameter choosing
     function sampPrmChosMthd()
         switch H.PCM
+            case 'Kgraph_pcm_radioBtn'
+                [~,KdistGrph] = knnsearch(H.sampData,H.sampData,'K',H.manuMnPt);
+                KdistGrph = sort(KdistGrph(:,end),'descend');
+                
+                % plotting sorted k-dist graph
+                axes(H.axes1); stairs(KdistGrph); legend('{\it{k}}-dist graph');
+                
+                CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
+                msgCont = ['\fontsize{10} After closing this dialog box, the program will be suspended by the "keyboard" command. '...
+                    'Please cease the operation by pressing "Shift+F5" and then return to the program window. Thereafter, first choose the '...
+                    '"Data Cursor" tool from the "Axes Toolbar" above the window, and then in the "DBSCAN Param Choosing" axes, '...
+                    'select a position which is indicating the first point in the first {\bf{"valley"}} of the sorted '...
+                    '{\it{k}}-dist graph. Remember the Y value of this bar as the DBSCAN Epsilon parameter for clustering the sampled data. '...
+                    '\newline\newline Finally, reset the whole disabled environment by pressing the "RESET BTNS" button; after that, '...
+                    'set the "DBSCAN parameter choosing" approach in the program window as "Manual" and use the obtained quantity '...
+                    'out of the {\it{k}}-dist graph for the sampling Epsilon parameter.\newline\newline {\color{red}\bf{Note:}} '...
+                    'For the plots related to large datasets, you might need to zoom in to better find the first valley. Moreover, '...
+                    'to evade the singularity occurrence, you will need to select a higher threshold through the same process '...
+                    'already mentioned; even it might be more reasonable to start from lower values until you reach the minimum '...
+                    'acceptable Epsilon (the best case).'];
+                h = msgbox(msgCont,'Sampling Epsilon selection','help',CreateStruct); uiwait(h)
+                keyboard % Stop the operation from here for visually selecting the best sampling Epsilon value
+                
             case 'PSO_pcm_radioBtn'
                 DBDS = H.sampData;
-                [bestSolParams,bestSolIdx,PSO_costArr] = PSO_DBSCAN(H);
+                [H.paramSampDS,H.idxSamp,PSO_costArr,PSO_time] = PSO_DBSCAN(H);
                 
-                H.paramSampDS = bestSolParams;
-                H.idxSamp = bestSolIdx;
                 H.paramCostArrSamp = {PSO_costArr};
-                
-                H.epsilonFin = H.epsCoeff*H.paramSampDS(1);
-                H.MinPtsFin = ceil(H.MinPtsCoeff*H.paramSampDS(2));
+                H.origEps = H.epsCoeff*H.paramSampDS(1);
+                H.origMnPt = H.paramSampDS(2);
                 
             case 'manu_pcm_radioBtn'
                 DBDS = H.sampData;
                 [H.idxSamp,~] = DBSCAN(H.manuEps,H.manuMnPt);
                 
                 H.paramSampDS = [H.manuEps H.manuMnPt];
-                H.paramCostArrSamp = {};
+                H.paramCostArrSamp = {}; PSO_time = 0;
                 
-                H.epsilonFin = H.epsCoeff*H.manuEps;
-                H.MinPtsFin = ceil(H.MinPtsCoeff*H.manuMnPt(1));
+                H.origEps = H.epsCoeff*H.paramSampDS(1);
+                H.origMnPt = H.paramSampDS(2);
         end
     end
 
@@ -205,7 +226,7 @@ H = rmfield(H,{'finalClusts'}); % Clearing RAM from unnecessary data
         end
     end
 
-H.tElapsed = toc(SDCORstrt)-1-(maxIter+4)*0.001; % Setting the elapsed time for SDCOR
+H.tElapsed = toc(SDCORstrt)-PSO_time-1-(maxIter+4)*0.001; % Setting the elapsed time for SDCOR
 
 guidata(hO,H);
 
@@ -214,28 +235,28 @@ end
 
 %% Subfunctions goes Here!
 
-function [bestSolParams,bestSolIdx,PSO_costArr] = PSO_DBSCAN(H)
+function [bestSolParams,bestSolIdx,PSO_costArr,PSO_time] = PSO_DBSCAN(H)
 
+tic
 global DBDS
 
-lowBd = [0 2];
-uppBd = [norm(max(DBDS)) H.dimCoef*H.p];
+minMnPt = floor(log(H.n));
+maxMnPt = H.manuMnPt; if maxMnPt<minMnPt; maxMnPt = minMnPt; end
+[~,Kdist] = knnsearch(DBDS,DBDS,'K',minMnPt); Kdist = Kdist(:,end);
+lowBnd = [min(Kdist) minMnPt];
+uppBnd = [max(Kdist) maxMnPt];
 
-% % Setting the parameters bounds manually @-- debugging script --@
-% lowBd = [1e2 1e2]; % @-- debugging script --@
-% uppBd = [2e3 2e3]; % @-- debugging script --@
-
-paramNo = numel(lowBd);
+paramNo = numel(lowBnd);
 PSO_costArr = [];
 particles = cell(0);
 for c1 = 1:H.PSO_particleNo
     % Setting random values for epsilon and MinPts
-    particles{1,c1} = unifrnd(lowBd,uppBd);
+    particles{1,c1} = unifrnd(lowBnd,uppBnd);
     % Calculating the cost of DBSCAN according to the parameters and
     % gaining the cluster indices
-    [particles{2,c1},particles{3,c1}] = DBSCAN_Cost(particles{1,c1}(1),particles{1,c1}(2));
-    % Setting the value for the velocity
-    particles{4,c1} = unifrnd(-abs(uppBd-lowBd),abs(uppBd-lowBd));
+    [particles{2,c1},particles{3,c1}] = DBSCAN_Cost(particles{1,c1}(1),ceil(particles{1,c1}(2)));
+    % Setting a random value for the velocity
+    particles{4,c1} = unifrnd(-abs(uppBnd-lowBnd),abs(uppBnd-lowBnd));
 end
 % Setting the very first values for localBest
 localBest = particles;
@@ -259,13 +280,12 @@ for c1 = 1:H.PSO_maxIter
         particles{1,c2} = particles{1,c2}+particles{4,c2};
         
         % Checking boundaries
-        uppBdCond = particles{1,c2}>uppBd;
-        particles{1,c2}(uppBdCond) = uppBd(uppBdCond);
-        lowBdCond = particles{1,c2}<lowBd;
-        particles{1,c2}(lowBdCond) = lowBd(lowBdCond);
+        uppBndCond = particles{1,c2}>uppBnd; particles{1,c2}(uppBndCond) = uppBnd(uppBndCond);
+        lowBndCond = particles{1,c2}<lowBnd; particles{1,c2}(lowBndCond) = lowBnd(lowBndCond);
+        
         
         % Updating the cost value
-        [particles{2,c2},particles{3,c2}] = DBSCAN_Cost(particles{1,c2}(1),particles{1,c2}(2));
+        [particles{2,c2},particles{3,c2}] = DBSCAN_Cost(particles{1,c2}(1),ceil(particles{1,c2}(2)));
         
         % Updating the local and global solutions
         if particles{2,c2}<localBest{2,c2}
@@ -278,21 +298,23 @@ for c1 = 1:H.PSO_maxIter
     % Updating W
     H.PSO_W = (1-H.PSO_alpha)*H.PSO_W;
     
+    % Updating and plotting the PSO cost array
     PSO_costArr = [PSO_costArr globalBest{2}];
-    
     PSOplot({PSO_costArr});
 end
 
-% Setting the best values for best found solution
+% Setting the best values for the best found solution
 globalBest{1}(2) = ceil(globalBest{1}(2));
 bestSolParams = globalBest{1};
 bestSolIdx = globalBest{3};
 
-[costArrs] = costArrsCheck({PSO_costArr},1e100,10);
-PSO_costArr = costArrs{1};
+% Setting inf values as a higher value than the maximum for better plotting
+PSO_costArr(isinf(PSO_costArr)) = 10*max(PSO_costArr);
 
 H.PSO_finCond = 1;
 PSOplot({PSO_costArr,bestSolParams});
+
+PSO_time = toc; % computing the wasted time for PSO
 
 % Nested function for plotting PSO cost array
     function PSOplot(data)
@@ -300,43 +322,23 @@ PSOplot({PSO_costArr,bestSolParams});
         plot(data{1},'-r');
         pause(.001);
         if H.PSO_finCond
-            legend(sprintf('PSO costArr for SampDS\neps=%0.2f, MinPts=%d', ...
-                data{2}(1),data{2}(2)), ...
-                'location','best');
-            grid on;
+            legend(sprintf('PSO costArr for SampDS\nEps=%0.3f, MinPts=%d',data{2}(1),data{2}(2)),'location','best'); grid on;
         end
     end
 
 end
 
-function [costArrs] = costArrsCheck(costArrs,maxVal,replcVal)
-
-for c1 = 1:numel(costArrs)
-    costArr = costArrs{c1};
-    idxMaxVal = costArr==maxVal;
-    if ~all(idxMaxVal)
-        costArr(idxMaxVal) = max(costArr(~idxMaxVal))+replcVal;
-    else
-        costArr(idxMaxVal) = replcVal;
-    end
-    
-    costArrs{c1} = costArr;
-end
-
-end
-
 function [cost,idx] = DBSCAN_Cost(epsilon,MinPts)
+
+global DBDS
 
 [idx,~] = DBSCAN(epsilon,MinPts);
 
-idxUnq = unique(idx(idx~=0));
-K = numel(idxUnq);
-
-if K>1
-    %     cost = sum([DBindex(idx), CSindex(idx)]);
-    cost = sum([DBindex(idx), BRindex(idx)]);
+[idx,singChck] = posSemiDefCheck(DBDS,idx);
+if ~singChck && any(idx==0)
+    cost = sum([DBindex(idx), CSindex(idx), sum(idx==0)/size(DBDS,1)]);
 else
-    cost = 1e100;
+    cost = inf;
 end
 
 end
@@ -353,9 +355,12 @@ if n^2+BLK_SZ_LIM^2*8 > sysView.PhysicalMemory.Available
     % Creating the structure of the message box
     CreateStruct.Interpreter = 'tex';
     CreateStruct.WindowStyle = 'modal';
-    msgCont = {'\fontsize{10}There is not {\bf{enough memory}} to run {\bf{DBSCAN}} on data available in RAM!, regarding the {\it{array-based implementation}} of MATLAB codes, and due to the {\it{incorrect input parameters}}, including random sampling rate {\bf{eta}}, and especially clustering parameters, {\bf{eps}} and {\bf{minPts}}.'; '\fontsize{10}Thus, please {\color{red}\bf{stop}} the execution and run it again with the true optimal parameters, or even just free up some memory space! ;-)'; '\newline{\color{red}\bf{Note:}} Consider the {\bf{BlckSzLim}} value in GUI as a parameter too!'};
-    h = msgbox(msgCont,'Memory Error','error',CreateStruct);
-    uiwait(h)
+    msgCont = ['\fontsize{10}There is not {\bf{enough memory}} to run {\bf{DBSCAN}} on data available in RAM !, regarding the '...
+        '{\it{array-based implementation}} of MATLAB codes, and due to the {\it{incorrect input parameters}}, including random '...
+        'sampling rate, {\bf{eta}}, and especially clustering parameters, {\bf{eps}} and {\bf{minPts}}. \newline\newline Thus, '...
+        'please {\color{red}\bf{stop}} the execution and run it again with true optimal parameters, or even just free up '...
+        'some memory space! ;-)\newline {\color{red}\bf{Note:}} Consider the {\bf{BlckSzLim}} value in GUI as a parameter too!'];
+    h = msgbox(msgCont,'Memory Error','error',CreateStruct); uiwait(h)
     keyboard % Stop the operation from here, because of lack of memory
 end
 %-----------------------------%
@@ -423,33 +428,41 @@ idx = full(idx);
 
 end
 
-function [DBindex] = DBindex(idx)
+function [DBidx] = DBindex(idx)
 
-idxUnq = unique(idx(idx~=0));
+idxUnq = unique(idx);
 K = numel(idxUnq);
 
 [cents,d2cMean] = centroidFind(idx);
-
 centsDist = pdist2(cents,cents);
-
 d2cMeanMat = repmat(d2cMean,1,K);
 
 Ctemp = (d2cMeanMat+transpose(d2cMeanMat))./centsDist;
 Ctemp(1:(K+1):K^2) = -inf;
-
-DBindex = mean(max(Ctemp));
+DBidx = mean(max(Ctemp));
 
 end
 
-function [BRindex] = BRindex(idx)
+function [CSidx] = CSindex(idx)
 
-[~,idxFreq,~] = idxFreqCalc(idx(idx~=0));
+global DBDS
 
-[~,d2cMean] = centroidFind(idx);
+idxUnq = unique(idx);
+K = numel(idxUnq);
 
-d2cMeanLog = log(d2cMean);
-d2cMeanLog(isinf(d2cMeanLog)) = 0;
-BRindex = sum(idxFreq.*d2cMeanLog);
+distMaxMean = zeros(K,1);
+for c1 = 1:K
+    idxKgi = idx==idxUnq(c1);
+    distMaxK = max(pdist2(DBDS(idxKgi,:),DBDS(idxKgi,:)),[],2);
+    distMaxMean(c1) = mean(distMaxK);
+end
+
+[cents,~] = centroidFind(idx);
+centsDist = pdist2(cents,cents);
+centsDist(1:(K+1):K^2) = inf;
+centsDistMin = min(centsDist,[],2);
+
+CSidx = sum(distMaxMean)/sum(centsDistMin);
 
 end
 
@@ -458,15 +471,15 @@ function [cents,d2cMean] = centroidFind(idx)
 global DBDS
 
 dim = size(DBDS,2);
-idxUnq = unique(idx(idx~=0));
+idxUnq = unique(idx);
 K = numel(idxUnq);
 cents = zeros(K,dim);
 d2cMean = zeros(K,1);
 for c1 = 1:K
     Y = DBDS(idx==idxUnq(c1),:);
-    n1 = size(Y,1);
-    cents(c1,:) = mean(Y);
-    d2cMean(c1) = mean(sqrt(sum((Y-repmat(cents(c1,:),n1,1)).^2,2)));
+    n = size(Y,1);
+    cents(c1,:) = mean(Y,1);
+    d2cMean(c1) = mean(sqrt(sum((Y-repmat(cents(c1,:),n,1)).^2,2)));
 end
 
 end
@@ -527,7 +540,7 @@ for c1 = currK+1:currK+K
     idxKgi = idx==idxUnq(c1-currK);
     Y = X(idxKgi,:);
     n = size(Y,1);
-    CLUSTS{1,c1} = mean(Y);
+    CLUSTS{1,c1} = mean(Y,1);
     CLUSTS{2,c1} = transpose(Y-repmat(CLUSTS{1,c1},n,1))*(Y-repmat(CLUSTS{1,c1},n,1));
     [coeff,~,latent,~,explained,~] = pca(Y);
     explCumSum = cumsum(explained); explCumSum(end) = 100;
@@ -621,7 +634,7 @@ global CLUSTS
 
 retSz = size(retainSet,1);
 if retSz~=0
-    [idxRet,~] = DBSCAN(H.epsilonFin,H.MinPtsFin);
+    [idxRet,~] = DBSCAN(H.origEps,H.origMnPt);
     Kind = zeros(numel(idxRet),1);
     clustAccpDBSCAN();
     
@@ -657,7 +670,7 @@ end
 %                 fprintf('Delta Violation happened!\n'); % @-- debugging script --@
 %                 beep % @-- debugging script --@
                 
-                [trueK,idxTrue] = findRetSetCorrK(Z,H.sampDetArr(nrstInitClstIdx),H.epsilonFin,H.MinPtsFin);
+                [trueK,idxTrue] = findRetSetCorrK(Z,H.sampDetArr(nrstInitClstIdx),H.origEps,H.origMnPt);
                 
                 if trueK~=1
                     idxRet(idxRetKgi) = idxRetUnq(c1)+idxTrue/(trueK+1);
@@ -770,10 +783,13 @@ for c1 = 1:H.origK
         while true
             regenData = [];
             for c2 = 1:size(clustInf,2)
-                clustCov = unbiasCoeffVec(c2)*clustInf{2,c2};
+                clustCov = unbiasCoeffVec(c2)*clustInf{2,c2};                
                 regenData = [regenData; mvnrnd(clustInf{1,c2},clustCov,sampNoVec(c2))];
             end
-            clustPrun();
+            
+            % pruning the regenerated data
+            mahalDist = sqrt(mahal(regenData,regenData));
+            regenData = regenData(mahalDist<=H.betaPrun*sqrt(H.p),:);
             
             [~,singChck] = posSemiDefCheck(regenData,ones(size(regenData,1),1));
             if ~singChck
@@ -800,18 +816,9 @@ end
 
 finalClusts = finalClusts(1:6,:);
 
-
-%% Nested functions here!
-
-% Nested function for pruning the regenerated data
-    function clustPrun()
-        mahalDist = sqrt(mahal(regenData,regenData));
-        regenData = regenData(mahalDist<=H.betaPrun*sqrt(H.p),:);
-    end
-
 end
 
-function [mahalScores,idxFin,finalAUC] = OLscoreMaker(H)
+function [mahalScores,idxFin,ROC,PR] = OLscoreMaker(H)
 
 K = size(H.finalClusts,2);
 mahalScorKarr = zeros(H.n,K);
@@ -833,7 +840,8 @@ end
 
 [mahalScores,idxFin] = min(mahalScorKarr,[],2);
 
-[~,~,~,finalAUC] = perfcurve(H.labDS.y,mahalScores,1);
+[~,~,~,ROC] = perfcurve(H.labDS.y,mahalScores,1);
+[~,~,~,PR] = perfcurve(H.labDS.y,mahalScores,1,'XCrit','reca','YCrit','prec');
 
 end
 

@@ -40,6 +40,8 @@ varargout{1} = H.output;
 
 function load_pushBtn_Callback(hO,eventdata,H)
 
+clearAxes_pushBtn_Callback(hO,eventdata,H); % clearing workspace before loading new data
+
 [FileName,PathName] = uigetfile('*.mat', 'Select the dataset along with outlier labels, all as a single MAT-file','..\datasets\');
 if ~FileName
     msgbox('Sorry! No file was loaded!','Failure','error');
@@ -49,7 +51,9 @@ else
     
     [~,H.dsName,~] = fileparts(FileName);
     H.dsName_statText.String = H.dsName;
+    H.chunkSz_editText.String = ceil(.1*H.n);
     
+    H.manu_pcm_radioBtn.Value = 1; PCMact(hO,eventdata,H);
     msgbox('File was loaded successfully!','Success');
 end
 
@@ -66,7 +70,7 @@ if ~isfield(H,'labDS') || isempty(H.labDS)
 end
 %-----------------------------%
 
-hOact(hO,eventdata,H,1);
+H.startCond = 1; hOact(hO,eventdata,H);
 
 H.dsName_statText.String = H.dsName;
 H.chunkSz = str2double(get(H.chunkSz_editText,'String'));
@@ -77,12 +81,7 @@ H.sampRate = str2double(get(H.sampRate_editText,'String'))/100;
 H.maxRun = str2double(get(H.maxRun_editText,'String'));
 BLK_SZ_LIM = str2double(get(H.blckSzlim_editText,'String'));
 
-H.minPtsIntv = str2num(get(H.minPtsIntv_editText,'String'));
-H.kStepLngth = str2double(get(H.kStepLngth_editText,'String'));
-H.LoOPlambda = str2double(get(H.LoOPlambda_editText,'String'));
-
 H.PCM = get(get(H.PCM_radioBtnGroup,'SelectedObject'),'tag');
-H.dimCoef = str2double(get(H.dimCoef_editText,'String'));
 H.PSO_particleNo = str2double(get(H.particleNo_editText,'String'));
 H.PSO_maxIter = str2double(get(H.maxIter_editText,'String'));
 H.PSO_W = str2double(get(H.W_editText,'String'));
@@ -90,57 +89,35 @@ H.PSO_C1 = str2double(get(H.C1_editText,'String'));
 H.PSO_C2 = str2double(get(H.C2_editText,'String'));
 H.PSO_alpha = str2double(get(H.alpha_editText,'String'));
 H.manuEps = str2double(get(H.manuEps_editText,'String'));
+if isnan(H.manuEps); H.manuEps = 0; end
 H.manuMnPt = str2double(get(H.manuMnPt_editText,'String'));
+if isnan(H.manuMnPt); H.manuMnPt = floor(log(H.n)); H.manuMnPt_editText.String = num2str(H.manuMnPt); end
 H.epsCoeff = str2double(get(H.epsCoef_editText,'String'));
-H.MinPtsCoeff = str2double(get(H.MinPtsCoef_editText,'String'));
 
-if get(H.LOF_checkBox,'Value')
-    H.apprType = 'LOF';
-    [H.lofVals,H.lofKmat,H.finalAUC,H.tElapsed] = LOF(H);
-    H = rmfield(H,'labDS'); % Clearing labeled data from RAM for GUI becoming refreshed!
+H.ROCarr = []; H.PRarr = []; H.tEarr = [];
+H.runLevl_statText.String = [num2str(0) '/' num2str(H.maxRun)]; pause(.001);
+for c1 = 1:H.maxRun
+    SDCOR(hO,H);
+    H = guidata(hO);
+    H.ROCarr = [H.ROCarr H.ROC];
+    H.PRarr = [H.PRarr H.PR];
+    H.tEarr = [H.tEarr H.tElapsed];
     
-    set(H.finalAUCbyScores_statText,'String',num2str(H.finalAUC,'%0.3f'));
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
-    msgbox('Process was conducted successfully!','Success');
-    
-    hOact(hO,eventdata,H,0);
-elseif get(H.LoOP_checkBox,'Value')
-    H.apprType = 'LoOP';
-    [H.LoOPvals,H.finalAUC,H.tElapsed] = LoOP(H);
-    H = rmfield(H,'labDS'); % Clearing labeled data from RAM for GUI becoming refreshed!
-    
-    set(H.finalAUCbyScores_statText,'String',num2str(H.finalAUC,'%0.3f'));
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
-    msgbox('Process was conducted successfully!','Success');
-    
-    hOact(hO,eventdata,H,0);
-else
-    H.apprType = 'SDCOR';
-    tEarr = [];
-    AUCarr = [];
-    H.runLevl_statText.String = [num2str(0) '/' num2str(H.maxRun)]; pause(.001);
-    for c1 = 1:H.maxRun
-        SDCOR(hO,H);
-        H = guidata(hO);
-        AUCarr = [AUCarr H.finalAUC];
-        tEarr = [tEarr H.tElapsed];
-        
-        H.runLevl_statText.String = [num2str(c1) '/' num2str(H.maxRun)]; pause(.001);
-        set(H.tempAUC_statText,'String',num2str(H.finalAUC,'%0.3f'));
-        set(H.tempTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
-    end
-    H.finalAUC = mean(AUCarr);
-    H.AUCstd = std(AUCarr);
-    H.tElapsed = mean(tEarr);
-    
-    set(H.finalAUCbyScores_statText,'String',num2str(H.finalAUC,'%0.3f'));
-    set(H.AUCstd_statText,'String',num2str(H.AUCstd,'%0.3f'));
-    set(H.runTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
-    msgbox('Process was conducted successfully!','Success');
-    
-    hOact(hO,eventdata,H,0);
-    PCMact(hO,eventdata,H);
+    set(H.tempROCPR_statText,'String',[num2str(H.ROC,'%0.3f') ' / ' num2str(H.PR,'%0.3f')]);
+    set(H.tempTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
+    H.runLevl_statText.String = [num2str(c1) '/' num2str(H.maxRun)]; pause(.001);
 end
+H.ROCavg = mean(H.ROCarr); H.ROCstd = std(H.ROCarr);
+H.PRavg = mean(H.PRarr); H.PRstd = std(H.PRarr);
+H.tEavg = mean(H.tEarr);
+
+set(H.ROCPRavg_statText,'String',[num2str(H.ROCavg,'%0.3f') ' / ' num2str(H.PRavg,'%0.3f')]);
+set(H.ROCPRstd_statText,'String',[num2str(H.ROCstd,'%0.3f') ' / ' num2str(H.PRstd,'%0.3f')]);
+set(H.runTime_statText,'String',num2str(H.tEavg,'%0.3f'));
+msgbox('Process was conducted successfully!','Success');
+
+H.startCond = 0; hOact(hO,eventdata,H);
+PCMact(hO,eventdata,H);
     
 guidata(hO,H);
 
@@ -164,10 +141,10 @@ if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundC
     set(hO,'BackgroundColor','white');
 end
 
-function maxRun_editText_CreateFcn(hObject, eventdata, handles)
+function maxRun_editText_CreateFcn(hO, eventdata, H)
 
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hO,'BackgroundColor','white');
 end
 
 function clearAxes_pushBtn_Callback(hO,eventdata,H)
@@ -176,11 +153,11 @@ cla(H.axes1); legend(H.axes1,'off');
 
 H.dsName_statText.String = '';
 H.progLevl_statText.String = '';
-H.tempAUC_statText.String = '';
+H.tempROCPR_statText.String = '';
 H.tempTime_statText.String = '';
 H.runLevl_statText.String = '';
-H.finalAUCbyScores_statText.String = '';
-H.AUCstd_statText.String = '';
+H.ROCPRavg_statText.String = '';
+H.ROCPRstd_statText.String = '';
 H.runTime_statText.String = '';
 H.origK_val_statText.String = '';
 
@@ -196,19 +173,11 @@ function PCvarRat_editText_KeyPressFcn(hO,eventdata,H)
 
 function sampRate_editText_KeyPressFcn(hO,eventdata,H)
 
-function finalAUCbyScores_statText_CreateFcn(hO,eventdata,H)
+function ROCPRavg_statText_CreateFcn(hO,eventdata,H)
 
 function chunkSz_editText_Callback(hO,eventdata,H)
 
 function chunkSz_editText_CreateFcn(hO,eventdata,H)
-
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
-end
-
-function dimCoef_editText_Callback(hO,eventdata,H)
-
-function dimCoef_editText_CreateFcn(hO,eventdata,H)
 
 if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hO,'BackgroundColor','white');
@@ -222,12 +191,12 @@ if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundC
     set(hO,'BackgroundColor','white');
 end
 
-function maxIter_editText_Callback(hObject, eventdata, handles)
+function maxIter_editText_Callback(hO, eventdata, H)
 
-function maxIter_editText_CreateFcn(hObject, eventdata, handles)
+function maxIter_editText_CreateFcn(hO, eventdata, H)
 
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hO,'BackgroundColor','white');
 end
 
 function W_editText_Callback(hO,eventdata,H)
@@ -270,14 +239,6 @@ if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundC
     set(hO,'BackgroundColor','white');
 end
 
-function MinPtsCoef_editText_Callback(hO,eventdata,H)
-
-function MinPtsCoef_editText_CreateFcn(hO,eventdata,H)
-
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
-end
-
 function manuEps_editText_Callback(hO,eventdata,H)
 
 function manuEps_editText_CreateFcn(hO,eventdata,H)
@@ -296,26 +257,19 @@ end
 
 function saveWork_pushBtn_Callback(hO,eventdata,H)
 
-if isfield(H,'finalAUC')
+if isfield(H,'ROCarr')
     Hsave = saveWork(hO,eventdata,H);
-    
-    switch H.apprType
-        case 'SDCOR'
-            uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_$',H.dsName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_std=',...
-                num2str(H.AUCstd,'%0.3f'),'_maxRun=',num2str(H.maxRun),'_Time=',num2str(H.tElapsed,'%0.3f')]);
-        case 'LOF'
-            uisave({'Hsave'},['..\results\','LOF(noVisDsk)_result_$',H.dsName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',...
-                num2str(H.tElapsed,'%0.3f')]);
-        case 'LoOP'
-            uisave({'Hsave'},['..\results\','LoOP(noVisDsk)_result_$',H.dsName,'$_AUC=',num2str(H.finalAUC,'%0.3f'),'_Time=',...
-                num2str(H.tElapsed,'%0.3f')]);
-    end
+    uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_$',H.dsName,'$_ROC=',num2str(H.ROCavg,'%0.3f'),...
+        '_ROCstd=',num2str(H.ROCstd,'%0.3f'),'_PR=',num2str(H.PRavg,'%0.3f'),'_PRstd=',num2str(H.PRstd,'%0.3f'),...
+        '_maxRun=',num2str(H.maxRun),'_Time=',num2str(H.tEavg,'%0.3f'),'.mat']);
     msgbox('File was saved successfully!','Success');
 else
-    msgbox('Sorry! There is not any clear run inf. to be saved!','Failure','error');
+    msgbox('Sorry! There is not any clear run info to be saved!','Failure','error');
 end
 
 function loadWork_pushBtn_Callback(hO,eventdata,H)
+
+clearAxes_pushBtn_Callback(hO,eventdata,H); % clearing workspace before loading the saved result
 
 [FileName,PathName] = uigetfile('*.mat', 'Select the saved workspace to be loaded','..\results\');
 if ~FileName
@@ -323,145 +277,104 @@ if ~FileName
 else
     Hsave = importdata([PathName FileName]);
     loadWork(hO, eventdata, H, Hsave);
-    msgbox('File was loaded successfully!','Success');
+    
+    CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
+    uiwait(msgbox('\fontsize{10}File was loaded successfully! Please load the dataset separately for a fresh test.','Success',CreateStruct));
 end
 
 function [Hsave] = saveWork(hO,eventdata,H)
 
 global BLK_SZ_LIM
 
-switch H.apprType
-    case 'SDCOR'
-        Hsave = struct('dsName',H.dsName,'apprType',H.apprType,'chunkSz',H.chunkSz,'PCvarRat',str2double(get(H.PCvarRat_editText,'String')),...
-            'alphaMemb',H.alphaMemb,'betaPrun',H.betaPrun,'sampRate',str2double(get(H.sampRate_editText,'String')),'maxRun',H.maxRun,...
-            'BLK_SZ_LIM',BLK_SZ_LIM,'PCM',H.PCM,'dimCoef',H.dimCoef,'PSO_particleNo',H.PSO_particleNo,'PSO_maxIter',H.PSO_maxIter,...
-            'PSO_W',H.PSO_W,'PSO_C1',H.PSO_C1,'PSO_C2',H.PSO_C2,'PSO_alpha',H.PSO_alpha,'manuEps',H.manuEps,'manuMnPt',H.manuMnPt,...
-            'epsCoeff',H.epsCoeff,'MinPtsCoeff',H.MinPtsCoeff,'paramSampDS',H.paramSampDS,'paramCostArrSamp',{H.paramCostArrSamp},...
-            'epsilonFin',H.epsilonFin,'MinPtsFin',H.MinPtsFin,'origK',H.origK,'sampIdx',H.sampIdx,'idxSamp',H.idxSamp,...
-            'mahalScores',H.mahalScores,'idxFin',H.idxFin,'finalAUC',H.finalAUC,'AUCstd',H.AUCstd,'tElapsed',H.tElapsed);
-    case 'LOF'
-        Hsave = struct('apprType',H.apprType,'dsName',H.dsName,'BLK_SZ_LIM',BLK_SZ_LIM,'minPtsIntv',H.minPtsIntv,'kStepLngth',H.kStepLngth,...
-            'lofVals',H.lofVals,'lofKmat',H.lofKmat,'finalAUC',H.finalAUC,'tElapsed',H.tElapsed);
-    case 'LoOP'
-        Hsave = struct('apprType',H.apprType,'dsName',H.dsName,'BLK_SZ_LIM',BLK_SZ_LIM,'minPtsIntv',H.minPtsIntv,'kStepLngth',H.kStepLngth,...
-            'LoOPlambda',H.LoOPlambda,'LoOPvals',H.LoOPvals,'finalAUC',H.finalAUC,'tElapsed',H.tElapsed);
-end
+Hsave = struct('dsName',H.dsName,'chunkSz',H.chunkSz,'PCvarRat',H.PCvarRat*100,'alphaMemb',H.alphaMemb,'betaPrun',H.betaPrun,...
+    'sampRate',H.sampRate*100,'maxRun',H.maxRun,'BLK_SZ_LIM',BLK_SZ_LIM,'PCM',H.PCM,'PSO_particleNo',H.PSO_particleNo,...
+    'PSO_maxIter',H.PSO_maxIter,'PSO_W',H.PSO_W,'PSO_C1',H.PSO_C1,'PSO_C2',H.PSO_C2,'PSO_alpha',H.PSO_alpha,'manuEps',H.manuEps,...
+    'manuMnPt',H.manuMnPt,'epsCoeff',H.epsCoeff,'paramSampDS',H.paramSampDS,'paramCostArrSamp',{H.paramCostArrSamp},...
+    'origEps',H.origEps,'origMnPt',H.origMnPt,'origK',H.origK,'sampInd',H.sampInd,'idxSamp',H.idxSamp,'mahalScores',H.mahalScores,...
+    'idxFin',H.idxFin,'ROCarr',H.ROCarr,'ROCavg',H.ROCavg,'ROCstd',H.ROCstd,'PRarr',H.PRarr,'PRavg',H.PRavg,'PRstd',H.PRstd,...
+    'tEarr',H.tEarr,'tEavg',H.tEavg);
 
 function [] = loadWork(hO, eventdata, H, Hsave)
 
 global BLK_SZ_LIM
 
-switch Hsave.apprType
-    case 'SDCOR'
-        H.apprType = Hsave.apprType;
-        hOact(hO, eventdata, H, 0);
-        H.dsName_statText.String = Hsave.dsName;
+H.startCond = 0; hOact(hO, eventdata, H);
+H.dsName_statText.String = Hsave.dsName;
+
+H.labDS = [];
+H.chunkSz_editText.String = num2str(Hsave.chunkSz);
+H.PCvarRat_editText.String = num2str(Hsave.PCvarRat);
+H.alphaMemb_editText.String = num2str(Hsave.alphaMemb);
+H.betaPrun_editText.String = num2str(Hsave.betaPrun);
+H.sampRate_editText.String = num2str(Hsave.sampRate);
+H.maxRun_editText.String = num2str(Hsave.maxRun);
+BLK_SZ_LIM = Hsave.BLK_SZ_LIM; H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
+
+switch Hsave.PCM
+    case 'PSO_pcm_radioBtn'
+        H.PSO_pcm_radioBtn.Value = 1;
         
-        H.labDS = [];
-        H.chunkSz_editText.String = num2str(Hsave.chunkSz);
-        H.PCvarRat_editText.String = num2str(Hsave.PCvarRat);
-        H.alphaMemb_editText.String = num2str(Hsave.alphaMemb);
-        H.betaPrun_editText.String = num2str(Hsave.betaPrun);
-        H.sampRate_editText.String = num2str(Hsave.sampRate);
-        H.maxRun_editText.String = num2str(Hsave.maxRun);
-        BLK_SZ_LIM = Hsave.BLK_SZ_LIM;
-        H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
+        axes(H.axes1);
+        plot(Hsave.paramCostArrSamp{1},'-r'); grid on;
+        legend(sprintf('PSO costArr for SampDS\nEps=%0.3f, MinPts=%d',Hsave.paramSampDS(1),Hsave.paramSampDS(2)),'location','best');
+        pause(.001);
         
-        switch Hsave.PCM
-            case 'PSO_pcm_radioBtn'
-                H.PSO_pcm_radioBtn.Value = 1;
-                
-                H.PSO_finCond = 1;
-                plotOptional(H,{Hsave.paramCostArrSamp{1},Hsave.paramSampDS},'PSOcost');
-                
-            case 'manu_pcm_radioBtn'
-                H.manu_pcm_radioBtn.Value = 1;
-                
-                cla(H.axes1);
-        end
-        PCMact(hO,eventdata,H);
+    case 'manu_pcm_radioBtn'
+        H.manu_pcm_radioBtn.Value = 1;
+        cla(H.axes1);
         
-        H.dimCoef_editText.String = num2str(Hsave.dimCoef);
-        H.particleNo_editText.String = num2str(Hsave.PSO_particleNo);
-        H.maxIter_editText.String = num2str(Hsave.PSO_maxIter);
-        H.W_editText.String = num2str(Hsave.PSO_W);
-        H.C1_editText.String = num2str(Hsave.PSO_C1);
-        H.C2_editText.String = num2str(Hsave.PSO_C2);
-        H.alpha_editText.String = num2str(Hsave.PSO_alpha);
-        H.manuEps_editText.String = num2str(Hsave.manuEps);
-        H.manuMnPt_editText.String = num2str(Hsave.manuMnPt);
-        H.epsCoef_editText.String = num2str(Hsave.epsCoeff);
-        H.MinPtsCoef_editText.String = num2str(Hsave.MinPtsCoeff);
-        
-        H.paramCostArrSamp = Hsave.paramCostArrSamp;
-        H.paramSampDS = Hsave.paramSampDS;
-        H.epsilonFin = Hsave.epsilonFin;
-        H.MinPtsFin = Hsave.MinPtsFin;
-        H.origK = Hsave.origK;
-        H.sampIdx = Hsave.sampIdx;
-        H.idxSamp = Hsave.idxSamp;
-        
-        H.mahalScores = Hsave.mahalScores;
-        H.idxFin = Hsave.idxFin;
-        H.finalAUC = Hsave.finalAUC;
-        H.AUCstd = Hsave.AUCstd;
-        H.tElapsed = Hsave.tElapsed;
-        H.finalAUCbyScores_statText.String = num2str(H.finalAUC,'%0.3f');
-        H.AUCstd_statText.String = num2str(H.AUCstd,'%0.3f');
-        H.runTime_statText.String = num2str(Hsave.tElapsed,'%0.3f');
-        H.origK_val_statText.String = num2str(Hsave.origK);
-        
-    case 'LOF'
-        H.apprType = Hsave.apprType;
-        H.LOF_checkBox.Value = 1;
-        hOact(hO, eventdata, H, 0);
-        
-        H.labDS = [];
-        H.dsName = Hsave.dsName;
-        H.dsName_statText.String = Hsave.dsName;
-        BLK_SZ_LIM = Hsave.BLK_SZ_LIM;
-        H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
-        
-        H.minPtsIntv = Hsave.minPtsIntv;
-        H.kStepLngth = Hsave.kStepLngth;
-        H.lofVals = Hsave.lofVals;
-        H.lofKmat = Hsave.lofKmat;
-        H.finalAUC = Hsave.finalAUC;
-        H.tElapsed = Hsave.tElapsed;
-        H.finalAUCbyScores_statText.String = num2str(H.finalAUC,'%0.3f');
-        H.runTime_statText.String = num2str(Hsave.tElapsed);
-                
-    case 'LoOP'
-        H.apprType = Hsave.apprType;
-        H.LoOP_checkBox.Value = 1;
-        hOact(hO, eventdata, H, 0);
-        
-        H.labDS = [];
-        H.dsName = Hsave.dsName;
-        H.dsName_statText.String = Hsave.dsName;
-        BLK_SZ_LIM = Hsave.BLK_SZ_LIM;
-        H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
-        
-        H.minPtsIntv = Hsave.minPtsIntv;
-        H.kStepLngth = Hsave.kStepLngth;
-        H.LoOPlambda = Hsave.LoOPlambda;
-        H.LoOPvals = Hsave.LoOPvals;
-        H.finalAUC = Hsave.finalAUC;
-        H.tElapsed = Hsave.tElapsed;
-        H.finalAUCbyScores_statText.String = num2str(H.finalAUC,'%0.3f');
-        H.runTime_statText.String = num2str(Hsave.tElapsed);
-                
 end
+PCMact(hO,eventdata,H);
+
+H.particleNo_editText.String = num2str(Hsave.PSO_particleNo);
+H.maxIter_editText.String = num2str(Hsave.PSO_maxIter);
+H.W_editText.String = num2str(Hsave.PSO_W);
+H.C1_editText.String = num2str(Hsave.PSO_C1);
+H.C2_editText.String = num2str(Hsave.PSO_C2);
+H.alpha_editText.String = num2str(Hsave.PSO_alpha);
+H.manuEps_editText.String = num2str(Hsave.manuEps);
+H.manuMnPt_editText.String = num2str(Hsave.manuMnPt);
+H.epsCoef_editText.String = num2str(Hsave.epsCoeff);
+
+H.paramCostArrSamp = Hsave.paramCostArrSamp;
+H.paramSampDS = Hsave.paramSampDS;
+H.origEps = Hsave.origEps;
+H.origMnPt = Hsave.origMnPt;
+H.origK = Hsave.origK;
+H.sampInd = Hsave.sampInd;
+H.idxSamp = Hsave.idxSamp;
+
+H.mahalScores = Hsave.mahalScores;
+H.idxFin = Hsave.idxFin;
+H.ROCarr = Hsave.ROCarr; H.ROCavg = Hsave.ROCavg; H.ROCstd = Hsave.ROCstd;
+H.PRarr = Hsave.PRarr; H.PRavg = Hsave.PRavg; H.PRstd = Hsave.PRstd;
+H.tEarr = Hsave.tEarr; H.tEavg = Hsave.tEavg;
+H.ROCPRavg_statText.String = [num2str(H.ROCavg,'%0.3f') ' / ' num2str(H.PRavg,'%0.3f')];
+H.ROCPRstd_statText.String = [num2str(H.ROCstd,'%0.3f') ' / ' num2str(H.PRstd,'%0.3f')];
+H.runTime_statText.String = num2str(H.tEavg,'%0.3f');
+H.origK_val_statText.String = num2str(Hsave.origK);
 
 guidata(hO,H);
 
 function PCMact(hO,eventdata,H)
 
 switch H.PCM_radioBtnGroup.SelectedObject.Tag
+    case 'Kgraph_pcm_radioBtn'
+        H.makeManu_pushBtn.Enable =  'off';
+        
+        H.particleNo_editText.Enable = 'off';
+        H.maxIter_editText.Enable = 'off';
+        H.W_editText.Enable = 'off';
+        H.C1_editText.Enable = 'off';
+        H.C2_editText.Enable = 'off';
+        H.alpha_editText.Enable = 'off';
+        H.manuEps_editText.Enable = 'off';
+        H.manuMnPt_editText.Enable = 'on';
+        H.epsCoef_editText.Enable = 'off';
+        
     case 'PSO_pcm_radioBtn'
         H.makeManu_pushBtn.Enable =  'on';
         
-        H.dimCoef_editText.Enable = 'on';
         H.particleNo_editText.Enable = 'on';
         H.maxIter_editText.Enable = 'on';
         H.W_editText.Enable = 'on';
@@ -469,14 +382,12 @@ switch H.PCM_radioBtnGroup.SelectedObject.Tag
         H.C2_editText.Enable = 'on';
         H.alpha_editText.Enable = 'on';
         H.manuEps_editText.Enable = 'off';
-        H.manuMnPt_editText.Enable = 'off';
+        H.manuMnPt_editText.Enable = 'on';
         H.epsCoef_editText.Enable = 'on';
-        H.MinPtsCoef_editText.Enable = 'on';
         
     case 'manu_pcm_radioBtn'
         H.makeManu_pushBtn.Enable =  'off';
         
-        H.dimCoef_editText.Enable = 'off';
         H.particleNo_editText.Enable = 'off';
         H.maxIter_editText.Enable = 'off';
         H.W_editText.Enable = 'off';
@@ -486,51 +397,22 @@ switch H.PCM_radioBtnGroup.SelectedObject.Tag
         H.manuEps_editText.Enable = 'on';
         H.manuMnPt_editText.Enable = 'on';
         H.epsCoef_editText.Enable = 'on';
-        H.MinPtsCoef_editText.Enable = 'on';
         
 end
 
-function hOact(hO, eventdata, H, startCond)
+function hOact(hO, eventdata, H)
 
-if startCond
+if H.startCond
     SDCOR_InitParam_Act(hO,eventdata,H,0);
     clearAxes_pushBtn_Callback(hO,eventdata,H);
-    
-    H.LOF_checkBox.Enable = 'off';
-    H.LoOP_checkBox.Enable = 'off';
-    LOF_LoOP_InitParam_Act(hO,eventdata,H,0);
-    LOF_InitParam_Act(hO,eventdata,H,0);
-    LoOP_InitParam_Act(hO,eventdata,H,0);
-    
     mainButns_Act(hO,eventdata,H,0);
-    
     DBSCANparamCM_Act(hO,eventdata,H,0);
-
+    
 else
-    if strcmp(H.apprType,'SDCOR')
-        SDCOR_InitParam_Act(hO,eventdata,H,1);
-        
-        H.LOF_checkBox.Enable = 'on';
-        H.LoOP_checkBox.Enable = 'on';
-        H.LOF_checkBox.Value = 0;
-        H.LoOP_checkBox.Value = 0;
-        LOF_LoOP_InitParam_Act(hO,eventdata,H,1);
-        LOF_InitParam_Act(hO,eventdata,H,1);
-        LoOP_InitParam_Act(hO,eventdata,H,1);
-        
-        DBSCANparamCM_Act(hO,eventdata,H,1);
-        
-    elseif strcmp(H.apprType,'LOF')
-        H.LOF_checkBox.Enable = 'on';
-        LOF_checkBox_Callback(hO,eventdata,H);
-        
-    elseif strcmp(H.apprType,'LoOP')
-        H.LoOP_checkBox.Enable = 'on';
-        LoOP_checkBox_Callback(hO,eventdata,H);
-        
-    end
-        
+    SDCOR_InitParam_Act(hO,eventdata,H,1);
+    DBSCANparamCM_Act(hO,eventdata,H,1);
     mainButns_Act(hO,eventdata,H,1);
+    
 end
 
 function SDCOR_InitParam_Act(hO, eventdata, H, actCond)
@@ -574,11 +456,11 @@ end
 function DBSCANparamCM_Act(hO, eventdata, H, actCond)
 
 if ~actCond
+    H.Kgraph_pcm_radioBtn.Enable = 'off';
     H.PSO_pcm_radioBtn.Enable = 'off';
     H.manu_pcm_radioBtn.Enable = 'off';
     H.makeManu_pushBtn.Enable =  'off';
     
-    H.dimCoef_editText.Enable = 'off';
     H.particleNo_editText.Enable = 'off';
     H.maxIter_editText.Enable = 'off';
     H.W_editText.Enable = 'off';
@@ -588,13 +470,12 @@ if ~actCond
     H.manuEps_editText.Enable = 'off';
     H.manuMnPt_editText.Enable = 'off';
     H.epsCoef_editText.Enable = 'off';
-    H.MinPtsCoef_editText.Enable = 'off';
 else
+    H.Kgraph_pcm_radioBtn.Enable = 'on';
     H.PSO_pcm_radioBtn.Enable = 'on';
     H.manu_pcm_radioBtn.Enable = 'on';
     H.makeManu_pushBtn.Enable =  'on';
     
-    H.dimCoef_editText.Enable = 'on';
     H.particleNo_editText.Enable = 'on';
     H.maxIter_editText.Enable = 'on';
     H.W_editText.Enable = 'on';
@@ -604,17 +485,36 @@ else
     H.manuEps_editText.Enable = 'on';
     H.manuMnPt_editText.Enable = 'on';
     H.epsCoef_editText.Enable = 'on';
-    H.MinPtsCoef_editText.Enable = 'on';
 end
+
+function Kgraph_pcm_radioBtn_Callback(hO, eventdata, H)
+
+H.manuEps_editText.String = '';
+
+if isfield(H,'p')
+    H.manuMnPt_editText.String = 10*H.p;
+    CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
+    msgCont = '\fontsize{10} To avoid outliers, we set the {\it{MinPts}} quantity to {\bf{10{\cdot}p}}. You can change it at your will!';
+    uiwait(msgbox(msgCont,'Alert!','Help',CreateStruct));
+end
+
+PCMact(hO,eventdata,H);
    
 function PSO_pcm_radioBtn_Callback(hO,eventdata,H)
 
-CreateStruct.Interpreter = 'tex';
-CreateStruct.WindowStyle = 'modal';
-msgCont = ['\fontsize{10}For excluding the execution time of PSO, after finding the optimal parameters, ' ...
-    'press the {\bf{Make Manu}} button to set them as manual, and then run the algorithm again.'];
-h = msgbox(msgCont,'Memory Error','error',CreateStruct);
-uiwait(h)
+H.manuEps_editText.String = '';
+
+if isfield(H,'p')
+    H.manuMnPt_editText.String = 10*H.p;
+    CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
+    msgCont = ['\fontsize{10} PSO searches in predetermined ranges by the user for finding the optimal {\it{Eps}} and {\it{MinPts}} ',...
+        'quantities. The {\it{Eps}} range and the lower bound for the {\it{MinPts}} range are defined automatically; for the {\it{MinPts}} ',...
+        'upper bound, we set it to {\bf{10{\cdot}p}} for your convenience.\newline\newline {\color{red}\bf{Note:}} For being more prudent ',...
+        'in the case of high noisy datasets, you can change it to greater values at your will! But please do NOT go much further as for ',...
+        'vary large {\it{MinPts}} values, the following {\it{k}}-dist graph tends to become horizontal and without any distinguishable ',...
+        'valleys; therefore, it might not be possible to choose the right value for the {\it{MinPts}} parameter.'];
+    uiwait(msgbox(msgCont,'Alert!','Help',CreateStruct));
+end
 
 PCMact(hO,eventdata,H);
 
@@ -633,90 +533,10 @@ end
 
 function resetBtns_pushBtn_Callback(hO,eventdata,H)
 
-H.apprType = 'SDCOR';
-hOact(hO, eventdata, H, 0);
+H.startCond = 0; hOact(hO, eventdata, H);
 PCMact(hO,eventdata,H);
 
-function LOF_checkBox_Callback(hO,eventdata,H)
-
-if get(H.LOF_checkBox,'Value')
-    H.LoOP_checkBox.Enable = 'off';
-    H.LoOP_checkBox.Value = 0;
-    LOF_LoOP_InitParam_Act(hO,eventdata,H,1);
-    LOF_InitParam_Act(hO,eventdata,H,1);
-    LoOP_InitParam_Act(hO,eventdata,H,0);
-    
-    SDCOR_InitParam_Act(hO,eventdata,H,0);
-    H.blckSzlim_editText.Enable = 'on';
-    
-    DBSCANparamCM_Act(hO,eventdata,H,0);
-else
-    H.LoOP_checkBox.Enable = 'on';
-    LOF_LoOP_InitParam_Act(hO,eventdata,H,1);
-    LOF_InitParam_Act(hO,eventdata,H,1);
-    LoOP_InitParam_Act(hO,eventdata,H,1);
-        
-    SDCOR_InitParam_Act(hO,eventdata,H,1);
-    
-    DBSCANparamCM_Act(hO,eventdata,H,1);
-    PCMact(hO,eventdata,H);
-end
-
-function LoOP_checkBox_Callback(hO,eventdata,H)
-
-if get(H.LoOP_checkBox,'Value')
-    H.LOF_checkBox.Enable = 'off';
-    H.LOF_checkBox.Value = 0;
-    LOF_LoOP_InitParam_Act(hO,eventdata,H,1);
-    LOF_InitParam_Act(hO,eventdata,H,0);
-    LoOP_InitParam_Act(hO,eventdata,H,1);
-    
-    H.minPtsIntv_Temp = H.minPtsIntv_editText.String;
-    H.minPtsIntv_editText.String = num2str(mean(str2num(H.minPtsIntv_editText.String)));
-    
-    SDCOR_InitParam_Act(hO,eventdata,H,0);
-    H.blckSzlim_editText.Enable = 'on';
-    
-    DBSCANparamCM_Act(hO,eventdata,H,0);
-else
-    H.LOF_checkBox.Enable = 'on';
-    LOF_LoOP_InitParam_Act(hO,eventdata,H,1);
-    LOF_InitParam_Act(hO,eventdata,H,1);
-    LoOP_InitParam_Act(hO,eventdata,H,1);
-    
-    H.minPtsIntv_editText.String = H.minPtsIntv_Temp;
-    
-    SDCOR_InitParam_Act(hO,eventdata,H,1);
-    
-    DBSCANparamCM_Act(hO,eventdata,H,1);
-    PCMact(hO,eventdata,H);
-end
-
 guidata(hO,H);
-
-function LOF_LoOP_InitParam_Act(hO, eventdata, H, actCond)
-
-if ~actCond
-    H.minPtsIntv_editText.Enable = 'off';
-else
-    H.minPtsIntv_editText.Enable = 'on';
-end
-
-function LOF_InitParam_Act(hO, eventdata, H, actCond)
-
-if ~actCond
-    H.kStepLngth_editText.Enable = 'off';
-else
-    H.kStepLngth_editText.Enable = 'on';
-end
-    
-function LoOP_InitParam_Act(hO, eventdata, H, actCond)
-
-if ~actCond
-    H.LoOPlambda_editText.Enable = 'off';
-else
-    H.LoOPlambda_editText.Enable = 'on';
-end
 
 function blckSzlim_editText_Callback(hO,eventdata,H)
 
@@ -729,30 +549,6 @@ end
 function betaPrun_editText_Callback(hO,eventdata,H)
 
 function betaPrun_editText_CreateFcn(hO,eventdata,H)
-
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
-end
-
-function minPtsIntv_editText_Callback(hO,eventdata,H)
-
-function minPtsIntv_editText_CreateFcn(hO,eventdata,H)
-
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
-end
-
-function kStepLngth_editText_Callback(hO,eventdata,H)
-
-function kStepLngth_editText_CreateFcn(hO,eventdata,H)
-
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
-end
-
-function LoOPlambda_editText_Callback(hO,eventdata,H)
-
-function LoOPlambda_editText_CreateFcn(hO,eventdata,H)
 
 if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hO,'BackgroundColor','white');
