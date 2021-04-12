@@ -79,7 +79,7 @@ In this version, for the ease of visualizations, the input data along with the a
 	
     * **Manual** Set the DBSCAN parameters manually to operate on the sampled data.
 	
-	  _**Note:**_ Please beware that if the structural characteristics of the input data is available, then it would be possible to acquire the optimal parameters of DBSCAN manually. However, such a state is out of our concern here.
+	  _**Note:**_ Please note that if the structural characteristics of the input data is available, then it would be possible to acquire the optimal parameters of DBSCAN manually. However, such a state is out of our concern here.
 
   * #### "Initial Params" sub-panel
 
@@ -88,35 +88,40 @@ In this version, for the ease of visualizations, the input data along with the a
 	  _**Note:**_  You can even modify the source code and change the current cost function of the PSO algorithm to an arbitrary one.
 
     * **manuEps:** The manual value for the *Eps* parameter of DBSCAN, set by the user.
+	
     * **manuMnPt:** The manual value for the *MinPts* parameter of DBSCAN, set by the user.
 
     * **epsCoef:** The coefficient value for the *Eps* parameter to be used while clustering the original distribution; you can leave it as suggested.
 
   * #### Axes plot
 
-    This plot is for showing the variations of the cost function employed by the PSO algorithm.
+    This plot is dedicated for showing the variations of the cost function employed by the PSO algorithm.
 
   * #### "Make Manu" button
 
-    This button is active when the **Mode** is set to *PSO*. By pressing this button, the optimal parameter values obtained out of PSO algorithm will be set as manual; and thus, in the next run of the proposed method, there will no time spent on finding the optimal values for DBSCAN parameters, to be used for the sampled data.
+    This button is active when the **Mode** is set to *PSO*. By pressing this button, the optimal parameter values obtained out of the PSO algorithm will be set as manual; and thus, in the next run of the proposed method, there will be no time spent on finding the optimal values for the DBSCAN parameters to be used for the sampled data.
 
   * #### "origK:" static text box
 
-    After DBSCAN is applied to the sampled data, the distinct value for the number of original clusters in the input data is attained, which will be displayed in this text box; and will be utilized in the upcoming steps of the proposed method.
+    After DBSCAN is applied to the sampled data, the distinct value for the number of original clusters in the input data is attained, which will be displayed in this text box; this value will be utilized in the upcoming steps of the proposed method.
 
 * ### "Final Results" panel
 
   * #### "Accuracy per Chunk" plot
   
-    This plot shows the gradual progress of the scalable clustering algorithm in terms of distinguishing outliers in each memory process. The progression is represented w.r.t. various accuracy measures, namely _AUC_, _Precision_, _Recall_ and _F1-Measure_. After processing each chunk of data, we expect the number of inliers in the retained set to become decreased, and on the other side, the number of true outliers become increased. Thus, the mentioned accuracy measures should rise gradually after processing each memory load of points and reach to the perfect condition, iff the parameters are correctly set and also, the input data follows the predefined strong assumptions of the proposed method.
+    This plot shows the gradual progress of the scalable clustering algorithm in terms of distinguishing outliers in each memory process. The progression is represented w.r.t. various accuracy measures, namely _ROC_, _PR_, _Precision_, _Recall_ and _F1-Measure_. After processing each chunk of data, we expect the number of inliers in the retained set to become decreased, and on the other side, the number of true outliers become increased. Thus, the mentioned accuracy measures should rise gradually after processing each memory load of points and reach to the perfect condition, iff the parameters are correctly set and also, the input data follows the predefined strong assumptions of the proposed method.
 	
 	However, after processing the whole chunks, there could be some inliers still sustained in buffer, because of the established membership and density-based clustering restrictions; and moreover, some of the outliers might be absorbed to some created mini-clusters during the scalable clustering. Finally, all the undecided points in memory are cleared from the buffer, while only the structural information of the temporary clusters is maintained in it.
 	
 	Furthermore, for the density-based anomaly detection algorithms, this axes plot will show the progress as a bar chart which is updated after processing each block of pairwise distances.
 	
-  * #### "Final AUC:" static text box
+  * #### "Final ROC:" static text box
   
-    This field shows the final AUC obtained out of the "Scoring" phase of the proposed method.
+    This field shows the final AUROC (ROC AUC) obtained out of the "Scoring" phase of the proposed method.
+	
+  * #### "Final PR:" static text box
+  
+    This field shows the final AUPRC (PR AUC) obtained out of the "Scoring" phase of the proposed method.
   
   * #### "Time(sec):" static text box
   
