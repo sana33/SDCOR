@@ -18,7 +18,7 @@ The code combines the implementations of the two density-based techniques, as th
 % Setting initial parameters
 t = 100; psi = 256; maxIter = 40;
 
-% Mammography
+% Mammography dataset
 clear X y
 load('C:\SDCOR\codes\datasets\realData\Mammography_(11183by6_260o).mat');
 
