@@ -8,3 +8,27 @@ In density-based methods, the local density of each object is calculated in a sp
 
 [2] Kriegel, Hans-Peter, et al. "LoOP: local outlier probabilities." Proceedings of the 18th ACM conference on Information and knowledge management. 2009.
 
+## Implementation details
+
+The code combines the implementations of the two density-based techniques, as they both require a materialization matrix containing the _k_-nearest-neighbors and the following distances. You can follow the subsequent script as a template to use the function and obtain LOF and LoOP outputs on an arbitrary dataset:
+
+```
+% Initializing input parameters
+minPtsLB = 10; % LOF parameter
+minPtsUB = 50; % LOF parameter
+kStep= 2; % LOF parameter
+kVal = 30; % LoOP parameter
+lambda = 3; % LoOP parameter
+OlNbCnd = 0; % OlNbCnd is the Overlapping Neighborhood (OlNb) Condition for the materialization matrix
+NSMethod = 0; % NSMethod is the Neighbor Search Method for the knnsearch function [0:kdtree, 1:exhaustive] while OlNb is equal to 0
+blkSzLim = 5e3; % blkSzLim is the memory size limit while OlNb equals 1 (our very own implementation)
+
+% Mammography dataset
+X = load('C:\SDCOR\datasets\realDS\Mammography_(11183by6_260o).mat');
+y = X.y; X = X.X;
+
+[lofVals_Mammography,lofKmat_Mammography,ROC_LOF_Mammography,PR_LOF_Mammography,tElapsed_LOF_Mammography,LoOPvals_Mammography,ROC_LoOP_Mammography,...
+    PR_LoOP_Mammography,tElapsed_LoOP_Mammography] = LOF_LoOP('Mammography',X,y,minPtsLB,minPtsUB,kStep,kVal,lambda,OlNbCnd,NSMethod,blkSzLim);
+```
+
+
