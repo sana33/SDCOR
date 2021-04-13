@@ -12,7 +12,7 @@ EnLOF was firstly introduced in [1] as an ensemble version of LOF and it solely 
 
 ## Implementation details
 
-You can follow the subsequent script with the suggested parameters as a template to use the function and obtain EnLOF results out of an arbitrary dataset:
+You can follow the subsequent script with the suggested parameters as a template to use the `EnLOF.m` function and obtain the required results out of an arbitrary dataset:
 
 ```matlab
 % Setting initial parameters
