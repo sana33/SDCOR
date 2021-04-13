@@ -205,11 +205,11 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 * ### "TotRun" parameter
 
-   This parameter is added to the *SDCOR Params* panel, and stands for the number of times that SDCOR will be executed on the input data. The final accuracy outcome will be an aggregate value of the total independent runs.
+   This parameter is added to the *SDCOR Params* panel, and stands for the number of times that SDCOR will be executed on the query data. The final accuracy outcome will be an aggregate value of the total independent runs.
   
 * ### "Progression Status" panel
 
-  * #### "Progress by Chunk/Block:" static text box
+  * #### "Progress by Chunk:" static text box
   
     This field shows the gradual progress of the scalable clustering algorithm or the chosen density-based anomaly algorithm, in terms of successive chunks or blocks of data, respectively.
 	
