@@ -16,7 +16,7 @@ You can follow the subsequent script as a template to use the function and obtai
 
 ```matlab
 % Setting initial parameters
-t = 100; psi = 256; maxIter = 40;
+t = 100; psi = 256; totIter = 40;
 
 % Mammography dataset
 clear X y
@@ -25,7 +25,7 @@ load('C:\SDCOR\codes\datasets\realData\Mammography_(11183by6_260o).mat');
 tEarr_Mammography = [];
 ROCarr_Mammography = [];
 PRarr_Mammography = [];
-for e1 = 1:maxIter
+for e1 = 1:totIter
     tic
     [~,ROC,PR] = EnLOF(X,y,t,psi);
     tEarr_Mammography = [tEarr_Mammography toc];
@@ -36,8 +36,8 @@ ROCavg_Mammography = mean(ROCarr_Mammography); ROCstd_Mammography = std(ROCarr_M
 PRavg_Mammography = mean(PRarr_Mammography); PRstd_Mammography = std(PRarr_Mammography);
 timElpAvg_Mammography = mean(tEarr_Mammography);
 
-fprintf('EnLOF (t=%d,psi=%d) result with maxIter = %d for Mammography:\t\tROC = %0.3f+-%0.3f\t\tPR = %0.3f+-%0.3f\t\telpsTime = %0.3f sec\n\n',...
-    t,psi,maxIter,ROCavg_Mammography,ROCstd_Mammography,PRavg_Mammography,PRstd_Mammography,timElpAvg_Mammography);
+fprintf('EnLOF (t=%d,psi=%d) result with totIter = %d for Mammography:\t\tROC = %0.3f+-%0.3f\t\tPR = %0.3f+-%0.3f\t\telpsTime = %0.3f sec\n\n',...
+    t,psi,totIter,ROCavg_Mammography,ROCstd_Mammography,PRavg_Mammography,PRstd_Mammography,timElpAvg_Mammography);
 save(['res_EnLOF(t=' num2str(t) ',psi=' num2str(psi) ')_Mammography.mat'],'ROCarr_Mammography','PRarr_Mammography','ROCavg_Mammography','ROCstd_Mammography',...
 	'PRavg_Mammography','PRstd_Mammography','timElpAvg_Mammography');
 ```
