@@ -211,11 +211,11 @@ In this version, the input data is directly read from the disk, and hence, any a
 
   * #### "Progress by Chunk:" static text box
   
-    This field shows the gradual progress of the scalable clustering algorithm or the chosen density-based anomaly algorithm, in terms of successive chunks or blocks of data, respectively.
+    This field shows the gradual progress of scalable clustering in terms of successive chunks.
 	
-  * #### "Temp AUC:" static text box
+  * #### "Temp ROC/PR:" static text box
   
-    This field displays the AUC outcome obtained through the last run of the proposed method, out of the _TotRun_ number of execution times.
+    This field displays the AUC outcomes obtained through the last run of the proposed method, out of the _TotRun_ number of execution times.
 	
   * #### "Temp Time(sec):" static text box
 
@@ -223,17 +223,17 @@ In this version, the input data is directly read from the disk, and hence, any a
 	
   * #### "Total Runs:" static text box
   
-    The total number of runs of SDCOR per the allowed number of execution times (_TotRun_) is depicted in this field.
+    The current number of SDCOR runs per the allowed number of execution times (_TotRun_) is depicted in this field.
 	
 * ### "Final Results" panel
 
-  * #### "Final AUC:" static text box
+  * #### "ROC/PR avg:" static text box
   
-    This field shows the average AUC outcome attained through the _TotRun_ number of execution times of SDCOR.
+    This field shows the average AUC outcomes attained through the _TotRun_ number of SDCOR executions.
 	
-  * #### "AUC std:" static text box
+  * #### "ROC/PR std:" static text box
 
-    This field shows the standard deviation of AUC outcomes gained out of the _TotRun_ number of SDCOR runs.
+    This field shows the standard deviation of AUC outcomes gained out of the _TotRun_ number of SDCOR executions.
 	
   * #### "Time(sec):" static text box
   
@@ -245,13 +245,13 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 * #### There are some commented scripts (each followed by _"@-- debugging script --@"_) in the code that could be uncommented if necessary, in the case of tracking the functionality of the proposed method.
 
-* #### There are two training videos for both [RAM version](/videos/SDCOR_RAMversion.wmv) and [Disk version](/videos/SDCOR_DiskVersion.wmv), which each of them demonstrates a test run of the corresponding implementation.
+* #### There are two training videos for both the [RAM version](/videos/SDCOR_RAMversion.wmv) and the [Disk version](/videos/SDCOR_DiskVersion.wmv), each of which demonstrates a test run of the corresponding implementation.
 
-* #### If the process of a GUI gets so long and intolerable, or if for any kind of reason you want to cease the operation, you can click in the _Command Window_ of MATLAB and press _Ctrl+C_ or _Ctrl+Break_.
+* #### If the process of a GUI gets so long and intolerable, or if for any reason you want to cease the operation, you can click in the _Command Window_ of MATLAB and press _Ctrl+C_ or _Ctrl+Break_.
 
 ## &#x1F4D8; Citation
 
-If you are interested in the idea or you are using this code for your research, please cite our paper as:
+If you are interested in the idea of our study or you are using this code for your research, please cite our paper as:
 
 ```
 @article{naghavi2020sdcor,
