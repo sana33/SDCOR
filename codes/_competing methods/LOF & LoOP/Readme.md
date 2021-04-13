@@ -12,7 +12,7 @@ In density-based methods, the local density of each object is calculated in a sp
 
 The code combines the implementations of the two density-based techniques, as they both require a materialization matrix containing the _k_-nearest-neighbors and the following distances. You can follow the subsequent script as a template to use the function and obtain LOF and LoOP outputs on an arbitrary dataset:
 
-```
+```matlab
 % Initializing input parameters
 minPtsLB = 10; % LOF parameter
 minPtsUB = 50; % LOF parameter
