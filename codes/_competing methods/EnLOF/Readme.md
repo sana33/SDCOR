@@ -2,13 +2,15 @@
 
 ## An ensemble version of LOF
 
-EnLOF was firstly introduced in [1] as an ensemble version of LOF and it solely works with each point nearest neighbor among the sampled instances in every ensemble member to define the density around it and the resultant anomaly score. This method, like _i_-NNE [1], is essentially inspired by the _i_-Forest method [2][3] and thus enjoys an adequate number of subsamples (<img src="https://latex.codecogs.com/svg.image?t" title="t" />) with a specific size (<img src="https://latex.codecogs.com/svg.image?\psi&space;" title="\psi " />) to determine the anomaly scores for every object. Here, we follow the same premise as _i_-Forest and set the two parameters as suggested, i.e., <img src="https://latex.codecogs.com/svg.image?t&space;=&space;100" title="t = 100" /> and <img src="https://latex.codecogs.com/svg.image?\psi&space;=&space;256" title="\psi = 256" />.
+EnLOF was firstly introduced in [1] as an ensemble version of LOF [2] and it solely works with each point nearest neighbor among the sampled instances in every ensemble member to define the density around it and the resultant anomaly score. This method, like _i_-NNE [1], is essentially inspired by the _i_-Forest method [3][4] and thus enjoys an adequate number of subsamples (<img src="https://latex.codecogs.com/svg.image?t" title="t" />) with a specific size (<img src="https://latex.codecogs.com/svg.image?\psi&space;" title="\psi " />) to determine the anomaly scores for every object. Here, we follow the same premise as _i_-Forest and set the two parameters as suggested, i.e., <img src="https://latex.codecogs.com/svg.image?t&space;=&space;100" title="t = 100" /> and <img src="https://latex.codecogs.com/svg.image?\psi&space;=&space;256" title="\psi = 256" />.
 
 [1] Bandaragoda, Tharindu R., et al. "Isolation-based anomaly detection using nearest-neighbor ensembles." Computational Intelligence 34.4 (2018): 968-998.
 
-[2] Liu, Fei Tony, Kai Ming Ting, and Zhi-Hua Zhou. "Isolation forest." 2008 eighth ieee international conference on data mining. IEEE, 2008.
+[2] Breunig, Markus M., et al. "LOF: identifying density-based local outliers." Proceedings of the 2000 ACM SIGMOD international conference on Management of data. 2000.
 
-[3] Liu, Fei Tony, Kai Ming Ting, and Zhi-Hua Zhou. "Isolation-based anomaly detection." ACM Transactions on Knowledge Discovery from Data (TKDD) 6.1 (2012): 1-39.
+[3] Liu, Fei Tony, Kai Ming Ting, and Zhi-Hua Zhou. "Isolation forest." 2008 eighth ieee international conference on data mining. IEEE, 2008.
+
+[4] Liu, Fei Tony, Kai Ming Ting, and Zhi-Hua Zhou. "Isolation-based anomaly detection." ACM Transactions on Knowledge Discovery from Data (TKDD) 6.1 (2012): 1-39.
 
 ## Implementation details
 
