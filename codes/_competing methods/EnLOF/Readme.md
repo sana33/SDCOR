@@ -38,7 +38,8 @@ timElpAvg_Mammography = mean(tEarr_Mammography);
 
 fprintf('EnLOF (t=%d,psi=%d) result with maxIter = %d for Mammography:\t\tROC = %0.3f+-%0.3f\t\tPR = %0.3f+-%0.3f\t\telpsTime = %0.3f sec\n\n',...
     t,psi,maxIter,ROCavg_Mammography,ROCstd_Mammography,PRavg_Mammography,PRstd_Mammography,timElpAvg_Mammography);
-save(['res_EnLOF(t=' num2str(t) ',psi=' num2str(psi) ')_Mammography.mat'],'ROCarr_Mammography','PRarr_Mammography','ROCavg_Mammography','ROCstd_Mammography','PRavg_Mammography','PRstd_Mammography','timElpAvg_Mammography');
+save(['res_EnLOF(t=' num2str(t) ',psi=' num2str(psi) ')_Mammography.mat'],'ROCarr_Mammography','PRarr_Mammography','ROCavg_Mammography','ROCstd_Mammography',...
+	'PRavg_Mammography','PRstd_Mammography','timElpAvg_Mammography');
 ```
 
 
