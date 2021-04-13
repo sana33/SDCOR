@@ -78,7 +78,7 @@ H.PCvarRat = str2double(get(H.PCvarRat_editText,'String'))/100;
 H.alphaMemb = str2double(get(H.alphaMemb_editText,'String'));
 H.betaPrun = str2double(get(H.betaPrun_editText,'String'));
 H.sampRate = str2double(get(H.sampRate_editText,'String'))/100;
-H.maxRun = str2double(get(H.maxRun_editText,'String'));
+H.totRun = str2double(get(H.totRun_editText,'String'));
 BLK_SZ_LIM = str2double(get(H.blckSzlim_editText,'String'));
 
 H.PCM = get(get(H.PCM_radioBtnGroup,'SelectedObject'),'tag');
@@ -95,8 +95,8 @@ if isnan(H.manuMnPt); H.manuMnPt = floor(log(H.n)); H.manuMnPt_editText.String =
 H.epsCoeff = str2double(get(H.epsCoef_editText,'String'));
 
 H.ROCarr = []; H.PRarr = []; H.tEarr = [];
-H.runLevl_statText.String = [num2str(0) '/' num2str(H.maxRun)]; pause(.001);
-for c1 = 1:H.maxRun
+H.runLevl_statText.String = [num2str(0) '/' num2str(H.totRun)]; pause(.001);
+for c1 = 1:H.totRun
     SDCOR(hO,H);
     H = guidata(hO);
     H.ROCarr = [H.ROCarr H.ROC];
@@ -105,7 +105,7 @@ for c1 = 1:H.maxRun
     
     set(H.tempROCPR_statText,'String',[num2str(H.ROC,'%0.3f') ' / ' num2str(H.PR,'%0.3f')]);
     set(H.tempTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
-    H.runLevl_statText.String = [num2str(c1) '/' num2str(H.maxRun)]; pause(.001);
+    H.runLevl_statText.String = [num2str(c1) '/' num2str(H.totRun)]; pause(.001);
 end
 H.ROCavg = mean(H.ROCarr); H.ROCstd = std(H.ROCarr);
 H.PRavg = mean(H.PRarr); H.PRstd = std(H.PRarr);
@@ -141,7 +141,7 @@ if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundC
     set(hO,'BackgroundColor','white');
 end
 
-function maxRun_editText_CreateFcn(hO, eventdata, H)
+function totRun_editText_CreateFcn(hO, eventdata, H)
 
 if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hO,'BackgroundColor','white');
@@ -165,7 +165,7 @@ guidata(hO,H);
 
 function sampRate_editText_Callback(hO,eventdata,H)
 
-function maxRun_editText_Callback(hO,eventdata,H)
+function totRun_editText_Callback(hO,eventdata,H)
 
 function PCvarRat_editText_Callback(hO,eventdata,H)
 
@@ -261,7 +261,7 @@ if isfield(H,'ROCarr')
     Hsave = saveWork(hO,eventdata,H);
     uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_$',H.dsName,'$_ROC=',num2str(H.ROCavg,'%0.3f'),...
         '_ROCstd=',num2str(H.ROCstd,'%0.3f'),'_PR=',num2str(H.PRavg,'%0.3f'),'_PRstd=',num2str(H.PRstd,'%0.3f'),...
-        '_maxRun=',num2str(H.maxRun),'_Time=',num2str(H.tEavg,'%0.3f'),'.mat']);
+        '_totRun=',num2str(H.totRun),'_Time=',num2str(H.tEavg,'%0.3f'),'.mat']);
     msgbox('File was saved successfully!','Success');
 else
     msgbox('Sorry! There is not any clear run info to be saved!','Failure','error');
@@ -287,7 +287,7 @@ function [Hsave] = saveWork(hO,eventdata,H)
 global BLK_SZ_LIM
 
 Hsave = struct('dsName',H.dsName,'chunkSz',H.chunkSz,'PCvarRat',H.PCvarRat*100,'alphaMemb',H.alphaMemb,'betaPrun',H.betaPrun,...
-    'sampRate',H.sampRate*100,'maxRun',H.maxRun,'BLK_SZ_LIM',BLK_SZ_LIM,'PCM',H.PCM,'PSO_particleNo',H.PSO_particleNo,...
+    'sampRate',H.sampRate*100,'totRun',H.totRun,'BLK_SZ_LIM',BLK_SZ_LIM,'PCM',H.PCM,'PSO_particleNo',H.PSO_particleNo,...
     'PSO_maxIter',H.PSO_maxIter,'PSO_W',H.PSO_W,'PSO_C1',H.PSO_C1,'PSO_C2',H.PSO_C2,'PSO_alpha',H.PSO_alpha,'manuEps',H.manuEps,...
     'manuMnPt',H.manuMnPt,'epsCoeff',H.epsCoeff,'paramSampDS',H.paramSampDS,'paramCostArrSamp',{H.paramCostArrSamp},...
     'origEps',H.origEps,'origMnPt',H.origMnPt,'origK',H.origK,'sampInd',H.sampInd,'idxSamp',H.idxSamp,'mahalScores',H.mahalScores,...
@@ -307,7 +307,7 @@ H.PCvarRat_editText.String = num2str(Hsave.PCvarRat);
 H.alphaMemb_editText.String = num2str(Hsave.alphaMemb);
 H.betaPrun_editText.String = num2str(Hsave.betaPrun);
 H.sampRate_editText.String = num2str(Hsave.sampRate);
-H.maxRun_editText.String = num2str(Hsave.maxRun);
+H.totRun_editText.String = num2str(Hsave.totRun);
 BLK_SZ_LIM = Hsave.BLK_SZ_LIM; H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
 
 switch Hsave.PCM
@@ -423,7 +423,7 @@ if ~actCond
     H.alphaMemb_editText.Enable = 'off';
     H.betaPrun_editText.Enable = 'off';
     H.sampRate_editText.Enable = 'off';
-    H.maxRun_editText.Enable = 'off';
+    H.totRun_editText.Enable = 'off';
     H.blckSzlim_editText.Enable = 'off';
     
 else
@@ -432,7 +432,7 @@ else
     H.alphaMemb_editText.Enable = 'on';
     H.betaPrun_editText.Enable = 'on';
     H.sampRate_editText.Enable = 'on';
-    H.maxRun_editText.Enable = 'on';
+    H.totRun_editText.Enable = 'on';
     H.blckSzlim_editText.Enable = 'on';
     
 end

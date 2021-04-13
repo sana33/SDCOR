@@ -7,7 +7,7 @@
 
 function plotOptional(H,data,option)
 
-if isfield(H,'DS') && isfield(H,'dispOn')
+if isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')
     switch option
         case 'loadDS'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
@@ -56,7 +56,7 @@ if isfield(H,'DS') && isfield(H,'dispOn')
                 plot(H.means(:,1),H.means(:,2),'Marker','s','MarkerSize',7,'MarkerFaceColor','m', ...
                     'MarkerEdgeColor','none','LineWidth',3,'LineStyle','none');
                 plot(H.DS(H.retIdx,1),H.DS(H.retIdx,2),'Marker','o','MarkerSize',3, ...
-                    'MarkerFaceColor','r','MarkerEdgeColor','none','LineWidth',3,'LineStyle','none');
+                    'MarkerFaceColor','k','MarkerEdgeColor','none','LineWidth',3,'LineStyle','none');
                 hold off;
                 legend('inliers','outliers',sprintf('means=%d',size(H.means,1)),...
                     sprintf('retainSet=%d',numel(H.retIdx)),'location','best');
@@ -197,7 +197,8 @@ if isfield(H,'DS') && isfield(H,'dispOn')
             
     end
 else
-    uiwait(msgbox('Sorry! Nothing has been run to display!','Failure','error','modal'));
+    uiwait(msgbox('Sorry! Nothing has been run to display or the query dataset has not been saved for illustration.',...
+        'Failure','error','modal'));
 end
 
 end

@@ -20,7 +20,7 @@
     * ["SDCOR various states" panel](#sdcor-various-states-panel)
     * [Main buttons of the GUI](#main-buttons-of-the-gui)
   * [SDCOR _ without visualization - read data from Disk](#-sdcor-_-without-visualization---read-data-from-disk)
-    * ["MaxRun" parameter](#maxrun-parameter)
+    * ["TotRun" parameter](#totrun-parameter)
     * ["Progression Status" panel](#progression-status-panel)
     * ["Final Results" panel](#final-results-panel-1)
 * [Some Notes](#-some-notes)
@@ -109,19 +109,17 @@ In this version, for the ease of visualizations, the input data along with the a
 
   * #### "Accuracy per Chunk" plot
   
-    This plot shows the gradual progress of the scalable clustering algorithm in terms of distinguishing outliers in each memory process. The progression is represented w.r.t. various accuracy measures, namely _ROC_, _PR_, _Precision_, _Recall_ and _F1-Measure_. After processing each chunk of data, we expect the number of inliers in the retained set to become decreased, and on the other side, the number of true outliers become increased. Thus, the mentioned accuracy measures should rise gradually after processing each memory load of points and reach to the perfect condition, iff the parameters are correctly set and also, the input data follows the predefined strong assumptions of the proposed method.
+    This plot shows the gradual progress of the scalable clustering algorithm in terms of distinguishing outliers in each memory process. The progression is represented w.r.t. various accuracy measures, namely _ROC_ (AUROC or ROC-AUC), _PR_ (AUPRC or PR-AUC), _Precision_, _Recall_ and _F1-Measure_. After processing each chunk of data, we expect the number of inliers in the retained set to decrease, and on the other side, the number of true outliers to increase. Thus, the mentioned accuracy measures should rise gradually after processing each memory load of points and reach to the perfect condition, iff the parameters are correctly set and also, the input data follows the predefined strong assumptions of the proposed method.
 	
-	However, after processing the whole chunks, there could be some inliers still sustained in buffer, because of the established membership and density-based clustering restrictions; and moreover, some of the outliers might be absorbed to some created mini-clusters during the scalable clustering. Finally, all the undecided points in memory are cleared from the buffer, while only the structural information of the temporary clusters is maintained in it.
-	
-	Furthermore, for the density-based anomaly detection algorithms, this axes plot will show the progress as a bar chart which is updated after processing each block of pairwise distances.
-	
+	However, after processing the whole chunks, there could be some inliers still sustained in buffer, because of the established membership and density-based clustering restrictions; and moreover, some of the outliers might be absorbed to some created miniclusters during scalable clustering. Finally, all of the undecided points in memory are cleared from the buffer, while only the structural information of the temporary clusters is maintained in it.
+		
   * #### "Final ROC:" static text box
   
-    This field shows the final AUROC (ROC AUC) obtained out of the "Scoring" phase of the proposed method.
+    This field shows the final AUROC obtained out of the "Scoring" phase of the proposed method.
 	
   * #### "Final PR:" static text box
   
-    This field shows the final AUPRC (PR AUC) obtained out of the "Scoring" phase of the proposed method.
+    This field shows the final AUPRC obtained out of the "Scoring" phase of the proposed method.
   
   * #### "Time(sec):" static text box
   
@@ -151,11 +149,11 @@ In this version, for the ease of visualizations, the input data along with the a
 	
   * #### "RetSetRed" button
   
-    This button illustrates inliers and outliers in different colors, while those points sustained in the retained set after processing the entire chunks and before building the final clustering model, are represented in red color. Besides, the temporary centroids of the temporary clustering model are denoted as magenta square points.
+    This button illustrates inliers and outliers in different colors, while the points sustained in the retained set after processing the entire chunks and before building the final clustering model are represented in black color. Besides, the temporary centroids of the temporary clustering model are denoted as magenta square points.
   
   * #### "FinalMeans" button
   
-    This button demonstrates both temporary means and final means, represented by solid circles and triangles respectively, with a different color for each final cluster.
+    This button demonstrates both the temporary means and the final means, represented by solid circles and triangles respectively, with a different color for each final cluster.
   
   * #### "RegenDS" button
   
@@ -163,7 +161,7 @@ In this version, for the ease of visualizations, the input data along with the a
   
   * #### "ScoredDS" button
   
-    This button colorfully illustrates the outcome of "Scoring" phase of the proposed method, based on the local Mahalanobis distance. Considering the final clustering model attained out of the second phase of SDCOR, each point regardless of being an inlier or outlier is denoted as a dot with the color of the closest final cluster, and with a size equal to the corresponding local Mahalanobis distance.
+    This button colorfully illustrates the outcome of the "Scoring" phase of the proposed method, based on the local Mahalanobis distance. Considering the final clustering model attained out of the second phase of SDCOR, each point regardless of being an inlier or outlier is denoted as a dot with the color of the closest final cluster, and with a size proportionate to the corresponding local Mahalanobis distance.
 	
 	_**Note:**_  The *ScorDSszCoef* input parameter in the *SDCOR Params* panel of the GUI can be employed here to better visualize the scored data points. The bigger this coefficient, the larger the scored points are represented.
   
@@ -185,11 +183,11 @@ In this version, for the ease of visualizations, the input data along with the a
   
   * #### "CLEAR AXES" button
   
-    This button clears all the axes plots along with the static text fields dedicated to depict a property or the outputs of the selected algorithm.
+    This button clears all the axes plots along with some static text fields dedicated to depict a property or the outputs of the selected algorithm.
   
   * #### "RESET BTNS" button
   
-    If during the operation, any error happens and the process is halted, or it is stopped intentionally, then all the disabled elements remain inactive. This button activates them again.
+    If during the operation, any error happens and the process is halted, or it is stopped intentionally, then all the disabled elements remain inactive. This button reactivates them.
   
   * #### "SAVE WORKSPACE" button
   
@@ -205,9 +203,9 @@ In this version, for the ease of visualizations, the input data along with the a
 
 In this version, the input data is directly read from the disk, and hence, any arbitrary size of dataset could be employed by the proposed method. Therefore, the dedicated facilities for visualizing different steps of the scalable clustering algorithm are removed from the GUI; and instead, some text fields are added to simply demonstrate the algorithm progression and detection accuracy outcomes. The new parts added to the GUI are characterized as follows:
 
-* ### "MaxRun" parameter
+* ### "TotRun" parameter
 
-   This parameter is added to the *SDCOR Params* panel, and stands for the maximum number of times that SDCOR will be executed on the input data. The final accuracy outcome will be an aggregate value of the total independent runs.
+   This parameter is added to the *SDCOR Params* panel, and stands for the number of times that SDCOR will be executed on the input data. The final accuracy outcome will be an aggregate value of the total independent runs.
   
 * ### "Progression Status" panel
 
@@ -217,29 +215,29 @@ In this version, the input data is directly read from the disk, and hence, any a
 	
   * #### "Temp AUC:" static text box
   
-    This field displays the AUC outcome obtained through the last run of the proposed method, out of the _MaxRun_ number of execution times.
+    This field displays the AUC outcome obtained through the last run of the proposed method, out of the _TotRun_ number of execution times.
 	
   * #### "Temp Time(sec):" static text box
 
-    This field displays the execution time (in seconds) of the last run of the proposed method, out of the _MaxRun_ number of execution times.
+    This field displays the execution time (in seconds) of the last run of the proposed method, out of the _TotRun_ number of execution times.
 	
   * #### "Total Runs:" static text box
   
-    The total number of runs of SDCOR per the allowed maximum number of execution times (_MaxRun_) is depicted in this field.
+    The total number of runs of SDCOR per the allowed number of execution times (_TotRun_) is depicted in this field.
 	
 * ### "Final Results" panel
 
   * #### "Final AUC:" static text box
   
-    This field shows the average AUC outcome attained through the _MaxRun_ number of execution times of SDCOR.
+    This field shows the average AUC outcome attained through the _TotRun_ number of execution times of SDCOR.
 	
   * #### "AUC std:" static text box
 
-    This field shows the standard deviation of AUC outcomes gained out of the _MaxRun_ number of SDCOR runs.
+    This field shows the standard deviation of AUC outcomes gained out of the _TotRun_ number of SDCOR runs.
 	
   * #### "Time(sec):" static text box
   
-    The average execution time (in seconds) acquired through the _MaxRun_ number of SDCOR runs.
+    The average execution time (in seconds) acquired through the _TotRun_ number of SDCOR runs.
 	
 ## &#x1F34F; Some Notes
 
