@@ -2,7 +2,7 @@
 
 ## An ensemble version of LOF
 
-EnLOF was firstly introduced in [1] as an ensemble version of LOF and it solely works with the nearest neighbor of each point among the sampled instances in every ensemble member to define the density around it. This method, like _i_NNE, is essentially inspired by the _i_Forest [2,3] method and thus enjoys an adequate number of subsamples (t) with a specific size ($\psi) to determine the anomaly scores for every object. Here, we follow the same premise as _i_Forest and set the two parameters as suggested, i.e., t = 100 and \psi = 256.
+EnLOF was firstly introduced in [1] as an ensemble version of LOF and it solely works with the nearest neighbor of each point among the sampled instances in every ensemble member to define the density around it. This method, like _i_NNE, is essentially inspired by the _i_Forest [2][3] method and thus enjoys an adequate number of subsamples (t) with a specific size (\psi) to determine the anomaly scores for every object. Here, we follow the same premise as _i_Forest and set the two parameters as suggested, i.e., t = 100 and \psi = 256.
 
 [1] Bandaragoda, Tharindu R., et al. "Isolation‐based anomaly detection using nearest‐neighbor ensembles." Computational Intelligence 34.4 (2018): 968-998.
 
@@ -12,7 +12,7 @@ EnLOF was firstly introduced in [1] as an ensemble version of LOF and it solely 
 
 ## Implementation details
 
-The code combines the implementations of the two density-based techniques, as they both require a materialization matrix containing the _k_-nearest-neighbors and the following distances. You can follow the subsequent script as a template to use the function and obtain LOF and LoOP results out of an arbitrary dataset:
+You can follow the subsequent script as a template to use the function and obtain EnLOF results out of an arbitrary dataset:
 
 ```matlab
 % Setting initial parameters
