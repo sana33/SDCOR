@@ -19,9 +19,9 @@ minPtsUB = 50; % LOF parameter
 kStep= 2; % LOF parameter
 kVal = 30; % LoOP parameter
 lambda = 3; % LoOP parameter
-OlNbCnd = 0; % OlNbCnd is the Overlapping Neighborhood (OlNb) Condition for the materialization matrix
-NSMethod = 0; % NSMethod is the Neighbor Search Method for the knnsearch function [0:kdtree, 1:exhaustive] while OlNb is equal to 0
-blkSzLim = 5e3; % blkSzLim is the memory size limit while OlNb equals 1 (our very own implementation)
+OlNbCnd = 0; % Overlapping Neighborhood (OlNb) Condition for the materialization matrix
+NSMethod = 0; % Neighbor Search Method for the knnsearch function [0:kdtree, 1:exhaustive] while OlNb is equal to 0
+blkSzLim = 5e3; % memory size limit while OlNb equals 1 (our very own implementation)
 
 % Mammography dataset
 X = load('C:\SDCOR\codes\datasets\realData\Mammography_(11183by6_260o).mat');

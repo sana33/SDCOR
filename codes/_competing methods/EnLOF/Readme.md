@@ -12,11 +12,13 @@ EnLOF was firstly introduced in [1] as an ensemble version of LOF and it solely 
 
 ## Implementation details
 
-You can follow the subsequent script as a template to use the function and obtain EnLOF results out of an arbitrary dataset:
+You can follow the subsequent script with the suggested parameters as a template to use the function and obtain EnLOF results out of an arbitrary dataset:
 
 ```matlab
 % Setting initial parameters
-t = 100; psi = 256; totIter = 40;
+t = 100; % ensemble size
+psi = 256; % subsample size
+totIter = 40; % total number of independent runs
 
 % Mammography dataset
 clear X y
