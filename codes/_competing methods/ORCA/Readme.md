@@ -44,6 +44,7 @@ C:\ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 139
 
 % "scores" contains the outliers indices provided by ORCA along with the subsequent outlier scores
 % "labels" contains the outlier labels for all data elements; 0 for inliers, and 1 for outliers
+% "timElp_Mammography" is the execution time of ORCA on this dataset
 
 scorTmp = zeros(numel(labels),1);
 scorTmp(scores(:,1)) = scores(:,2);
@@ -52,8 +53,8 @@ scores = scorTmp;
 [~,~,~,ROC_Mammography] = perfcurve(labels,scores,1);
 [~,~,~,PR_Mammography] = perfcurve(labels,scores,1,'XCrit','reca','YCrit','prec');
 
-fprintf('ORCA result for Mammography:\t\tROC = %0.3f\t\tPR = %0.3f\n\n',ROC_Mammography,PR_Mammography);
-save('res_ORCA_Mammography.mat','ROC_Mammography','PR_Mammography');
+fprintf('ORCA result for Mammography:\t\tROC = %0.3f\t\tPR = %0.3f\t\telpsTime = %0.3f sec\n\n',ROC_Mammography,PR_Mammography,timElp_Mammography);
+save('res_ORCA_Mammography.mat','ROC_Mammography','PR_Mammography','timElp_Mammography');
 ```
 
 
