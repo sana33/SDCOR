@@ -82,13 +82,13 @@ end
 
 ```matlab
 
-%% running the Linux C++ binary code of DOLPHIN
-
-the following command is an example to run DOLPHIN method on the Mammography dataset with k=112 and R=1.170412063:
+%% running the Linux C++ binary code of DOLPHIN with k=112 and R=1.170412063
 
 > in Linux Terminal window:
 
 time sudo ./dolphin.bin mammographyBin 112 1.170412063 t 0.05 16 |& tee output_mammography_k=112_r=1.170412063.txt
+
+% Note: "time" and "sudo" commands are for calculating the runtime and giving administrative privileges to the command. "output_mammography_k=112_r=1.170412063.txt" file will contain the command output, including the runtime.
 ```
 
 ```matlab
