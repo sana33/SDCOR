@@ -22,10 +22,12 @@ You can follow the subsequent script with the suggested parameters as a template
 %% converting the MAT dataset into a binary format acceptable by ORCA
 
 (1) in MATLAB:
+
 load('Mammography_(11183by6_260o).mat');
 dlmwrite('Mammography',X,'precision','%.15f'); dlmwrite('labels',y);
 
 (2) create the "Mammography.fields" file with the following content:
+
 attrib01: continuous.
 attrib02: continuous.
 attrib03: continuous.
@@ -34,6 +36,7 @@ attrib05: continuous.
 attrib06: continuous.
 
 (3) in command window:
+
 dprep.exe Mammography Mammography.fields Mammography.bin -rand -snone -cleanf
 
 %% running the C++ executable code in command window

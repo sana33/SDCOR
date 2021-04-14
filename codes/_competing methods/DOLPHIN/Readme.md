@@ -22,9 +22,15 @@ You can follow the subsequent script with the suggested parameters as a template
 ```matlab
 %%% Mammography dataset
 
-%% converting the MAT dataset into a binary format acceptable by ORCA
+%% converting the MAT dataset into a binary format acceptable by DOLPHIN
 
 (1) in MATLAB:
+load('Mammography_(11183by6_260o).mat');
+DOLPHIN_dssave('mammographyBin',X);
+% [ds,rows,cols] = DOLPHIN_dsload('mammographyBin');
+
+
+
 load('Mammography_(11183by6_260o).mat');
 dlmwrite('Mammography',X,'precision','%.15f'); dlmwrite('labels',y);
 
