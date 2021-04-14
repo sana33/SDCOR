@@ -42,11 +42,15 @@ attrib06: continuous.
 3> in command window:
 
 dprep.exe Mammography Mammography.fields Mammography.bin -rand -snone -cleanf
+```
 
+```matlab
 %% running the ORCA C++ executable code in command window
 
 C:\ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 1397 > Mammography_ORCA.comOut
+```
 
+```matlab
 %% gaining the AUC outcomes through the acquired scores
 
 > in MATLAB
