@@ -21,12 +21,12 @@ You can follow the subsequent script with the suggested parameters as a template
 
 %% converting the MAT dataset into a binary format acceptable by ORCA
 
-(1) in MATLAB:
+1> in MATLAB:
 
 load('Mammography_(11183by6_260o).mat');
 dlmwrite('Mammography',X,'precision','%.15f'); dlmwrite('labels',y);
 
-(2) create the "Mammography.fields" file with the following content:
+2> create the "Mammography.fields" file with the following content:
 
 attrib01: continuous.
 attrib02: continuous.
@@ -35,15 +35,17 @@ attrib04: continuous.
 attrib05: continuous.
 attrib06: continuous.
 
-(3) in command window:
+3> in command window:
 
 dprep.exe Mammography Mammography.fields Mammography.bin -rand -snone -cleanf
 
-%% running the C++ executable code in command window
+%% running the ORCA C++ executable code in command window
 
 C:\ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 1397 > Mammography_ORCA.comOut
 
 %% gaining the AUC outcomes through the acquired scores
+
+> in MATLAB
 
 % "scores" is a 2D vector containing the outlier indices provided by ORCA along with the subsequent outlier scores
 % "labels" is a vector containing the outlier labels for all data elements; 0 for inliers, and 1 for outliers

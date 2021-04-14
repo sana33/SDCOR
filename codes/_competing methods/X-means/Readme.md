@@ -1,4 +1,4 @@
-# DOLPHIN
+# X-means
 
 ## DOLPHIN (Detecting OutLiers PusHing objects into an INdex)
 
@@ -8,9 +8,7 @@ For executing the DOLPHIN method on any query data, we need two distinct input p
 
 To define _k_ under each dataset, we have set it to 1% of the dataset size. However, for _R_, we followed the _DolphinParamEstim_ procedure stipulated in the original paper. Concerning this procedure, the parameter _R_ directly correlates with the expected ratio of outliers, _alpha_, which is anticipated to be detected by DOLPHIN.
 
-It should be noted that DOLPHIN does not provide any anomaly scores for the data elements, and its output is all and solely the definite list of potential outliers. In such a case, the ROC and PR curves will not be appealingly smooth, and the following AUC values will not be very reliable either<sup>1</sup>. For this reason, we decided to run the method by various _R_ values, which are in accordance with different _alpha_ values, and rank the detected outliers in the entire iterations w.r.t. the sum of their appearance times in diverse iterations. This heuristic strategy would lead to some sort of outlier ranking, in which every potential outlier gains a positive integer score with a direct relationship to its anomalousness degree, while non-outlier objects attain a score of zero.
-
-<sup>1</sup> In fact, in more convenient computational conditions, DOLPHIN mostly leads to non-promising detection results. On the other hand, in more compelling parameter settings, i.e., lower values for _R_ and greater values for _k_, in spite of higher data-processing costs, the DOLPHIN algorithm outputs incline to be quite deterministic and auspicious in all cases; thus, the subsequent detection accuracy outcomes will be more dependable.
+It should be noted that DOLPHIN does not provide any anomaly scores for the data elements, and its output is all and solely the definite list of potential outliers. In such a case, the ROC and PR curves will not be appealingly smooth, and the following AUC values will not be very reliable either. For this reason, we decided to run the method by various _R_ values, which are in accordance with different _alpha_ values, and rank the detected outliers in the entire iterations w.r.t. the sum of their appearance times in diverse iterations. This heuristic strategy would lead to some sort of outlier ranking, in which every potential outlier gains a positive integer score with a direct relationship to its anomalousness degree, while non-outlier objects attain a score of zero.
 
 [1] Angiulli, Fabrizio, and Fabio Fassetti. "Dolphin: An efficient algorithm for mining distance-based outliers in very large datasets." ACM Transactions on Knowledge Discovery from Data (TKDD) 3.1 (2009): 1-57.
 
@@ -47,48 +45,6 @@ R_Mammography = zeros(1,alphaK);
 for c1 = 1:alphaK
     [R_Mammography(c1)] = DolphinParamEstim(X,Eps,delta,alpha(c1),sigma);
 end
-
-
-
-
-
-
-
-As for the usage, it is sufficient to run it from the OS prompt as follows:
-
-./dolphin <File.ds2> <k> <r> <silent (t/f)> <prob> <slots>
-
-where:
-
-- <File.ds2> is a binary file whose format is described next
-
-- <k> is the numer of nearest neigbhors to consider
-
-- <R> is the radius value to consider
-
-- <silent (t/f)> is a flag to disable(t)/enable(f) verbose mode
-
-- <prob> is the $p_inliers$ parameter described in the paper (the recommended value is 0.05, if I remember correctly)
-
-- <slots> is the number of histogram bins used to approximate nearest neighbors distribution (parameter $h$ in the paper, recommended value 8 if I remember correctly)
-
-E.g., you can run the code as follows:
-
-./dolphin  mydataset  5  3.14  t  0.05  8
-
-As for the dataset format, it must be a binary file of float32 numbers containing data points in row major order (n*d*4 bytes, n=number of rows, d=number of columns). At the beginning of the file an header is required (8 bytes), consisting of the number of columns (d) and rows (n) respectively stored as two int32 numbers.
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
