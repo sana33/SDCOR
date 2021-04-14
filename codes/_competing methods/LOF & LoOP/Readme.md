@@ -24,7 +24,7 @@ NSMethod = 0; % Neighbor Search Method for the knnsearch function [0:kdtree, 1:e
 blkSzLim = 5e3; % memory size limit while OlNb equals 1 (our very own implementation)
 
 % Mammography dataset
-X = load('C:\SDCOR\codes\datasets\realData\Mammography_(11183by6_260o).mat');
+X = load('Mammography_(11183by6_260o).mat');
 y = X.y; X = X.X;
 
 [lofVals_Mammography,lofKmat_Mammography,ROC_LOF_Mammography,PR_LOF_Mammography,tElapsed_LOF_Mammography,LoOPvals_Mammography,ROC_LoOP_Mammography,...

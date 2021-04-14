@@ -24,7 +24,7 @@ totIter = 40; % total number of independent runs
 
 % Mammography dataset
 clear X y
-load('C:\SDCOR\codes\datasets\realData\Mammography_(11183by6_260o).mat');
+load('Mammography_(11183by6_260o).mat');
 
 tEarr_Mammography = [];
 ROCarr_Mammography = [];
