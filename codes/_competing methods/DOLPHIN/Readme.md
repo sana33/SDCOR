@@ -8,7 +8,7 @@ For executing the DOLPHIN method on any query data, we need two distinct input p
 
 To define _k_ under each dataset, we have set it to 1% of the dataset size. However, for _R_, we followed the _DolphinParamEstim_ procedure stipulated in the original paper. Concerning this procedure, the parameter _R_ directly correlates with the expected ratio of outliers, _alpha_, which is anticipated to be detected by DOLPHIN.
 
-It should be noted that DOLPHIN does not provide any anomaly scores for the data elements, and its output is all and solely the definite list of potential outliers. In such a case, the ROC and PR curves will not be appealingly smooth, and the following AUC values will not be very reliable either <sup>1</sup>. For this reason, we decided to run the method by various _R_ values, which are in accordance with different _alpha_ values, and rank the detected outliers in the entire iterations w.r.t. the sum of their appearance times in diverse iterations. This heuristic strategy would lead to some sort of outlier ranking, in which every potential outlier gains a positive integer score with a direct relationship to its anomalousness degree, while non-outlier objects attain a score of zero.
+It should be noted that DOLPHIN does not provide any anomaly scores for the data elements, and its output is all and solely the definite list of potential outliers. In such a case, the ROC and PR curves will not be appealingly smooth, and the following AUC values will not be very reliable either <sup>1</sup>. For this reason, as proposed by the authors, we decided to run the method by various _R_ values, which are in accordance with different _alpha_ values, and rank the detected outliers in the entire iterations w.r.t. the sum of their appearance times in diverse iterations. This heuristic strategy would lead to some sort of outlier ranking, in which every potential outlier gains a positive integer score with a direct relationship to its anomalousness degree, while non-outlier objects attain a score of zero.
 
 <sup>1</sup> *In fact, in more convenient computational conditions, DOLPHIN mostly leads to non-promising detection results. On the other hand, in more compelling parameter settings, i.e., lower values for _R_ and greater values for _k_, in spite of higher data-processing costs, the DOLPHIN algorithm outputs incline to be quite deterministic and auspicious in all cases; thus, the subsequent detection accuracy outcomes will be more dependable.*
 
@@ -18,12 +18,35 @@ It should be noted that DOLPHIN does not provide any anomaly scores for the data
 
 **The implementation code is a Linux C++ executable binary file provided by the genuine authors.**
 
-In the case of datasets in MAT format, you shall convert them to a format acceptable by DOLPHIN. 
+In the case of datasets in MAT format, you shall convert them to a format acceptable by DOLPHIN. This can be done through MATLAB codes dedicated to this issue by the authors.
+
+After preparing the input dataset, it is required to compute various _R_ quantities regarding diverse _alpha_ values. This could be achieved through the _DolphinParamEstim_ procedure with the suggested parameters.
+
+Then for running the DOLPHIN method on a query dataset, you should do as the following template in the Linux Terminal window:
+
+	./dolphin <File.ds> <k> <R> <silent (t/f)> <prob> <slots>
+
+	where:
+
+	- <File.ds> is the dataset binary file
+
+	- <k> is the numer of nearest neigbhors to consider
+
+	- <R> is the radius value to consider
+
+	- <silent (t/f)> is a flag to disable(t)/enable(f) verbose mode
+
+	- <prob> is the p_inliers parameter (the suggested value is equal to 0.05)
+
+	- <slots> is the number of histogram bins used to approximate nearest neighbors distribution (the suggested value is equal to 16)
 
 
-		For this matter, first, you should save them through MATLAB in ASCII format; this can be done using the `dlmwrite()` or the `writematrix()` functions. Then you must employ `dprep.exe` given by the ORCA authors along with the mentioned necessities to change the ASCII data into a binary file required by ORCA. Finally, for running the code, it will be only required to use `orca.exe` with the suggested parameters to obtain the anomaly scores. You can utilize the `ptime.exe` executable code to calculate the runtime for each command and save the command output in a specific file by adding `> orca_output.txt` to the end of the command line; outlier scores and the execution time can be elicited out of this file.
 
-You can follow the subsequent script with the suggested parameters as a template to use the ORCA implementation code and obtain the required results out of an arbitrary dataset:
+
+
+
+
+You can follow the subsequent scripts with the suggested parameters as a template to use the ORCA implementation code and obtain the required results out of an arbitrary dataset:
 
 ```matlab
 %%% Mammography dataset
@@ -32,13 +55,13 @@ You can follow the subsequent script with the suggested parameters as a template
 ```matlab
 %% converting the MAT dataset into a binary format acceptable by DOLPHIN
 
+% Note: As for the dataset format, it must be a binary file of float32 numbers containing data points in row major order (n*d*4 bytes, n=number of rows, d=number of columns). At the beginning of the file, a header is required (8 bytes), consisting of the number of columns (d) and rows (n), respectively, stored as two int32 numbers.
+
 > in MATLAB:
 
 load('Mammography_(11183by6_260o).mat');
 DOLPHIN_dssave('mammographyBin',X);
 [ds,rows,cols] = DOLPHIN_dsload('mammographyBin'); % just for checking the correctness of the output binary file
-
-% Note: As for the dataset format, it must be a binary file of float32 numbers containing data points in row major order (n*d*4 bytes, n=number of rows, d=number of columns). At the beginning of the file, a header is required (8 bytes), consisting of the number of columns (d) and rows (n), respectively, stored as two int32 numbers.
 ```
 
 ```matlab
@@ -57,85 +80,19 @@ for c1 = 1:alphaK
 end
 ```
 
-```linux
+```matlab
+
+%% running the Linux C++ binary code of DOLPHIN
+
+the following command is an example to run DOLPHIN method on the Mammography dataset with k=112 and R=1.170412063:
 
 > in Linux Terminal window:
 
+time sudo ./dolphin.bin mammographyBin 112 1.170412063 t 0.05 16 |& tee output_mammography_k=112_r=1.170412063.txt
+```
 
+```matlab
 
-
-As for the usage, it is sufficient to run it from the OS prompt as follows:
-
-./dolphin <File.ds2> <k> <r> <silent (t/f)> <prob> <slots>
-
-where:
-
-- <File.ds2> is a binary file whose format is described next
-
-- <k> is the numer of nearest neigbhors to consider
-
-- <R> is the radius value to consider
-
-- <silent (t/f)> is a flag to disable(t)/enable(f) verbose mode
-
-- <prob> is the $p_inliers$ parameter described in the paper (the recommended value is 0.05, if I remember correctly)
-
-- <slots> is the number of histogram bins used to approximate nearest neighbors distribution (parameter $h$ in the paper, recommended value 8 if I remember correctly)
-
-E.g., you can run the code as follows:
-
-./dolphin  mydataset  5  3.14  t  0.05  8
-
-
-
-
-time sudo ./dolphin.bin data\ and\ output/realData/mammography/mammographyBin 112 1.170412063 t 0.05 16 |& tee data\ and\ output/realData/mammography/output_mammography_k=112_r=1.170412063.txt
-
-
-
-
-
-
-
-
-
-
-
-
-
-load('Mammography_(11183by6_260o).mat');
-dlmwrite('Mammography',X,'precision','%.15f'); dlmwrite('labels',y);
-
-(2) create the "Mammography.fields" file with the following content:
-attrib01: continuous.
-attrib02: continuous.
-attrib03: continuous.
-attrib04: continuous.
-attrib05: continuous.
-attrib06: continuous.
-
-(3) in command window:
-dprep.exe Mammography Mammography.fields Mammography.bin -rand -snone -cleanf
-
-%% running the C++ executable code in command window
-
-C:\ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 1397 > Mammography_ORCA.comOut
-
-%% gaining the AUC outcomes through the acquired scores
-
-% "scores" contains the outliers indices provided by ORCA along with the subsequent outlier scores
-% "labels" contains the outlier labels for all data elements; 0 for inliers, and 1 for outliers
-% "timElp_Mammography" is the execution time of ORCA on this dataset
-
-scorTmp = zeros(numel(labels),1);
-scorTmp(scores(:,1)) = scores(:,2);
-scores = scorTmp;
-
-[~,~,~,ROC_Mammography] = perfcurve(labels,scores,1);
-[~,~,~,PR_Mammography] = perfcurve(labels,scores,1,'XCrit','reca','YCrit','prec');
-
-fprintf('ORCA result for Mammography:\t\tROC = %0.3f\t\tPR = %0.3f\t\telpsTime = %0.3f sec\n\n',ROC_Mammography,PR_Mammography,timElp_Mammography);
-save('res_ORCA_Mammography.mat','ROC_Mammography','PR_Mammography','timElp_Mammography');
 ```
 
 

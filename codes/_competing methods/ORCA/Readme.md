@@ -18,7 +18,7 @@ In the case of datasets in MAT format, you shall convert them to a format accept
 
 Finally, for running the code, it will be only required to use `orca.exe` with the suggested parameters to obtain the anomaly scores. You can utilize the `ptime.exe` executable code to calculate the runtime for each command and save the command output in a specific file by adding `> orca_output.txt` to the end of the command line; outlier scores and the execution time can be elicited out of this file.
 
-You can follow the subsequent script with the suggested parameters as a template to use the ORCA implementation code and obtain the required results out of an arbitrary dataset:
+You can follow the subsequent scripts with the suggested parameters as a template to use the ORCA implementation code and obtain the required results out of an arbitrary dataset:
 
 ```matlab
 %%% Mammography dataset
