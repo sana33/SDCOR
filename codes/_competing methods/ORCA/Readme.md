@@ -22,7 +22,9 @@ You can follow the subsequent script with the suggested parameters as a template
 
 ```matlab
 %%% Mammography dataset
+```
 
+```matlab
 %% converting the MAT dataset into a binary format acceptable by ORCA
 
 1> in MATLAB:
