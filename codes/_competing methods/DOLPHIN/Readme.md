@@ -42,8 +42,8 @@ C:\ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 139
 
 %% gaining the AUC outcomes through the acquired scores
 
-% "scores" is a 2D vector containing the outlier indices provided by ORCA along with the subsequent outlier scores
-% "labels" is a vector containing the outlier labels for all data elements; 0 for inliers, and 1 for outliers
+% "scores" contains the outliers indices provided by ORCA along with the subsequent outlier scores
+% "labels" contains the outlier labels for all data elements; 0 for inliers, and 1 for outliers
 % "timElp_Mammography" is the execution time of ORCA on this dataset
 
 scorTmp = zeros(numel(labels),1);
