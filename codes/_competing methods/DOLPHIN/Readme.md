@@ -16,15 +16,20 @@ It should be noted that DOLPHIN does not provide any anomaly scores for the data
 
 ## Implementation details
 
-**The implementation code is a Linux C++ executable binary file provided by the genuine authors**. 
+**The implementation code is a Linux C++ executable binary file provided by the genuine authors.**
 
-In the case of datasets in MAT format, you shall convert them to a format acceptable by ORCA. For this matter, first, you should save them through MATLAB in ASCII format; this can be done using the `dlmwrite()` or the `writematrix()` functions. Then you must employ `dprep.exe` given by the ORCA authors along with the mentioned necessities to change the ASCII data into a binary file required by ORCA. Finally, for running the code, it will be only required to use `orca.exe` with the suggested parameters to obtain the anomaly scores. You can utilize the `ptime.exe` executable code to calculate the runtime for each command and save the command output in a specific file by adding `> orca_output.txt` to the end of the command line; outlier scores and the execution time can be elicited out of this file.
+In the case of datasets in MAT format, you shall convert them to a format acceptable by DOLPHIN. 
+
+
+		For this matter, first, you should save them through MATLAB in ASCII format; this can be done using the `dlmwrite()` or the `writematrix()` functions. Then you must employ `dprep.exe` given by the ORCA authors along with the mentioned necessities to change the ASCII data into a binary file required by ORCA. Finally, for running the code, it will be only required to use `orca.exe` with the suggested parameters to obtain the anomaly scores. You can utilize the `ptime.exe` executable code to calculate the runtime for each command and save the command output in a specific file by adding `> orca_output.txt` to the end of the command line; outlier scores and the execution time can be elicited out of this file.
 
 You can follow the subsequent script with the suggested parameters as a template to use the ORCA implementation code and obtain the required results out of an arbitrary dataset:
 
 ```matlab
 %%% Mammography dataset
+```
 
+```matlab
 %% converting the MAT dataset into a binary format acceptable by DOLPHIN
 
 > in MATLAB:
@@ -33,6 +38,10 @@ load('Mammography_(11183by6_260o).mat');
 DOLPHIN_dssave('mammographyBin',X);
 [ds,rows,cols] = DOLPHIN_dsload('mammographyBin'); % just for checking the correctness of the output binary file
 
+% Note: As for the dataset format, it must be a binary file of float32 numbers containing data points in row major order (n*d*4 bytes, n=number of rows, d=number of columns). At the beginning of the file, a header is required (8 bytes), consisting of the number of columns (d) and rows (n), respectively, stored as two int32 numbers.
+```
+
+```matlab
 %% computing various R values w.r.t. different alpha values
 
 > in MATLAB:
@@ -46,9 +55,11 @@ R_Mammography = zeros(1,alphaK);
 for c1 = 1:alphaK
     [R_Mammography(c1)] = DolphinParamEstim(X,Eps,delta,alpha(c1),sigma);
 end
+```
 
+```linux
 
-
+> in Linux Terminal window:
 
 
 
@@ -75,11 +86,10 @@ E.g., you can run the code as follows:
 
 ./dolphin  mydataset  5  3.14  t  0.05  8
 
-As for the dataset format, it must be a binary file of float32 numbers containing data points in row major order (n*d*4 bytes, n=number of rows, d=number of columns). At the beginning of the file an header is required (8 bytes), consisting of the number of columns (d) and rows (n) respectively stored as two int32 numbers.
 
 
 
-
+time sudo ./dolphin.bin data\ and\ output/realData/mammography/mammographyBin 112 1.170412063 t 0.05 16 |& tee data\ and\ output/realData/mammography/output_mammography_k=112_r=1.170412063.txt
 
 
 

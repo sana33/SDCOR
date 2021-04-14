@@ -12,7 +12,7 @@ However, ORCA does not report an anomaly score for the rest of the data, and thi
 
 ## Implementation details
 
-**The implementation is in C++ and provided by the genuine authors through [this link](http://www.stephenbay.net/orca/)**.
+**The implementation is in C++ and provided by the genuine authors through [this link](http://www.stephenbay.net/orca/).**
 
 In the case of datasets in MAT format, you shall convert them to a format acceptable by ORCA. For this matter, first, you should save them through MATLAB in ASCII format; this can be done using the `dlmwrite()` or the `writematrix()` functions. Then you must employ `dprep.exe` given by the ORCA authors along with the mentioned necessities to change the ASCII data into a binary file required by ORCA.
 
