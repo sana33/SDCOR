@@ -7,7 +7,7 @@
 
 function plotOptional(H,data,option)
 
-if isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')
+if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || strcmp(option,'accPerChunk') || strcmp(option,'PSOcost')
     switch option
         case 'loadDS'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
