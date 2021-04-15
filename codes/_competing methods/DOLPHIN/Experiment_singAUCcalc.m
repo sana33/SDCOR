@@ -1,4 +1,4 @@
-%% Calculating accuracy and runtime values for DOLPHIN in single output case
+%% Calculating accuracy values for DOLPHIN in single output case
 
 % clear; close all; clc; warning off
 
@@ -7,7 +7,7 @@
 fileDIR = [PathName FileName]; [~,fName,~] = fileparts(FileName);
 labels = load(fileDIR);
 
-% loading the scores (outliers) file
+% loading the scores (outlier indices) file
 [FileName,PathName] = uigetfile('Outliers_*.txt','Please select Outliers_* files','..\data and output\');
 fileDIR = [PathName FileName]; scorTemp = load(fileDIR); scores = zeros(numel(labels),1); scores(scorTemp) = 1;
 

@@ -7,7 +7,7 @@
 fileDIR = [PathName FileName]; [~,fName,~] = fileparts(FileName);
 labels = load(fileDIR);
 
-% loading the scores (outliers) file
+% loading the scores (outlier indices) files
 [FileName,PathName] = uigetfile('Outliers_*.txt','Please select Outliers_* files','..\data and output\','MultiSelect','on');
 filCnt = numel(FileName);
 OLarr = cell(filCnt,1);
