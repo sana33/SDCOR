@@ -42,7 +42,7 @@ Then for running the DOLPHIN method on a query dataset, you should do as the fol
 
 This command will produce some files as output which the one starting with "Outliers_" contains the outlier indices and should be utilized to compute detection accuracy results.
 
-After obtaining outlier indices w.r.t. various _R_ values, we need to acquire AUC results out of them. If there is only one run, you can utilize the `Experiment_singAUCcalc.m` procedure to calculate the AUROC and AUPRC results; in the case of multiple runs, the `Experiment_multAUCcalc.m` procedure could be of use. Note that for outlier labels, you need to extract them from the corresponding dataset file and save it, e.g., in an ASCII format with an extension like LABELS. Moreover, in the `Experiment_multAUCcalc.m` procedure, we load the command output files too for extracting the related execution times.
+After obtaining outlier indices w.r.t. various _R_ values, we need to acquire AUC results out of them. If there is only one run, you can utilize the `Experiment_singAUCcalc.m` procedure to calculate the AUROC and AUPRC results; in the case of multiple runs, the `Experiment_multAUCcalc.m` procedure could be of use. Note that for outlier labels, you need to extract them from the corresponding dataset file and save it, e.g., in an ASCII format with an extension like LABELS. Moreover, in both procedures, we load the command output file(s) to extract the related execution time(s).
 
 You can follow the subsequent scripts with the suggested parameters as a template to use the DOLPHIN implementation code and obtain the required results out of an arbitrary dataset:
 
