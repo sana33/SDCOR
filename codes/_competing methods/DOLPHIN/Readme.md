@@ -70,7 +70,6 @@ DOLPHIN_dssave('mammographyBin',X);
 Eps = .01; delta = .1; alpha = [1:10]./100; sigma = .01;
 alphaK = numel(alpha);
 
-% Mammography
 load('Mammography_(11183by6_260o).mat');
 R_Mammography = zeros(1,alphaK);
 for c1 = 1:alphaK
