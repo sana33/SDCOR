@@ -42,6 +42,8 @@ Then for running the DOLPHIN method on a query dataset, you should do as the fol
 
 This command will produce some files as output which the one starting with "Outliers_" contains the outlier indices and should be utilized to compute detection accuracy results.
 
+After obtaining the outlier indices files w.r.t. various _R_ values, we need to acquire the AUC results out of them. Accordingly, you should utilize the `Experiment_AUCcalc.m` procedure to calculate the AUROC and AUPRC results. Note that for outlier labels required to determine AUC outcomes, you need to extract them from the corresponding dataset file with MAT format and save it, e.g., in an ASCII format with an extension like LABELS; other arbitrary formats could be considered too. Moreover, in the `Experiment_AUCcalc.m` procedure, the command output files are loaded to extract the related execution times; here, the maximum runtime is considered as the representative.
+
 You can follow the subsequent scripts with the suggested parameters as a template to use the DOLPHIN implementation code and obtain the required results out of an arbitrary dataset:
 
 ```matlab
@@ -89,4 +91,6 @@ time sudo ./dolphin.bin mammographyBin 112 1.170412063 t 0.05 16 |& tee output_m
 % Note: "time" and "sudo" commands are for calculating the runtime and giving administrative privileges to the command. "|& tee" is for controlling the command output. "output_mammography_k=112_r=1.170412063.txt" file will contain the command output, including the runtime.
 ```
 
-After obtaining outlier indices w.r.t. various _R_ values, we need to acquire AUC results out of them. If there is only one run, you can utilize the `Experiment_singAUCcalc.m` procedure to calculate the AUROC and AUPRC results; in the case of multiple runs, the `Experiment_multAUCcalc.m` procedure could be of use. Note that for outlier labels, you need to extract them from the corresponding dataset file with MAT format and save it, e.g., in an ASCII format with an extension like LABELS; other arbitrary formats could be considered too. Moreover, in both procedures, we load the command output file(s) to extract the related execution time(s).
+```matlab
+%% employ the `Experiment_AUCcalc.m` procedure to attain AUC and runtime outcomes out of the outlier indices files and the command output files.
+```

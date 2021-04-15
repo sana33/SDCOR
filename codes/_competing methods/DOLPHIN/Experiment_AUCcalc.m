@@ -9,7 +9,7 @@ labels = load(fileDIR);
 
 % loading the scores (outlier indices) files
 [FileName,PathName] = uigetfile('Outliers_*.txt','Please select Outliers_* files','..\data and output\','MultiSelect','on');
-filCnt = numel(FileName);
+if iscell(FileName); filCnt = numel(FileName); else; FileNameTemp{1} = FileName; FileName = FileNameTemp; filCnt = 1; end
 OLarr = cell(filCnt,1);
 for d1 = 1:filCnt
     fileDIR = [PathName FileName{d1}];
@@ -26,7 +26,7 @@ end
 
 % loading the output files for calculation of the runtime
 [FileName,PathName] = uigetfile('output_*.txt','Please select output_* files','..\data and output\','MultiSelect','on');
-filCnt = numel(FileName);
+if iscell(FileName); filCnt = numel(FileName); else; FileNameTemp{1} = FileName; FileName = FileNameTemp; filCnt = 1; end
 Tarr = zeros(filCnt,1);
 for d1 = 1:filCnt
     fileDIR = [PathName FileName{d1}];
