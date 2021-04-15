@@ -133,7 +133,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
   * #### "DispPlot" checkbox
     
-	If this checkbox is on, then various states of SDCOR are displayed in the main plot.
+	If this checkbox is on, then various states of SDCOR are displayed in the main plot. This checkbox should be selected if you want to save different states plots parallel to the other results.
 	
   * #### "AuxiFig" checkbox
 
