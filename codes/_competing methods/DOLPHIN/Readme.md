@@ -58,8 +58,8 @@ You can follow the subsequent scripts with the suggested parameters as a templat
 > in MATLAB:
 
 load('Mammography_(11183by6_260o).mat');
-DOLPHIN_dssave('mammographyBin',X);
-[ds,rows,cols] = DOLPHIN_dsload('mammographyBin'); % just for checking the correctness of the output binary file
+DOLPHIN_dssave('MammographyBin',X);
+[ds,rows,cols] = DOLPHIN_dsload('MammographyBin'); % just for checking the correctness of the output binary file
 ```
 
 ```matlab
@@ -86,9 +86,9 @@ end
 
 > in Linux Terminal window:
 
-time sudo ./dolphin.bin mammographyBin 112 1.170412063 t 0.05 16 |& tee output_mammography_k=112_r=1.170412063.txt
+time sudo ./dolphin.bin MammographyBin 112 1.170412063 t 0.05 16 |& tee output_Mammography_k=112_R=1.170412063.txt
 
-% Note: "time" and "sudo" commands are for calculating the runtime and giving administrative privileges to the command. "|& tee" is for controlling the command output. "output_mammography_k=112_r=1.170412063.txt" file will contain the command output, including the runtime.
+% Note: "time" and "sudo" commands are for calculating the runtime and giving administrative privileges to the command. "|& tee" is for controlling the command output. "output_Mammography_k=112_R=1.170412063.txt" file will contain the command output, including the runtime.
 ```
 
 ```matlab
