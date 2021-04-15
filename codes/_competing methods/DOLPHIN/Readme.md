@@ -67,7 +67,11 @@ DOLPHIN_dssave('mammographyBin',X);
 
 > in MATLAB:
 
-Eps = .01; delta = .1; alpha = [1:10]./100; sigma = .01;
+Eps = .01; % Eps is the estimation error
+delta = .1; % delta is the probability constant
+alpha = [1:10]./100; % alpha is the expected fraction of outliers to be detected
+sigma = .01; % sigma is the fraction of neighbors to be considered
+
 alphaK = numel(alpha);
 
 load('Mammography_(11183by6_260o).mat');
