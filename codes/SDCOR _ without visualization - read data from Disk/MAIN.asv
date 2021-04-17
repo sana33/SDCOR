@@ -272,7 +272,7 @@ end
 
 function saveWork_pushBtn_Callback(hO,eventdata,H)
 
-if isfield(H,'ROCarr') && ~isempty(H.ROCarr)
+if isfield(H,'ROCarr')
     Hsave = saveWork(hO,eventdata,H);
     uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_$',H.dsName,'$_ROC=',num2str(H.ROCavg,'%0.3f'),...
         '_ROCstd=',num2str(H.ROCstd,'%0.3f'),'_PR=',num2str(H.PRavg,'%0.3f'),'_PRstd=',num2str(H.PRstd,'%0.3f'),...
@@ -319,14 +319,13 @@ H.dsName_statText.String = Hsave.dsName; H.dsName = Hsave.dsName;
 
 H.labDS = [];
 H.chunkSz_editText.String = num2str(Hsave.chunkSz); H.chunkSz = Hsave.chunkSz;
-H.PCvarRat_editText.String = num2str(Hsave.PCvarRat); H.PCvarRat = Hsave.PCvarRat/100;
-H.alphaMemb_editText.String = num2str(Hsave.alphaMemb); H.alphaMemb = Hsave.alphaMemb;
-H.betaPrun_editText.String = num2str(Hsave.betaPrun); H.betaPrun = Hsave.betaPrun;
-H.sampRate_editText.String = num2str(Hsave.sampRate); H.sampRate = Hsave.sampRate/100;
-H.totRun_editText.String = num2str(Hsave.totRun); H.totRun = Hsave.totRun;
+H.PCvarRat_editText.String = num2str(Hsave.PCvarRat); H.PCvarRat = Hsave.PCvarRat;
+H.alphaMemb_editText.String = num2str(Hsave.alphaMemb); H.alphaMemb = Hsave.dsName;
+H.betaPrun_editText.String = num2str(Hsave.betaPrun); H.dsName = Hsave.dsName;
+H.sampRate_editText.String = num2str(Hsave.sampRate); H.dsName = Hsave.dsName;
+H.totRun_editText.String = num2str(Hsave.totRun); H.dsName = Hsave.dsName;
 BLK_SZ_LIM = Hsave.BLK_SZ_LIM; H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
 
-H.PCM = Hsave.PCM;
 switch Hsave.PCM
     case 'PSO_pcm_radioBtn'
         H.PSO_pcm_radioBtn.Value = 1;
@@ -343,16 +342,15 @@ switch Hsave.PCM
 end
 PCMact(hO,eventdata,H);
 
-H.particleNo_editText.String = num2str(Hsave.PSO_particleNo); H.PSO_particleNo = Hsave.PSO_particleNo;
-H.maxIter_editText.String = num2str(Hsave.PSO_maxIter); H.PSO_maxIter = Hsave.PSO_maxIter;
-H.W_editText.String = num2str(Hsave.PSO_W); H.PSO_W = Hsave.PSO_W;
-H.C1_editText.String = num2str(Hsave.PSO_C1); H.PSO_C1 = Hsave.PSO_C1;
-H.C2_editText.String = num2str(Hsave.PSO_C2); H.PSO_C2 = Hsave.PSO_C2;
-H.alpha_editText.String = num2str(Hsave.PSO_alpha); H.PSO_alpha = Hsave.PSO_alpha;
-H.manuEps_editText.String = num2str(Hsave.manuEps); H.manuEps = Hsave.manuEps;
-H.manuMnPt_editText.String = num2str(Hsave.manuMnPt); H.manuMnPt = Hsave.manuMnPt;
-H.epsCoef_editText.String = num2str(Hsave.epsCoeff); H.epsCoeff = Hsave.epsCoeff;
-H.origK_val_statText.String = num2str(Hsave.origK); H.origK = Hsave.origK;
+H.particleNo_editText.String = num2str(Hsave.PSO_particleNo);
+H.maxIter_editText.String = num2str(Hsave.PSO_maxIter);
+H.W_editText.String = num2str(Hsave.PSO_W);
+H.C1_editText.String = num2str(Hsave.PSO_C1);
+H.C2_editText.String = num2str(Hsave.PSO_C2);
+H.alpha_editText.String = num2str(Hsave.PSO_alpha);
+H.manuEps_editText.String = num2str(Hsave.manuEps);
+H.manuMnPt_editText.String = num2str(Hsave.manuMnPt);
+H.epsCoef_editText.String = num2str(Hsave.epsCoeff);
 
 H.paramCostArrSamp = Hsave.paramCostArrSamp;
 H.paramSampDS = Hsave.paramSampDS;
@@ -367,9 +365,10 @@ H.idxFin = Hsave.idxFin;
 H.ROCarr = Hsave.ROCarr; H.ROCavg = Hsave.ROCavg; H.ROCstd = Hsave.ROCstd;
 H.PRarr = Hsave.PRarr; H.PRavg = Hsave.PRavg; H.PRstd = Hsave.PRstd;
 H.tEarr = Hsave.tEarr; H.tEavg = Hsave.tEavg;
-H.ROCPRavg_statText.String = [num2str(Hsave.ROCavg,'%0.3f') ' / ' num2str(Hsave.PRavg,'%0.3f')];
-H.ROCPRstd_statText.String = [num2str(Hsave.ROCstd,'%0.3f') ' / ' num2str(Hsave.PRstd,'%0.3f')];
-H.runTime_statText.String = num2str(Hsave.tEavg,'%0.3f');
+H.ROCPRavg_statText.String = [num2str(H.ROCavg,'%0.3f') ' / ' num2str(H.PRavg,'%0.3f')];
+H.ROCPRstd_statText.String = [num2str(H.ROCstd,'%0.3f') ' / ' num2str(H.PRstd,'%0.3f')];
+H.runTime_statText.String = num2str(H.tEavg,'%0.3f');
+H.origK_val_statText.String = num2str(Hsave.origK);
 
 guidata(hO,H);
 
@@ -508,7 +507,7 @@ function Kgraph_pcm_radioBtn_Callback(hO, eventdata, H)
 
 H.manuEps_editText.String = '';
 
-if isfield(H,'p') && ~isempty(H.p)
+if isfield(H,'p')
     H.manuMnPt_editText.String = 10*H.p;
     CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
     msgCont = '\fontsize{10} To avoid outliers, we set the {\it{MinPts}} quantity to {\bf{10{\cdot}p}}. You can change it at your will!';
@@ -521,7 +520,7 @@ function PSO_pcm_radioBtn_Callback(hO,eventdata,H)
 
 H.manuEps_editText.String = '';
 
-if isfield(H,'p') && ~isempty(H.p)
+if isfield(H,'p')
     H.manuMnPt_editText.String = 10*H.p;
     CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
     msgCont = ['\fontsize{10} PSO searches in predetermined ranges by the user for finding the optimal {\it{Eps}} and {\it{MinPts}} ',...
@@ -541,7 +540,7 @@ PCMact(hO,eventdata,H);
 
 function makeManu_pushBtn_Callback(hO,eventdata,H)
 
-if isfield(H,'paramSampDS') && ~isempty(H.paramSampDS)
+if isfield(H,'paramSampDS')
     H.manuEps_editText.String = num2str(H.paramSampDS(1));
     H.manuMnPt_editText.String = num2str(H.paramSampDS(2));
 else

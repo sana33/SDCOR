@@ -14,11 +14,11 @@ However, ORCA does not report an anomaly score for the rest of the data, and thi
 
 **The implementation is in C++ and provided by the genuine authors through [this link](http://www.stephenbay.net/orca/).**
 
-In the case of datasets in MAT format, you shall convert them to a format acceptable by ORCA. For this matter, first, you should save them through MATLAB in ASCII format; this can be done using the `dlmwrite()` or the `writematrix()` functions. Then you must employ `dprep.exe` given by the ORCA authors along with the mentioned necessities to change the ASCII data into a binary file required by ORCA.
+In the case of datasets in MAT format, you shall convert them to a format acceptable by ORCA. For this matter, first, you should save them through MATLAB in ASCII format; this can be done using the `dlmwrite()` or the `writematrix()` functions. Then you must employ `dprep.exe` given by the ORCA authors along with the mentioned necessities to change the ASCII data into a binary file required by ORCA. Moreover, the corresponding outlier labels could be saved separately in a file with ASCII format for further accuracy assessments.
 
 Finally, for running the code, it will be only required to use `orca.exe` with the suggested parameters to obtain the anomaly scores. You can utilize the `ptime.exe` executable code to calculate the runtime for each command and save the command output in a specific file by adding `> orca_output.txt` to the end of the command line; outlier scores and the execution time can be elicited out of this file.
 
-*__Note:__ In the command output file, you need to search for the "Top outliers:" term and the ordered list after this term will be the list of top-N outliers; you should extract and save it as an N-by-2 array, the first column containing the outlier indices, and the second, containing the corresponding outlier ranks. At the end of the command output file, the "Execution time" term is followed by the total runtime of the method on the correspondent dataset.*
+*__Note:__ In the command output file, you need to search for the "Top outliers:" term, and the ordered list after this term will be the list of top-N outliers indices along with the related scores. You should extract this list and create a vector representing the scores array for all data elements; in this vector, for every element in the top-N outliers list, the corresponding reported score by ORCA is placed, and for other non-anomaly declared object, a score of 0 is dedicated. Eventually, at the end of the command output file, the "Execution time" term is followed by the total runtime of the method on the correspondent dataset.*
 
 You can follow the subsequent scripts with the suggested parameters as a template to use the ORCA implementation code and obtain the required results out of an arbitrary dataset:
 
@@ -43,15 +43,15 @@ attrib04: continuous.
 attrib05: continuous.
 attrib06: continuous.
 
-3> in command window:
+3> in the command window:
 
 dprep.exe Mammography Mammography.fields Mammography.bin -rand -snone -cleanf
 ```
 
 ```matlab
-%% running the ORCA C++ executable code in command window
+%% running the ORCA C++ executable code in the command window
 
-C:\ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 1397 > Mammography_ORCA.comOut
+ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 1397 > Mammography_ORCA.comOut
 ```
 
 ```matlab
@@ -59,7 +59,7 @@ C:\ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 139
 
 > in MATLAB
 
-% "scores" is a 2D vector containing the outlier indices provided by ORCA along with the subsequent outlier scores
+% "scores" is a vector containing the outlier scores for all data elements; 0 for non-anomaly reported objects, and a score for potential outliers (the same top-N outliers)
 % "labels" is a vector containing the outlier labels for all data elements; 0 for inliers, and 1 for outliers
 % "timElp_Mammography" is the execution time of ORCA on this dataset
 
@@ -73,5 +73,3 @@ scores = scorTmp;
 fprintf('ORCA result for Mammography:\t\tROC = %0.3f\t\tPR = %0.3f\t\telpsTime = %0.3f sec\n\n',ROC_Mammography,PR_Mammography,timElp_Mammography);
 save('res_ORCA_Mammography.mat','ROC_Mammography','PR_Mammography','timElp_Mammography');
 ```
-
-

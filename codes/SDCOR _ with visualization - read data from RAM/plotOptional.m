@@ -7,7 +7,7 @@
 
 function plotOptional(H,data,option)
 
-if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || strcmp(option,'accPerChunk') || strcmp(option,'PSOcost')
+if isfield(H,'DS') && isfield(H,'dispOn')
     switch option
         case 'loadDS'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
@@ -20,7 +20,8 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                 legend('inliers','outliers','location','best');
                 xlim(H.xLim); ylim(H.yLim); grid on;
             elseif ~H.dispOn || isempty(H.DS_PCA) || isempty(H.DS)
-                uiwait(msgbox('Sorry! Required items have not been saved to display!','Failure','error','modal'));
+                uiwait(msgbox(['Sorry! Required items (maybe including the query dataset in 2D case) have not been saved to display. '...
+                    'Please preform a fresh run with the "DispPlot" option checked, for detailed illustrations.'],'Failure','error','modal'));
             end
             
         case 'sampDS'
@@ -32,12 +33,13 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                 gscatter(H.sampData(:,1),H.sampData(:,2),H.idxSamp);
                 xlim(H.xLim); ylim(H.yLim); grid on; pause(1);
             elseif ~H.dispOn || isempty(H.sampData_PCA) || isempty(H.sampData)
-                uiwait(msgbox('Sorry! Required items have not been saved to display!','Failure','error','modal'));
+                uiwait(msgbox(['Sorry! Required items (maybe including the query dataset in 2D case) have not been saved to display. '...
+                    'Please preform a fresh run with the "DispPlot" option checked, for detailed illustrations.'],'Failure','error','modal'));
             end
             
         case 'retSetDS'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
-            if H.p>2 && H.dispOn && ~isempty(H.DS_PCA)
+            if H.p>2 && H.dispOn && ~isempty(H.DS_PCA) && ~isempty(H.means_PCA)
                 if ~H.dispOn; msgbox('Sorry! Nothing to display for p>2!','Failure','error'); end
                 gscatter(H.DS_PCA(:,1),H.DS_PCA(:,2),H.labFin,'br');
                 grid on; hold on;
@@ -50,7 +52,7 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                     sprintf('retainSet=%d',numel(H.retIdx)),'location','best');
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p==2 && H.dispOn && ~isempty(H.DS)
+            elseif H.p==2 && H.dispOn && ~isempty(H.DS) && ~isempty(H.means)
                 gscatter(H.DS(:,1),H.DS(:,2),H.labFin,'br');
                 grid on; hold on;
                 plot(H.means(:,1),H.means(:,2),'Marker','s','MarkerSize',7,'MarkerFaceColor','m', ...
@@ -62,13 +64,14 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                     sprintf('retainSet=%d',numel(H.retIdx)),'location','best');
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif ~H.dispOn || isempty(H.DS_PCA) || isempty(H.DS)
-                uiwait(msgbox('Sorry! Required items have not been saved to display!','Failure','error','modal'));
+            elseif ~H.dispOn || isempty(H.DS_PCA) || isempty(H.DS) || isempty(H.means_PCA) || isempty(H.means)
+                uiwait(msgbox(['Sorry! Required items (maybe including the query dataset in 2D case) have not been saved to display. '...
+                    'Please preform a fresh run with the "DispPlot" option checked, for detailed illustrations.'],'Failure','error','modal'));
             end
             
         case 'finalMeans'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
-            if H.p>2 && H.dispOn && ~isempty(H.means_PCA)
+            if H.p>2 && H.dispOn && ~isempty(H.means_PCA) && ~isempty(H.meansMeans_PCA) && ~isempty(H.origK)
                 if ~H.dispOn; msgbox('Sorry! Nothing to display for p>2!','Failure','error'); end
                 [H.xLim,H.yLim] = xyLimCreat(H.means_PCA,H.xLim,H.yLim);
                 cMap = hsv(H.origK);
@@ -81,7 +84,7 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                 hold off;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p==2 && H.dispOn && ~isempty(H.means)
+            elseif H.p==2 && H.dispOn && ~isempty(H.means) && ~isempty(H.meansMeans) && ~isempty(H.origK)
                 cMap = hsv(H.origK);
                 gscatter(H.means(:,1),H.means(:,2),H.idxMeans,cMap);
                 grid on; hold on;
@@ -92,13 +95,15 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                 hold off;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif ~H.dispOn || isempty(H.means_PCA) || isempty(H.means)
-                uiwait(msgbox('Sorry! Required items have not been saved to display!','Failure','error','modal'));
+            elseif ~H.dispOn || isempty(H.means_PCA) || isempty(H.means) || isempty(H.meansMeans_PCA) || isempty(H.meansMeans) || ...
+                    isempty(H.origK)
+                uiwait(msgbox(['Sorry! Required items (maybe including the query dataset in 2D case) have not been saved to display. '...
+                    'Please preform a fresh run with the "DispPlot" option checked, for detailed illustrations.'],'Failure','error','modal'));
             end
             
         case 'regenDS'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
-            if H.p>2 && H.dispOn && ~isempty(H.regenDS_PCA)
+            if H.p>2 && H.dispOn && ~isempty(H.regenDS_PCA) && ~isempty(H.meansMeans_PCA) && ~isempty(H.origK)
                 if ~H.dispOn; msgbox('Sorry! Nothing to display for p>2!','Failure','error'); end
                 [H.xLim,H.yLim] = xyLimCreat(H.regenDS_PCA(:,1:2),H.xLim,H.yLim);
                 cMap = hsv(H.origK);
@@ -111,7 +116,7 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                 hold off;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p==2 && H.dispOn && ~isempty(H.regenDS)
+            elseif H.p==2 && H.dispOn && ~isempty(H.regenDS) && ~isempty(H.meansMeans) && ~isempty(H.origK)
                 cMap = hsv(H.origK);
                 gscatter(H.regenDS(:,1),H.regenDS(:,2),H.idxRegenDS,cMap);
                 grid on; hold on;
@@ -122,13 +127,15 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                 hold off;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif ~H.dispOn || isempty(H.regenDS_PCA) || isempty(H.regenDS)
-                uiwait(msgbox('Sorry! Required items have not been saved to display!','Failure','error','modal'));
+            elseif ~H.dispOn || isempty(H.regenDS_PCA) || isempty(H.regenDS) || isempty(H.meansMeans_PCA) || ...
+                    isempty(H.meansMeans) || isempty(H.origK)
+                uiwait(msgbox(['Sorry! Required items (maybe including the query dataset in 2D case) have not been saved to display. '...
+                    'Please preform a fresh run with the "DispPlot" option checked, for detailed illustrations.'],'Failure','error','modal'));
             end
             
         case 'scorDS'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
-            if H.p>2 && H.dispOn && ~isempty(H.DS_PCA)
+            if H.p>2 && H.dispOn && ~isempty(H.DS_PCA) && ~isempty(H.origK)
                 if ~H.dispOn; msgbox('Sorry! Nothing to display for p>2!','Failure','error'); end
                 cMap = hsv(H.origK);
                 hm1 = gscatter(H.DS_PCA(:,1),H.DS_PCA(:,2),H.idxFin,cMap(H.idxFin,:),'.',H.mahalScores.*H.scorDSszCoef,'on');
@@ -140,7 +147,7 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                 grid on;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p==2 && H.dispOn && ~isempty(H.DS)
+            elseif H.p==2 && H.dispOn && ~isempty(H.DS) && ~isempty(H.origK)
                 cMap = hsv(H.origK);
                 hm1 = gscatter(H.DS(:,1),H.DS(:,2),H.idxFin,cMap(H.idxFin,:),'.',H.mahalScores.*H.scorDSszCoef,'on');
                 %             hm1 = gscatter(H.DS(:,1),H.DS(:,2),H.idxFin,cMap(H.idxFin,:),'.',ones(H.n,1).*H.scorDSszCoef,'on');
@@ -151,25 +158,27 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
                 grid on;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif ~H.dispOn || isempty(H.DS_PCA) || isempty(H.DS)
-                uiwait(msgbox('Sorry! Required items have not been saved to display!','Failure','error','modal'));
+            elseif ~H.dispOn || isempty(H.DS_PCA) || isempty(H.DS) || isempty(H.origK)
+                uiwait(msgbox(['Sorry! Required items (maybe including the query dataset in 2D case) have not been saved to display. '...
+                    'Please preform a fresh run with the "DispPlot" option checked, for detailed illustrations.'],'Failure','error','modal'));
             end
             
         case 'topNol'
             if ~get(H.auxiFig_checkBox,'Value'); axes(H.axes1); else; figure; end
-            if H.p>2 && H.dispOn && ~isempty(H.DS_PCA)
+            if H.p>2 && H.dispOn && ~isempty(H.DS_PCA) && ~isempty(H.topNol)
                 if ~H.dispOn; msgbox('Sorry! Nothing to display for p>2!','Failure','error'); end
                 gscatter(H.DS_PCA(:,1),H.DS_PCA(:,2),H.topNol,'br','.');
                 legend('inliers','outliers'); grid on;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif H.p==2 && H.dispOn && ~isempty(H.DS)
+            elseif H.p==2 && H.dispOn && ~isempty(H.DS) && ~isempty(H.topNol)
                 gscatter(H.DS(:,1),H.DS(:,2),H.topNol,'br','.');
                 legend('inliers','outliers'); grid on;
                 xlim(H.xLim); ylim(H.yLim);
                 pause(1);
-            elseif ~H.dispOn || isempty(H.DS_PCA) || isempty(H.DS)
-                uiwait(msgbox('Sorry! Required items have not been saved to display!','Failure','error','modal'));
+            elseif ~H.dispOn || isempty(H.DS_PCA) || isempty(H.DS) || isempty(H.topNol)
+                uiwait(msgbox(['Sorry! Required items (maybe including the query dataset in 2D case) have not been saved to display. '...
+                    'Please preform a fresh run with the "DispPlot" option checked, for detailed illustrations.'],'Failure','error','modal'));
             end
             
         case 'accPerChunk'
@@ -197,8 +206,7 @@ if (isfield(H,'DS') && all(size(H.DS)==[H.n,H.p]) && isfield(H,'dispOn')) || str
             
     end
 else
-    uiwait(msgbox('Sorry! Nothing has been run to display or the query dataset has not been saved for illustration.',...
-        'Failure','error','modal'));
+    uiwait(msgbox('Sorry! Nothing has been run to display.','Failure','error','modal'));
 end
 
 end

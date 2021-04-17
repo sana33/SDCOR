@@ -23,7 +23,6 @@ psi = 256; % subsample size
 totIter = 40; % total number of independent runs
 
 % Mammography dataset
-clear X y
 load('Mammography_(11183by6_260o).mat');
 
 tEarr_Mammography = [];
@@ -45,5 +44,3 @@ fprintf('EnLOF (t=%d,psi=%d) result with totIter = %d for Mammography:\t\tROC = 
 save(['res_EnLOF(t=' num2str(t) ',psi=' num2str(psi) ')_Mammography.mat'],'ROCarr_Mammography','PRarr_Mammography','ROCavg_Mammography','ROCstd_Mammography',...
 	'PRavg_Mammography','PRstd_Mammography','timElpAvg_Mammography');
 ```
-
-

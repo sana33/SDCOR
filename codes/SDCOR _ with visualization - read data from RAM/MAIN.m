@@ -48,6 +48,7 @@ H.dispOn = get(H.dispOn_checkBox,'Value');
 if ~FileName
     msgbox('Sorry! No file was loaded!','Failure','error');
 else
+    Hclear(hO,eventdata,H); H = guidata(hO);
     labDS = importdata([PathName FileName]);
     H.DS = labDS.X;
     H.labFin = labDS.y;
@@ -189,6 +190,22 @@ if H.startCond==0; H.manuMnPt_editText.String = ''; end
 
 guidata(hO,H);
 
+function Hclear(hO,eventdata,H)
+
+Harr = {'DS','dsName','labFin','OLno','DS_PCA','coef_PCA','n','p','xLim','yLim','chunkSz','PCvarRat','alphaMemb',...
+    'betaPrun','sampRate','topNols','scorDSszCoef','BLK_SZ_LIM','PCM','PSO_particleNo','PSO_maxIter','PSO_W',...
+    'PSO_C1','PSO_C2','PSO_alpha','manuEps','manuMnPt','epsCoeff','paramSampDS','paramCostArrSamp','origEps','origMnPt','origK',...
+    'sampInd','sampData','sampData_PCA','idxSamp','accResArr','clusts','retIdx','means','means_PCA','idxMeans','finalClusts',...
+    'meansMeans','meansMeans_PCA','regenDS','regenDS_PCA','idxRegenDS','origKvec','mahalScores','idxFin','finalROC','finalPR','tElapsed'};
+
+for c1 = 1:numel(Harr)
+    if isfield(H,Harr{c1})
+        H = setfield(H,Harr{c1},[]);
+    end
+end
+
+guidata(hO,H);
+
 function sampRate_editText_Callback(hO,eventdata,H)
 
 function PCvarRat_editText_Callback(hO,eventdata,H)
@@ -238,11 +255,13 @@ plotOptional(H,{},'scorDS');
 
 function plotTopNols_pushBtn_Callback(hO,eventdata,H)
 
-if isfield(H,'mahalScores')
-    topNolNo = str2double(get(H.topNols_editText,'String'));
+if isfield(H,'mahalScores') && ~isempty(H.mahalScores)
+    topNolNo = str2double(get(H.topNols_editText,'String')); topNolNo(isnan(topNolNo)) = 0;
     [~,scrSortInd] = sort(H.mahalScores,'descend');
     H.topNol = zeros(H.n,1);
     H.topNol(scrSortInd(1:topNolNo)) = 1;
+else
+    H.topNol = [];
 end
 plotOptional(H,{},'topNol');
 
@@ -332,7 +351,7 @@ end
 
 function saveWork_pushBtn_Callback(hO,eventdata,H)
 
-if isfield(H,'finalROC')
+if isfield(H,'finalROC') && ~isempty(H.finalROC)
     Hsave = saveWork(hO,eventdata,H);
     
     resType = 'SDCOR(visRAM)_';
@@ -344,8 +363,6 @@ else
 end
 
 function loadWork_pushBtn_Callback(hO,eventdata,H)
-
-clearAxes_pushBtn_Callback(hO,eventdata,H); % clearing workspace before loading the saved result
 
 [FileName,PathName] = uigetfile('*.mat', 'Select the saved workspace to be loaded','..\results\');
 if ~FileName
@@ -392,8 +409,11 @@ function [] = loadWork(hO, eventdata, H, Hsave)
 
 global BLK_SZ_LIM
 
+clearAxes_pushBtn_Callback(hO,eventdata,H); % clearing workspace before loading the saved result
+Hclear(hO,eventdata,H); H = guidata(hO);
+
 H.startCond = 0; hOact(hO,eventdata,H);
-H.dsName_statText.String = Hsave.dsName;
+H.dsName_statText.String = Hsave.dsName; H.dsName = Hsave.dsName;
 H.dsName = Hsave.dsName;
 H.labFin = Hsave.labFin;
 H.OLno = Hsave.OLno;
@@ -412,16 +432,16 @@ elseif ~Hsave.dispOn
     H.dispOn_checkBox.Value = 0;
 end
 
-H.chunkSz_editText.String = num2str(Hsave.chunkSz);
-H.PCvarRat_editText.String = num2str(Hsave.PCvarRat);
-H.alphaMemb_editText.String = num2str(Hsave.alphaMemb);
-H.betaPrun_editText.String = num2str(Hsave.betaPrun);
-H.sampRate_editText.String = num2str(Hsave.sampRate);
-H.topNols_editText.String = num2str(Hsave.topNols);
-H.scorDSszCoef_editText.String = num2str(Hsave.scorDSszCoef);
-BLK_SZ_LIM = Hsave.BLK_SZ_LIM;
-H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
+H.chunkSz_editText.String = num2str(Hsave.chunkSz); H.chunkSz = Hsave.chunkSz;
+H.PCvarRat_editText.String = num2str(Hsave.PCvarRat); H.PCvarRat = Hsave.PCvarRat/100;
+H.alphaMemb_editText.String = num2str(Hsave.alphaMemb); H.alphaMemb = Hsave.alphaMemb;
+H.betaPrun_editText.String = num2str(Hsave.betaPrun); H.betaPrun = Hsave.betaPrun;
+H.sampRate_editText.String = num2str(Hsave.sampRate); H.sampRate = Hsave.sampRate/100;
+H.topNols_editText.String = num2str(Hsave.topNols); H.topNols = Hsave.topNols;
+H.scorDSszCoef_editText.String = num2str(Hsave.scorDSszCoef); H.scorDSszCoef = Hsave.scorDSszCoef;
+BLK_SZ_LIM = Hsave.BLK_SZ_LIM; H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
 
+H.PCM = Hsave.PCM;
 switch Hsave.PCM
     case 'PSO_pcm_radioBtn'
         H.PSO_pcm_radioBtn.Value = 1;
@@ -439,16 +459,16 @@ H.accResArr = Hsave.accResArr;
 H.accFinCond = 1;
 plotOptional(H,{Hsave.accResArr},'accPerChunk');
 
-H.particleNo_editText.String = num2str(Hsave.PSO_particleNo);
-H.maxIter_editText.String = num2str(Hsave.PSO_maxIter);
-H.W_editText.String = num2str(Hsave.PSO_W);
-H.C1_editText.String = num2str(Hsave.PSO_C1);
-H.C2_editText.String = num2str(Hsave.PSO_C2);
-H.alpha_editText.String = num2str(Hsave.PSO_alpha);
-H.manuEps_editText.String = num2str(Hsave.manuEps);
-H.manuMnPt_editText.String = num2str(Hsave.manuMnPt);
-H.epsCoef_editText.String = num2str(Hsave.epsCoeff);
-H.origK_val_statText.String = num2str(Hsave.origK);
+H.particleNo_editText.String = num2str(Hsave.PSO_particleNo); H.PSO_particleNo = Hsave.PSO_particleNo;
+H.maxIter_editText.String = num2str(Hsave.PSO_maxIter); H.PSO_maxIter = Hsave.PSO_maxIter;
+H.W_editText.String = num2str(Hsave.PSO_W); H.PSO_W = Hsave.PSO_W;
+H.C1_editText.String = num2str(Hsave.PSO_C1); H.PSO_C1 = Hsave.PSO_C1;
+H.C2_editText.String = num2str(Hsave.PSO_C2); H.PSO_C2 = Hsave.PSO_C2;
+H.alpha_editText.String = num2str(Hsave.PSO_alpha); H.PSO_alpha = Hsave.PSO_alpha;
+H.manuEps_editText.String = num2str(Hsave.manuEps); H.manuEps = Hsave.manuEps;
+H.manuMnPt_editText.String = num2str(Hsave.manuMnPt); H.manuMnPt = Hsave.manuMnPt;
+H.epsCoef_editText.String = num2str(Hsave.epsCoeff); H.epsCoeff = Hsave.epsCoeff;
+H.origK_val_statText.String = num2str(Hsave.origK); H.origK = Hsave.origK;
 
 H.sampInd = Hsave.sampInd;
 H.sampData = Hsave.sampData;
@@ -476,12 +496,9 @@ H.origKvec = Hsave.origKvec;
 
 H.mahalScores = Hsave.mahalScores;
 H.idxFin = Hsave.idxFin;
-H.finalROC = Hsave.finalROC;
-H.finalPR = Hsave.finalPR;
-H.tElapsed = Hsave.tElapsed;
-H.finalROC_statText.String = num2str(H.finalROC,'%0.3f');
-H.finalPR_statText.String = num2str(H.finalPR,'%0.3f');
-H.runTime_statText.String = num2str(Hsave.tElapsed,'%0.3f');
+H.finalROC_statText.String = num2str(Hsave.finalROC,'%0.3f'); H.finalROC = Hsave.finalROC;
+H.finalPR_statText.String = num2str(Hsave.finalPR,'%0.3f'); H.finalPR = Hsave.finalPR;
+H.runTime_statText.String = num2str(Hsave.tElapsed,'%0.3f'); H.tElapsed = Hsave.tElapsed;
 
 guidata(hO,H);
 
@@ -648,7 +665,7 @@ function Kgraph_pcm_radioBtn_Callback(hO, eventdata, H)
 
 H.manuEps_editText.String = '';
 
-if isfield(H,'p')
+if isfield(H,'p') && ~isempty(H.p)
     H.manuMnPt_editText.String = 10*H.p;
     CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
     msgCont = '\fontsize{10} To avoid outliers, we set the {\it{MinPts}} quantity to {\bf{10{\cdot}p}}. You can change it at your will!';
@@ -661,7 +678,7 @@ function PSO_pcm_radioBtn_Callback(hO,eventdata,H)
 
 H.manuEps_editText.String = '';
 
-if isfield(H,'p')
+if isfield(H,'p') && ~isempty(H.p)
     H.manuMnPt_editText.String = 10*H.p;
     CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
     msgCont = ['\fontsize{10} PSO searches in predetermined ranges by the user for finding the optimal {\it{Eps}} and {\it{MinPts}} ',...
@@ -681,7 +698,7 @@ PCMact(hO,eventdata,H);
 
 function makeManu_pushBtn_Callback(hO,eventdata,H)
 
-if isfield(H,'paramSampDS')
+if isfield(H,'paramSampDS') && ~isempty(H.paramSampDS)
     H.manuEps_editText.String = num2str(H.paramSampDS(1));
     H.manuMnPt_editText.String = num2str(H.paramSampDS(2));
 else

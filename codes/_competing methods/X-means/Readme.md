@@ -12,83 +12,49 @@ For the evaluations, the minimum and the maximum number of clusters are set to 1
 
 **The implementation is in C and provided by the genuine authors through [this link](https://www.cs.cmu.edu/~dpelleg/kmeans.html).**
 
+In the case of datasets in MAT format, you shall convert them to a format acceptable by X-means. For this matter, you should save them through MATLAB in ASCII format; this can be done using the `dlmwrite()` or the `writematrix()` functions. Moreover, the corresponding outlier labels could be saved separately in a file with ASCII format for further accuracy assessments.
 
+Finally, for running the code, it will only required to use the `kmeans.exe` function in the installation directory of X-means. You can find the necessary information on how to employ this function with the suggested parameters in the `README` file in the same directory. Besides, you can utilize the `ptime.exe` executable code to calculate the runtime of every command.
 
+The output of the X-means method is a file containing the final means located by the method. You should utilize this file for calculating the final detection results.
 
-
-		In the case of datasets in MAT format, you shall convert them to a format acceptable by ORCA. For this matter, first, you should save them through MATLAB in ASCII format; this can be done using the `dlmwrite()` or the `writematrix()` functions. Then you must employ `dprep.exe` given by the ORCA authors along with the mentioned necessities to change the ASCII data into a binary file required by ORCA. Finally, for running the code, it will be only required to use `orca.exe` with the suggested parameters to obtain the anomaly scores. You can utilize the `ptime.exe` executable code to calculate the runtime for each command and save the command output in a specific file by adding `> orca_output.txt` to the end of the command line; outlier scores and the execution time can be elicited out of this file.
-
-You can follow the subsequent script with the suggested parameters as a template to use the ORCA implementation code and obtain the required results out of an arbitrary dataset:
+You can follow the subsequent scripts with the suggested parameters as a template to use the X-means implementation code and obtain the required results out of an arbitrary dataset:
 
 ```matlab
 %%% Mammography dataset
-
-%% converting the MAT dataset into a binary format acceptable by DOLPHIN
-
-> in MATLAB:
-
-load('Mammography_(11183by6_260o).mat');
-DOLPHIN_dssave('mammographyBin',X);
-[ds,rows,cols] = DOLPHIN_dsload('mammographyBin'); % just for checking the correctness of the output binary file
-
-%% computing various R values w.r.t. different alpha values
-
-> in MATLAB:
-
-Eps = .01; delta = .1; alpha = [1:10]./100; sigma = .01;
-alphaK = numel(alpha);
-
-% Mammography
-load('Mammography_(11183by6_260o).mat');
-R_Mammography = zeros(1,alphaK);
-for c1 = 1:alphaK
-    [R_Mammography(c1)] = DolphinParamEstim(X,Eps,delta,alpha(c1),sigma);
-end
-
-
-
-
-
-load('Mammography_(11183by6_260o).mat');
-dlmwrite('Mammography',X,'precision','%.15f'); dlmwrite('labels',y);
-
-(2) create the "Mammography.fields" file with the following content:
-attrib01: continuous.
-attrib02: continuous.
-attrib03: continuous.
-attrib04: continuous.
-attrib05: continuous.
-attrib06: continuous.
-
-(3) in command window:
-dprep.exe Mammography Mammography.fields Mammography.bin -rand -snone -cleanf
-
-%% running the C++ executable code in command window
-
-C:\ptime.exe orca.exe Mammography.bin Mammography.bin Mammography.weights -n 1397 > Mammography_ORCA.comOut
-
-%% gaining the AUC outcomes through the acquired scores
-
-% "scores" contains the outliers indices provided by ORCA along with the subsequent outlier scores
-% "labels" contains the outlier labels for all data elements; 0 for inliers, and 1 for outliers
-% "timElp_Mammography" is the execution time of ORCA on this dataset
-
-
-% mammography
-clear
-X = load('G:\Dropbox Aux. Folder\Researches\Implementations\SDCOR\_Competing methods\X-means\datasets\realData\mammography');
-y = load('G:\Dropbox Aux. Folder\Researches\Implementations\SDCOR\_Competing methods\X-means\results\realData\algOutput\mammography_lab');
-ctrs = load('G:\Dropbox Aux. Folder\Researches\Implementations\SDCOR\_Competing methods\X-means\results\realData\algOutput\mammography_ctrs.out');
-
-tic
-[~,scores] = knnsearch(ctrs,X);
-[~,~,~,ROC_mammography] = perfcurve(y,scores,1);
-[~,~,~,PR_mammography] = perfcurve(y,scores,1,'XCrit','reca','YCrit','prec');
-timElp_mammography = 1.115+toc;
-
-fprintf('X-means result_02 for mammography:\t\tROC AUC = %0.3f\t\tPR AUC = %0.3f\t\telpsTime = %0.3f sec\n\n',ROC_mammography,PR_mammography,timElp_mammography);
-save('res02_X-means_mammography.mat','ROC_mammography','PR_mammography','timElp_mammography');
-
 ```
 
+```matlab
+%% converting the MAT dataset into ASCII format acceptable by X-means
 
+> in MATLAB:
+
+load('Mammography_(11183by6_260o).mat');
+dlmwrite('Mammography',X,'precision','%.15f'); dlmwrite('Mammography_lab',y);
+```
+
+```matlab
+%% running the C executable code of X-means in the command window
+
+> in the command window:
+
+ptime.exe kmeans.exe kmeans -k 1 -create_universe true -D_SHOW_END_CENTERS -method blacklist -max_leaf_size 40 -min_box_width 0.03 -cutoff_factor 0.5 -max_iter 50 -num_splits 6 -max_ctrs 15 -in Mammography -save_ctrs Mammography_ctrs
+```
+
+```matlab
+%% gaining the AUC outcomes through the acquired cluster centers
+
+> in MATLAB:
+
+% "Mammography" represents the Mammography dataset
+% "Mammography_lab" contains the outlier labels for all data elements; 0 for inliers, and 1 for outliers
+% "Mammography_ctrs" contains the final cluster centers provided by X-means as output
+% "timElp_Mammography" is the execution time of X-means on this dataset
+
+[~,scores] = knnsearch(Mammography_ctrs,Mammography);
+[~,~,~,ROC_Mammography] = perfcurve(y,scores,1);
+[~,~,~,PR_Mammography] = perfcurve(y,scores,1,'XCrit','reca','YCrit','prec');
+
+fprintf('X-means result for Mammography:\t\tROC = %0.3f\t\tPR = %0.3f\t\telpsTime = %0.3f sec\n\n',ROC_Mammography,PR_Mammography,timElp_Mammography);
+save('res_X-means_Mammography.mat','ROC_Mammography','PR_Mammography','timElp_Mammography');
+```
