@@ -1,4 +1,13 @@
 function [score,ROC,PR] = EnLOF(X,y,t,psi)
+% This is an implementation for the density-based method for outlier
+% detection named EnLOF, which is an ensemble version of LOF. This method
+% was firstly introduced in "Isolation-based anomaly detection using
+% nearest-neighbor ensembles." by Bandaragoda, Tharindu R., et al.
+% 
+% X: input data set
+% y: label vector
+% t: ensemble size
+% psi: subsample size
 
 n = size(X,1);
 score = ones(n,t);

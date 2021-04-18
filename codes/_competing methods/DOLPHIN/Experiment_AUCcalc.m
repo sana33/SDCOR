@@ -40,6 +40,7 @@ for d1 = 1:filCnt
             break
         end
     end
+    fclose(fid);
 end
 tElps = max(Tarr);
 
