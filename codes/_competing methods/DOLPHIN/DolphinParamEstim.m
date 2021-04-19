@@ -1,9 +1,12 @@
 function [R] = DolphinParamEstim(X,Eps,delta,alpha,sigma)
-% X is the query dataset with N objects
-% Eps is the estimation error
-% delta is the probability constant
-% alpha is the expected fraction of outliers to be detected
-% sigma is the fraction of neighbors to be considered
+% This procedure estimates the suitable value for parameter R
+% w.r.t. alpha, the percentage of expected outliers
+% 
+% X: the query dataset with N objects
+% Eps: the estimation error
+% delta: the probability constant
+% alpha: the expected fraction of outliers to be detected
+% sigma: the fraction of neighbors to be considered
 
 % calculating the sample size
 n = nComp(alpha,Eps,delta);
