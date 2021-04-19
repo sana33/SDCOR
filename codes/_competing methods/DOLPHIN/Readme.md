@@ -24,11 +24,11 @@ After preparing the input dataset, it is required to compute various _R_ quantit
 
 Then for running the DOLPHIN method on a query dataset, you should do as the following template in the Linux Terminal window:
 
-	./dolphin <File.ds> <k> <R> <silent (t/f)> <prob> <slots>
+	./dolphin <DS> <k> <R> <silent (t/f)> <prob> <slots>
 
 	where:
 
-	- <File.ds> is the dataset binary file
+	- <DS> is the dataset binary file
 
 	- <k> is the numer of nearest neigbhors to consider
 
