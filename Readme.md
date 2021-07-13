@@ -254,11 +254,13 @@ In this version, the input data is directly read from the disk, and hence, any a
 If you are interested in the idea of our study or you are using this code for your research, please cite our paper as:
 
 ```
-@article{naghavi2020sdcor,
-  title={SDCOR: Scalable Density-based Clustering for Local Outlier Detection in Massive-Scale Datasets},
-  author={Naghavi-Nozad, Sayyed-Ahmad and Haeri, Maryam Amir and Folino, Gianluigi},
-  journal={arXiv preprint arXiv:2006.07616},
-  year={2020}
+@article{naghavi2021sdcor,
+  title={SDCOR: Scalable density-based clustering for local outlier detection in massive-scale datasets},
+  author={Naghavi Nozad, Sayyed Ahmad and Amir Haeri, Maryam and Folino, Gianluigi},
+  journal={Knowledge-Based Systems},
+  pages={107256},
+  year={2021},
+  publisher={Elsevier}
 }
 ```
 
