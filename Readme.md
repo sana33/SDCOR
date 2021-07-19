@@ -4,7 +4,7 @@
 
 #### *Authors:* Sayyed Ahmad Naghavi Nozad, Maryam Amir Haeri and Gianluigi Folino
 
-[![arXiv e-print](https://img.shields.io/badge/arXiv-e--print-blue?style=for-the-badge&logo=arXiv&logoColor=white)](https://arxiv.org/pdf/2006.07616.pdf) &emsp; [![Elsevier e-print](https://img.shields.io/badge/Elsevier-e--print-red?style=for-the-badge&logo=Elsevier&logoColor=white)]()
+[![arXiv e-print](https://img.shields.io/badge/arXiv-e--print-blue?style=for-the-badge&logo=arXiv&logoColor=white)](https://arxiv.org/pdf/2006.07616.pdf) &emsp; [![Elsevier e-print](https://img.shields.io/badge/Elsevier-e--print-red?style=for-the-badge&logo=Elsevier&logoColor=white)](https://www.sciencedirect.com/science/article/pii/S0950705121005189)
 
 [![license](https://img.shields.io/github/license/DAVFoundation/captain-n3m0.svg?style=flat-square)](https://github.com/sana33/SDCOR/blob/master/LICENSE)
 
