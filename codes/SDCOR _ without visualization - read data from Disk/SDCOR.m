@@ -20,7 +20,7 @@ H.progLevl_statText.String = 'Sampling phase started!'; pause(.001);
 rndSmp_Maker();
 while true
     sampPrmChosMthd();
-    [H.idxSamp,singChck] = posSemiDefCheck(H.sampData,H.idxSamp);
+    [H.idxSamp,singChck] = posDefCheck(H.sampData,H.idxSamp);
     
     if ~singChck
         break;
@@ -334,7 +334,7 @@ global DBDS
 
 [idx,~] = DBSCAN(epsilon,MinPts);
 
-[idx,singChck] = posSemiDefCheck(DBDS,idx);
+[idx,singChck] = posDefCheck(DBDS,idx);
 if ~singChck && any(idx==0)
     cost = sum([DBindex(idx), CSindex(idx), sum(idx==0)/size(DBDS,1)]);
 else
@@ -498,7 +498,7 @@ end
 
 end
 
-function [idxFin,singChck] = posSemiDefCheck(X,idx)
+function [idxFin,singChck] = posDefCheck(X,idx)
 
 dim = size(X,2);
 [idxUnq,idxFreq,K] = idxFreqCalc(idx(idx~=0));
@@ -511,7 +511,7 @@ for c1 = 1:K
     clust = X(idx==idxUnq(c1),:);
     cCovEig = eig(cov(clust));
     
-    cond1 = any(cCovEig<0);
+    cond1 = any(cCovEig<=0);
     cond2 = ~isreal(cCovEig);
     cond3 = idxFreq(c1)<=dim;
     if cond1 || cond2 || cond3
@@ -647,7 +647,7 @@ end
 % Nested function for verifying DBSCAN output clusters
     function clustAccpDBSCAN()
         
-        [idxRet,~] = posSemiDefCheck(retainSet,idxRet);
+        [idxRet,~] = posDefCheck(retainSet,idxRet);
         
         idxRetUnq = unique(idxRet(idxRet~=0));
         K = numel(idxRetUnq);
@@ -716,7 +716,7 @@ while true
         [idxKmns,~] = DBSCAN(epsilon,MinPts);
         DBSCANichr = numel(unique(idxKmns(idxKmns~=0)))>1;
         
-		[~,singChck] = posSemiDefCheck(X(idx==c1,:),idx(idx==c1));
+		[~,singChck] = posDefCheck(X(idx==c1,:),idx(idx==c1));
         
 		PCDviol = det(cov(X(idx==c1,:)))>deltaDet;
         
@@ -791,7 +791,7 @@ for c1 = 1:H.origK
             mahalDist = sqrt(mahal(regenData,regenData));
             regenData = regenData(mahalDist<=H.betaPrun*sqrt(H.p),:);
             
-            [~,singChck] = posSemiDefCheck(regenData,ones(size(regenData,1),1));
+            [~,singChck] = posDefCheck(regenData,ones(size(regenData,1),1));
             if ~singChck
                 break
             else
