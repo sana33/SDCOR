@@ -407,6 +407,7 @@ end
 idx = sparse(n,1);
 isNoise = sparse(n,1);
 clustNo = 0;
+neighbMatX = logical([]);
 neighbMat_Maker();
 idxCore = find(sum(neighbMatX,2)>=MinPts);
 corPntNo = numel(idxCore);
@@ -435,8 +436,6 @@ idx = full(idx);
 
 % Nested function for computing the neighborhood matrix
     function neighbMat_Maker()
-        
-        neighbMatX = logical([]);
         
         cntLim = ceil(n/BLK_SZ_LIM);
         
