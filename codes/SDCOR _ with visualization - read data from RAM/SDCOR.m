@@ -3,7 +3,7 @@
 % AmirKabir University of Technology, Department of Computer Engineering
 % Email Address: sa_na33@aut.ac.ir, ahmad.naghavi.aut@gmail.com
 % Website: https://ce.aut.ac.ir/~sann_cv/
-% June 2020
+% June 2020-
 
 function [] = SDCOR(hO,H)
 
