@@ -83,7 +83,7 @@ In this version, for the ease of visualizations, the input data along with the a
 
   * #### "Initial Params" sub-panel
 
-    * **particleNo:, maxIter:, W:, C1:, C2:, Alpha:** Parameters of the PSO algorithm that you can leave them as default.
+    * **particleNo, maxIter, W, C1, C2, Alpha:** Parameters of the PSO algorithm that you can leave them as default.
 	  
 	  _**Note:**_  You can even modify the source code and change the current cost function of the PSO algorithm to an arbitrary one.
 
