@@ -42,7 +42,7 @@ At last, in the third phase of the proposed approach, w.r.t. the final clusterin
 
 ## &#10002; Implementations Description
 
-The code is implemented using and best-working with **MATLAB R2016b (version 9.1)**, and all the experiments are executed on a laptop having an Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz   2.50GHz, 6 GB of memory, 750 GB of HDD, and a Windows 7 Ultimate (Service Pack 1) operating system. There are two independent versions of implementation, each equipped with a sophisticated GUI:
+The code has been implemented using **MATLAB R2016b (version 9.1)**, though it is already adapted to the latest version of MATLAB. All the experiments are executed on a laptop having an Intel(R) Core(TM) i5-3210M CPU @ 2.50GHz   2.50GHz, 6 GB of memory, 750 GB of HDD, and a Windows 7 Ultimate (Service Pack 1) operating system. There are two independent versions of implementation, each equipped with a sophisticated GUI:
 
 ### &#x1F537; __*SDCOR _ with visualization - read data from RAM*__
 
