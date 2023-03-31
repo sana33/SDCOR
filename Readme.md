@@ -251,7 +251,7 @@ In this version, the input data is directly read from the disk, and hence, any a
 
 ## &#x1F4D8; Citation
 
-If you are interested in the idea of our study or you are using this code for your research, please cite our paper as:
+If you are interested in the idea of our study or if you are using this code for your research, please cite our paper as:
 
 ```
 @article{naghavi2021sdcor,
