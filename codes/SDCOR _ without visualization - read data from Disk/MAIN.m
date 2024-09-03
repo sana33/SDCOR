@@ -24,505 +24,498 @@ else
     gui_mainfcn(gui_State, varargin{:});
 end
 
-function MAIN_OpeningFcn(hO, eventdata, H, varargin)
+function MAIN_OpeningFcn(hObject, eventdata, handles, varargin)
 
-H.output = hO;
+handles.output = hObject;
 
 warning off;
-PCMact(hO,eventdata,H);
+PCMact(hObject,eventdata,handles);
 
-% Update H structure
-guidata(hO, H);
+% Update handles structure
+guidata(hObject, handles);
 
-function varargout = MAIN_OutputFcn(hO,eventdata,H) 
+function varargout = MAIN_OutputFcn(hObject,eventdata,handles) 
 
-varargout{1} = H.output;
+varargout{1} = handles.output;
 
-function load_pushBtn_Callback(hO,eventdata,H)
+function load_pushBtn_Callback(hObject,eventdata,handles)
 
-clearAxes_pushBtn_Callback(hO,eventdata,H); % clearing workspace before loading new data
+clearAxes_pushBtn_Callback(hObject,eventdata,handles); % clearing workspace before loading new data
 
 [FileName,PathName] = uigetfile('*.mat', 'Select the dataset along with outlier labels, all as a single MAT-file','..\datasets\');
 if ~FileName
     msgbox('Sorry! No file was loaded!','Failure','error');
 else
-    Hclear(hO,eventdata,H); H = guidata(hO);
-    H.labDS = matfile([PathName FileName]);
-    [H.n,H.p] = size(H.labDS,'X');
+    Hclear(hObject,eventdata,handles); handles = guidata(hObject);
+    handles.labDS = matfile([PathName FileName]);
+    [handles.n,handles.p] = size(handles.labDS,'X');
     
-    [~,H.dsName,~] = fileparts(FileName);
-    H.dsName_statText.String = H.dsName;
-    H.chunkSz_editText.String = ceil(.1*H.n);
+    [~,handles.dsName,~] = fileparts(FileName);
+    handles.dsName_statText.String = handles.dsName;
+    handles.chunkSz_editText.String = ceil(.1*handles.n);
     
-    H.manu_pcm_radioBtn.Value = 1; PCMact(hO,eventdata,H);
+    handles.manu_pcm_radioBtn.Value = 1; PCMact(hObject,eventdata,handles);
     msgbox('File was loaded successfully!','Success');
 end
 
-guidata(hO,H);
+guidata(hObject,handles);
 
-function start_pushBtn_Callback(hO,eventdata,H)
-
-global BLK_SZ_LIM
+function start_pushBtn_Callback(hObject,eventdata,handles)
 
 %------- error handing -------%
-if ~isfield(H,'labDS') || isempty(H.labDS)
+if ~isfield(handles,'labDS') || isempty(handles.labDS)
     errordlg('Dataset file not found! Please load the input data first!','File Error');
     return
 end
 %-----------------------------%
 
-H.startCond = 1; hOact(hO,eventdata,H);
+handles.startCond = 1; hOact(hObject,eventdata,handles);
 
-H.dsName_statText.String = H.dsName;
-H.chunkSz = str2double(get(H.chunkSz_editText,'String'));
-H.PCvarRat = str2double(get(H.PCvarRat_editText,'String'))/100;
-H.alphaMemb = str2double(get(H.alphaMemb_editText,'String'));
-H.betaPrun = str2double(get(H.betaPrun_editText,'String'));
-H.sampRate = str2double(get(H.sampRate_editText,'String'))/100;
-H.totRun = str2double(get(H.totRun_editText,'String'));
-BLK_SZ_LIM = str2double(get(H.blckSzlim_editText,'String'));
+handles.dsName_statText.String = handles.dsName;
+handles.chunkSz = str2double(get(handles.chunkSz_editText,'String'));
+handles.PCvarRat = str2double(get(handles.PCvarRat_editText,'String'))/100;
+handles.alphaMemb = str2double(get(handles.alphaMemb_editText,'String'));
+handles.betaPrun = str2double(get(handles.betaPrun_editText,'String'));
+handles.sampRate = str2double(get(handles.sampRate_editText,'String'))/100;
+handles.totRun = str2double(get(handles.totRun_editText,'String'));
+handles.nonUnifSamp = get(handles.nonUnifSamp_chckbx,'Value');
 
-H.PCM = get(get(H.PCM_radioBtnGroup,'SelectedObject'),'tag');
-H.PSO_particleNo = str2double(get(H.particleNo_editText,'String'));
-H.PSO_maxIter = str2double(get(H.maxIter_editText,'String'));
-H.PSO_W = str2double(get(H.W_editText,'String'));
-H.PSO_C1 = str2double(get(H.C1_editText,'String'));
-H.PSO_C2 = str2double(get(H.C2_editText,'String'));
-H.PSO_alpha = str2double(get(H.alpha_editText,'String'));
-H.manuEps = str2double(get(H.manuEps_editText,'String'));
-if isnan(H.manuEps); H.manuEps = 0; end
-H.manuMnPt = str2double(get(H.manuMnPt_editText,'String'));
-if isnan(H.manuMnPt); H.manuMnPt = floor(log(H.n)); H.manuMnPt_editText.String = num2str(H.manuMnPt); end
-H.epsCoeff = str2double(get(H.epsCoef_editText,'String'));
+handles.PCM = get(get(handles.PCM_radioBtnGroup,'SelectedObject'),'tag');
+handles.PSO_particleNo = str2double(get(handles.particleNo_editText,'String'));
+handles.PSO_maxIter = str2double(get(handles.maxIter_editText,'String'));
+handles.PSO_W = str2double(get(handles.W_editText,'String'));
+handles.PSO_C1 = str2double(get(handles.C1_editText,'String'));
+handles.PSO_C2 = str2double(get(handles.C2_editText,'String'));
+handles.PSO_alpha = str2double(get(handles.alpha_editText,'String'));
+handles.manuEps = str2double(get(handles.manuEps_editText,'String'));
+if isnan(handles.manuEps); handles.manuEps = 0; end
+handles.manuMnPt = str2double(get(handles.manuMnPt_editText,'String'));
+if isnan(handles.manuMnPt); handles.manuMnPt = floor(log(handles.n)); handles.manuMnPt_editText.String = num2str(handles.manuMnPt); end
+handles.epsCoeff = str2double(get(handles.epsCoef_editText,'String'));
 
-H.ROCarr = []; H.PRarr = []; H.tEarr = [];
-H.runLevl_statText.String = [num2str(0) '/' num2str(H.totRun)]; pause(.001);
-for c1 = 1:H.totRun
-    SDCOR(hO,H);
-    H = guidata(hO);
-    H.ROCarr = [H.ROCarr H.ROC];
-    H.PRarr = [H.PRarr H.PR];
-    H.tEarr = [H.tEarr H.tElapsed];
+handles.ROCarr = []; handles.PRarr = []; handles.tEarr = [];
+handles.runLevl_statText.String = [num2str(0) '/' num2str(handles.totRun)]; pause(.001);
+for c1 = 1:handles.totRun
+    SDCOR(hObject,handles);
+    handles = guidata(hObject);
+    handles.ROCarr = [handles.ROCarr handles.ROC];
+    handles.PRarr = [handles.PRarr handles.PR];
+    handles.tEarr = [handles.tEarr handles.tElapsed];
     
-    set(H.tempROCPR_statText,'String',[num2str(H.ROC,'%0.3f') ' / ' num2str(H.PR,'%0.3f')]);
-    set(H.tempTime_statText,'String',num2str(H.tElapsed,'%0.3f'));
-    H.runLevl_statText.String = [num2str(c1) '/' num2str(H.totRun)]; pause(.001);
+    set(handles.tempROCPR_statText,'String',[num2str(handles.ROC,'%0.3f') ' / ' num2str(handles.PR,'%0.3f')]);
+    set(handles.tempTime_statText,'String',num2str(handles.tElapsed,'%0.3f'));
+    handles.runLevl_statText.String = [num2str(c1) '/' num2str(handles.totRun)]; pause(.001);
 end
-H.ROCavg = mean(H.ROCarr); H.ROCstd = std(H.ROCarr);
-H.PRavg = mean(H.PRarr); H.PRstd = std(H.PRarr);
-H.tEavg = mean(H.tEarr);
+handles.ROCavg = mean(handles.ROCarr); handles.ROCstd = std(handles.ROCarr);
+handles.PRavg = mean(handles.PRarr); handles.PRstd = std(handles.PRarr);
+handles.tEavg = mean(handles.tEarr);
 
-set(H.ROCPRavg_statText,'String',[num2str(H.ROCavg,'%0.3f') ' / ' num2str(H.PRavg,'%0.3f')]);
-set(H.ROCPRstd_statText,'String',[num2str(H.ROCstd,'%0.3f') ' / ' num2str(H.PRstd,'%0.3f')]);
-set(H.runTime_statText,'String',num2str(H.tEavg,'%0.3f'));
+set(handles.ROCPRavg_statText,'String',[num2str(handles.ROCavg,'%0.3f') ' / ' num2str(handles.PRavg,'%0.3f')]);
+set(handles.ROCPRstd_statText,'String',[num2str(handles.ROCstd,'%0.3f') ' / ' num2str(handles.PRstd,'%0.3f')]);
+set(handles.runTime_statText,'String',num2str(handles.tEavg,'%0.3f'));
 msgbox('Process was conducted successfully!','Success');
 
-H.startCond = 0; hOact(hO,eventdata,H);
-PCMact(hO,eventdata,H);
+handles.startCond = 0; hOact(hObject,eventdata,handles);
+PCMact(hObject,eventdata,handles);
     
-guidata(hO,H);
+guidata(hObject,handles);
 
-function alphaMemb_editText_Callback(hO,eventdata,H)
+function alphaMemb_editText_Callback(hObject,eventdata,handles)
 
-function alphaMemb_editText_CreateFcn(hO,eventdata,H)
+function alphaMemb_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function PCvarRat_editText_CreateFcn(hO,eventdata,H)
+function PCvarRat_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function sampRate_editText_CreateFcn(hO,eventdata,H)
+function sampRate_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function totRun_editText_CreateFcn(hO, eventdata, H)
+function totRun_editText_CreateFcn(hObject, eventdata, handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function clearAxes_pushBtn_Callback(hO,eventdata,H)
+function clearAxes_pushBtn_Callback(hObject,eventdata,handles)
 
-cla(H.axes1); legend(H.axes1,'off');
+cla(handles.axes1); legend(handles.axes1,'off');
 
-H.dsName_statText.String = '';
-H.progLevl_statText.String = '';
-H.tempROCPR_statText.String = '';
-H.tempTime_statText.String = '';
-H.runLevl_statText.String = '';
-H.ROCPRavg_statText.String = '';
-H.ROCPRstd_statText.String = '';
-H.runTime_statText.String = '';
-H.origK_val_statText.String = '';
+handles.dsName_statText.String = '';
+handles.progLevl_statText.String = '';
+handles.tempROCPR_statText.String = '';
+handles.tempTime_statText.String = '';
+handles.runLevl_statText.String = '';
+handles.ROCPRavg_statText.String = '';
+handles.ROCPRstd_statText.String = '';
+handles.runTime_statText.String = '';
+handles.origK_val_statText.String = '';
 
-guidata(hO,H);
+guidata(hObject,handles);
 
-function Hclear(hO,eventdata,H)
+function Hclear(hObject,eventdata,handles)
 
-Harr = {'dsName','chunkSz','PCvarRat','alphaMemb','betaPrun','sampRate','totRun','BLK_SZ_LIM','PCM','PSO_particleNo','PSO_maxIter',...
+Harr = {'dsName','chunkSz','PCvarRat','alphaMemb','betaPrun','sampRate','totRun','PCM','PSO_particleNo','PSO_maxIter',...
     'PSO_W','PSO_C1','PSO_C2','PSO_alpha','manuEps','manuMnPt','epsCoeff','paramSampDS','paramCostArrSamp','origEps','origMnPt','origK',...
     'sampInd','idxSamp','mahalScores','idxFin','ROCarr','ROCavg','ROCstd','PRarr','PRavg','PRstd','tEarr','tEavg'};
 
 for c1 = 1:numel(Harr)
-    if isfield(H,Harr{c1})
-        H = setfield(H,Harr{c1},[]);
+    if isfield(handles,Harr{c1})
+        handles = setfield(handles,Harr{c1},[]);
     end
 end
 
-guidata(hO,H);
+guidata(hObject,handles);
 
-function sampRate_editText_Callback(hO,eventdata,H)
+function sampRate_editText_Callback(hObject,eventdata,handles)
 
-function totRun_editText_Callback(hO,eventdata,H)
+function totRun_editText_Callback(hObject,eventdata,handles)
 
-function PCvarRat_editText_Callback(hO,eventdata,H)
+function PCvarRat_editText_Callback(hObject,eventdata,handles)
 
-function PCvarRat_editText_KeyPressFcn(hO,eventdata,H)
+function PCvarRat_editText_KeyPressFcn(hObject,eventdata,handles)
 
-function sampRate_editText_KeyPressFcn(hO,eventdata,H)
+function sampRate_editText_KeyPressFcn(hObject,eventdata,handles)
 
-function ROCPRavg_statText_CreateFcn(hO,eventdata,H)
+function ROCPRavg_statText_CreateFcn(hObject,eventdata,handles)
 
-function chunkSz_editText_Callback(hO,eventdata,H)
+function chunkSz_editText_Callback(hObject,eventdata,handles)
 
-function chunkSz_editText_CreateFcn(hO,eventdata,H)
+function chunkSz_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function particleNo_editText_Callback(hO,eventdata,H)
+function particleNo_editText_Callback(hObject,eventdata,handles)
 
-function particleNo_editText_CreateFcn(hO,eventdata,H)
+function particleNo_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function maxIter_editText_Callback(hO, eventdata, H)
+function maxIter_editText_Callback(hObject, eventdata, handles)
 
-function maxIter_editText_CreateFcn(hO, eventdata, H)
+function maxIter_editText_CreateFcn(hObject, eventdata, handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function W_editText_Callback(hO,eventdata,H)
+function W_editText_Callback(hObject,eventdata,handles)
 
-function W_editText_CreateFcn(hO,eventdata,H)
+function W_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function C1_editText_Callback(hO,eventdata,H)
+function C1_editText_Callback(hObject,eventdata,handles)
 
-function C1_editText_CreateFcn(hO,eventdata,H)
+function C1_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function C2_editText_Callback(hO,eventdata,H)
+function C2_editText_Callback(hObject,eventdata,handles)
 
-function C2_editText_CreateFcn(hO,eventdata,H)
+function C2_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function alpha_editText_Callback(hO,eventdata,H)
+function alpha_editText_Callback(hObject,eventdata,handles)
 
-function alpha_editText_CreateFcn(hO,eventdata,H)
+function alpha_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function epsCoef_editText_Callback(hO,eventdata,H)
+function epsCoef_editText_Callback(hObject,eventdata,handles)
 
-function epsCoef_editText_CreateFcn(hO,eventdata,H)
+function epsCoef_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function manuEps_editText_Callback(hO,eventdata,H)
+function manuEps_editText_Callback(hObject,eventdata,handles)
 
-function manuEps_editText_CreateFcn(hO,eventdata,H)
+function manuEps_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function manuMnPt_editText_Callback(hO,eventdata,H)
+function manuMnPt_editText_Callback(hObject,eventdata,handles)
 
-function manuMnPt_editText_CreateFcn(hO,eventdata,H)
+function manuMnPt_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function saveWork_pushBtn_Callback(hO,eventdata,H)
+function saveWork_pushBtn_Callback(hObject,eventdata,handles)
 
-if isfield(H,'ROCarr') && ~isempty(H.ROCarr)
-    Hsave = saveWork(hO,eventdata,H);
-    uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_$',H.dsName,'$_ROC=',num2str(H.ROCavg,'%0.3f'),...
-        '_ROCstd=',num2str(H.ROCstd,'%0.3f'),'_PR=',num2str(H.PRavg,'%0.3f'),'_PRstd=',num2str(H.PRstd,'%0.3f'),...
-        '_totRun=',num2str(H.totRun),'_Time=',num2str(H.tEavg,'%0.3f'),'.mat']);
+if isfield(handles,'ROCarr') && ~isempty(handles.ROCarr)
+    Hsave = saveWork(hObject,eventdata,handles);
+    uisave({'Hsave'},['..\results\','SDCOR(noVisDsk)_result_$',handles.dsName,'$_ROC=',num2str(handles.ROCavg,'%0.3f'),...
+        '_ROCstd=',num2str(handles.ROCstd,'%0.3f'),'_PR=',num2str(handles.PRavg,'%0.3f'),'_PRstd=',num2str(handles.PRstd,'%0.3f'),...
+        '_totRun=',num2str(handles.totRun),'_Time=',num2str(handles.tEavg,'%0.3f'),'.mat']);
     msgbox('File was saved successfully!','Success');
 else
     msgbox('Sorry! There is not any clear run info to be saved!','Failure','error');
 end
 
-function loadWork_pushBtn_Callback(hO,eventdata,H)
+function loadWork_pushBtn_Callback(hObject,eventdata,handles)
 
 [FileName,PathName] = uigetfile('*.mat', 'Select the saved workspace to be loaded','..\results\');
 if ~FileName
     msgbox('Sorry! No file was loaded!','Failure','error');
 else
     Hsave = importdata([PathName FileName]);
-    loadWork(hO, eventdata, H, Hsave);
+    loadWork(hObject, eventdata, handles, Hsave);
     
     CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
     uiwait(msgbox('\fontsize{10}File was loaded successfully! Please load the dataset separately for a fresh test.','Success',CreateStruct));
 end
 
-function [Hsave] = saveWork(hO,eventdata,H)
+function [Hsave] = saveWork(hObject,eventdata,handles)
 
-global BLK_SZ_LIM
+Hsave = struct('dsName',handles.dsName,'chunkSz',handles.chunkSz,'PCvarRat',handles.PCvarRat*100,'alphaMemb',handles.alphaMemb,'betaPrun',handles.betaPrun,...
+    'sampRate',handles.sampRate*100,'totRun',handles.totRun,'PCM',handles.PCM,'PSO_particleNo',handles.PSO_particleNo,...
+    'PSO_maxIter',handles.PSO_maxIter,'PSO_W',handles.PSO_W,'PSO_C1',handles.PSO_C1,'PSO_C2',handles.PSO_C2,'PSO_alpha',handles.PSO_alpha,'manuEps',handles.manuEps,...
+    'manuMnPt',handles.manuMnPt,'epsCoeff',handles.epsCoeff,'paramSampDS',handles.paramSampDS,'paramCostArrSamp',{handles.paramCostArrSamp},...
+    'origEps',handles.origEps,'origMnPt',handles.origMnPt,'origK',handles.origK,'sampInd',handles.sampInd,'idxSamp',handles.idxSamp,'mahalScores',handles.mahalScores,...
+    'idxFin',handles.idxFin,'ROCarr',handles.ROCarr,'ROCavg',handles.ROCavg,'ROCstd',handles.ROCstd,'PRarr',handles.PRarr,'PRavg',handles.PRavg,'PRstd',handles.PRstd,...
+    'tEarr',handles.tEarr,'tEavg',handles.tEavg);
 
-Hsave = struct('dsName',H.dsName,'chunkSz',H.chunkSz,'PCvarRat',H.PCvarRat*100,'alphaMemb',H.alphaMemb,'betaPrun',H.betaPrun,...
-    'sampRate',H.sampRate*100,'totRun',H.totRun,'BLK_SZ_LIM',BLK_SZ_LIM,'PCM',H.PCM,'PSO_particleNo',H.PSO_particleNo,...
-    'PSO_maxIter',H.PSO_maxIter,'PSO_W',H.PSO_W,'PSO_C1',H.PSO_C1,'PSO_C2',H.PSO_C2,'PSO_alpha',H.PSO_alpha,'manuEps',H.manuEps,...
-    'manuMnPt',H.manuMnPt,'epsCoeff',H.epsCoeff,'paramSampDS',H.paramSampDS,'paramCostArrSamp',{H.paramCostArrSamp},...
-    'origEps',H.origEps,'origMnPt',H.origMnPt,'origK',H.origK,'sampInd',H.sampInd,'idxSamp',H.idxSamp,'mahalScores',H.mahalScores,...
-    'idxFin',H.idxFin,'ROCarr',H.ROCarr,'ROCavg',H.ROCavg,'ROCstd',H.ROCstd,'PRarr',H.PRarr,'PRavg',H.PRavg,'PRstd',H.PRstd,...
-    'tEarr',H.tEarr,'tEavg',H.tEavg);
+function [] = loadWork(hObject, eventdata, handles, Hsave)
 
-function [] = loadWork(hO, eventdata, H, Hsave)
+clearAxes_pushBtn_Callback(hObject,eventdata,handles); % clearing workspace before loading the saved result
+Hclear(hObject,eventdata,handles); handles = guidata(hObject);
 
-global BLK_SZ_LIM
+handles.startCond = 0; hOact(hObject, eventdata, handles);
+handles.dsName_statText.String = Hsave.dsName; handles.dsName = Hsave.dsName;
 
-clearAxes_pushBtn_Callback(hO,eventdata,H); % clearing workspace before loading the saved result
-Hclear(hO,eventdata,H); H = guidata(hO);
+handles.labDS = [];
+handles.chunkSz_editText.String = num2str(Hsave.chunkSz); handles.chunkSz = Hsave.chunkSz;
+handles.PCvarRat_editText.String = num2str(Hsave.PCvarRat); handles.PCvarRat = Hsave.PCvarRat/100;
+handles.alphaMemb_editText.String = num2str(Hsave.alphaMemb); handles.alphaMemb = Hsave.alphaMemb;
+handles.betaPrun_editText.String = num2str(Hsave.betaPrun); handles.betaPrun = Hsave.betaPrun;
+handles.sampRate_editText.String = num2str(Hsave.sampRate); handles.sampRate = Hsave.sampRate/100;
+handles.totRun_editText.String = num2str(Hsave.totRun); handles.totRun = Hsave.totRun;
 
-H.startCond = 0; hOact(hO, eventdata, H);
-H.dsName_statText.String = Hsave.dsName; H.dsName = Hsave.dsName;
-
-H.labDS = [];
-H.chunkSz_editText.String = num2str(Hsave.chunkSz); H.chunkSz = Hsave.chunkSz;
-H.PCvarRat_editText.String = num2str(Hsave.PCvarRat); H.PCvarRat = Hsave.PCvarRat/100;
-H.alphaMemb_editText.String = num2str(Hsave.alphaMemb); H.alphaMemb = Hsave.alphaMemb;
-H.betaPrun_editText.String = num2str(Hsave.betaPrun); H.betaPrun = Hsave.betaPrun;
-H.sampRate_editText.String = num2str(Hsave.sampRate); H.sampRate = Hsave.sampRate/100;
-H.totRun_editText.String = num2str(Hsave.totRun); H.totRun = Hsave.totRun;
-BLK_SZ_LIM = Hsave.BLK_SZ_LIM; H.blckSzlim_editText.String = num2str(BLK_SZ_LIM);
-
-H.PCM = Hsave.PCM;
+handles.PCM = Hsave.PCM;
 switch Hsave.PCM
     case 'PSO_pcm_radioBtn'
-        H.PSO_pcm_radioBtn.Value = 1;
+        handles.PSO_pcm_radioBtn.Value = 1;
         
-        axes(H.axes1);
+        axes(handles.axes1);
         plot(Hsave.paramCostArrSamp{1},'-r'); grid on;
         legend(sprintf('PSO costArr for SampDS\nEps=%0.3f, MinPts=%d',Hsave.paramSampDS(1),Hsave.paramSampDS(2)),'location','best');
         pause(.001);
         
     case 'manu_pcm_radioBtn'
-        H.manu_pcm_radioBtn.Value = 1;
-        cla(H.axes1);
+        handles.manu_pcm_radioBtn.Value = 1;
+        cla(handles.axes1);
         
 end
-PCMact(hO,eventdata,H);
+PCMact(hObject,eventdata,handles);
 
-H.particleNo_editText.String = num2str(Hsave.PSO_particleNo); H.PSO_particleNo = Hsave.PSO_particleNo;
-H.maxIter_editText.String = num2str(Hsave.PSO_maxIter); H.PSO_maxIter = Hsave.PSO_maxIter;
-H.W_editText.String = num2str(Hsave.PSO_W); H.PSO_W = Hsave.PSO_W;
-H.C1_editText.String = num2str(Hsave.PSO_C1); H.PSO_C1 = Hsave.PSO_C1;
-H.C2_editText.String = num2str(Hsave.PSO_C2); H.PSO_C2 = Hsave.PSO_C2;
-H.alpha_editText.String = num2str(Hsave.PSO_alpha); H.PSO_alpha = Hsave.PSO_alpha;
-H.manuEps_editText.String = num2str(Hsave.manuEps); H.manuEps = Hsave.manuEps;
-H.manuMnPt_editText.String = num2str(Hsave.manuMnPt); H.manuMnPt = Hsave.manuMnPt;
-H.epsCoef_editText.String = num2str(Hsave.epsCoeff); H.epsCoeff = Hsave.epsCoeff;
-H.origK_val_statText.String = num2str(Hsave.origK); H.origK = Hsave.origK;
+handles.particleNo_editText.String = num2str(Hsave.PSO_particleNo); handles.PSO_particleNo = Hsave.PSO_particleNo;
+handles.maxIter_editText.String = num2str(Hsave.PSO_maxIter); handles.PSO_maxIter = Hsave.PSO_maxIter;
+handles.W_editText.String = num2str(Hsave.PSO_W); handles.PSO_W = Hsave.PSO_W;
+handles.C1_editText.String = num2str(Hsave.PSO_C1); handles.PSO_C1 = Hsave.PSO_C1;
+handles.C2_editText.String = num2str(Hsave.PSO_C2); handles.PSO_C2 = Hsave.PSO_C2;
+handles.alpha_editText.String = num2str(Hsave.PSO_alpha); handles.PSO_alpha = Hsave.PSO_alpha;
+handles.manuEps_editText.String = num2str(Hsave.manuEps); handles.manuEps = Hsave.manuEps;
+handles.manuMnPt_editText.String = num2str(Hsave.manuMnPt); handles.manuMnPt = Hsave.manuMnPt;
+handles.epsCoef_editText.String = num2str(Hsave.epsCoeff); handles.epsCoeff = Hsave.epsCoeff;
+handles.origK_val_statText.String = num2str(Hsave.origK); handles.origK = Hsave.origK;
 
-H.paramCostArrSamp = Hsave.paramCostArrSamp;
-H.paramSampDS = Hsave.paramSampDS;
-H.origEps = Hsave.origEps;
-H.origMnPt = Hsave.origMnPt;
-H.origK = Hsave.origK;
-H.sampInd = Hsave.sampInd;
-H.idxSamp = Hsave.idxSamp;
+handles.paramCostArrSamp = Hsave.paramCostArrSamp;
+handles.paramSampDS = Hsave.paramSampDS;
+handles.origEps = Hsave.origEps;
+handles.origMnPt = Hsave.origMnPt;
+handles.origK = Hsave.origK;
+handles.sampInd = Hsave.sampInd;
+handles.idxSamp = Hsave.idxSamp;
 
-H.mahalScores = Hsave.mahalScores;
-H.idxFin = Hsave.idxFin;
-H.ROCarr = Hsave.ROCarr; H.ROCavg = Hsave.ROCavg; H.ROCstd = Hsave.ROCstd;
-H.PRarr = Hsave.PRarr; H.PRavg = Hsave.PRavg; H.PRstd = Hsave.PRstd;
-H.tEarr = Hsave.tEarr; H.tEavg = Hsave.tEavg;
-H.ROCPRavg_statText.String = [num2str(Hsave.ROCavg,'%0.3f') ' / ' num2str(Hsave.PRavg,'%0.3f')];
-H.ROCPRstd_statText.String = [num2str(Hsave.ROCstd,'%0.3f') ' / ' num2str(Hsave.PRstd,'%0.3f')];
-H.runTime_statText.String = num2str(Hsave.tEavg,'%0.3f');
+handles.mahalScores = Hsave.mahalScores;
+handles.idxFin = Hsave.idxFin;
+handles.ROCarr = Hsave.ROCarr; handles.ROCavg = Hsave.ROCavg; handles.ROCstd = Hsave.ROCstd;
+handles.PRarr = Hsave.PRarr; handles.PRavg = Hsave.PRavg; handles.PRstd = Hsave.PRstd;
+handles.tEarr = Hsave.tEarr; handles.tEavg = Hsave.tEavg;
+handles.ROCPRavg_statText.String = [num2str(Hsave.ROCavg,'%0.3f') ' / ' num2str(Hsave.PRavg,'%0.3f')];
+handles.ROCPRstd_statText.String = [num2str(Hsave.ROCstd,'%0.3f') ' / ' num2str(Hsave.PRstd,'%0.3f')];
+handles.runTime_statText.String = num2str(Hsave.tEavg,'%0.3f');
 
-guidata(hO,H);
+guidata(hObject,handles);
 
-function PCMact(hO,eventdata,H)
+function PCMact(hObject,eventdata,handles)
 
-switch H.PCM_radioBtnGroup.SelectedObject.Tag
+switch handles.PCM_radioBtnGroup.SelectedObject.Tag
     case 'Kgraph_pcm_radioBtn'
-        H.makeManu_pushBtn.Enable =  'off';
+        handles.makeManu_pushBtn.Enable =  'off';
         
-        H.particleNo_editText.Enable = 'off';
-        H.maxIter_editText.Enable = 'off';
-        H.W_editText.Enable = 'off';
-        H.C1_editText.Enable = 'off';
-        H.C2_editText.Enable = 'off';
-        H.alpha_editText.Enable = 'off';
-        H.manuEps_editText.Enable = 'off';
-        H.manuMnPt_editText.Enable = 'on';
-        H.epsCoef_editText.Enable = 'off';
+        handles.particleNo_editText.Enable = 'off';
+        handles.maxIter_editText.Enable = 'off';
+        handles.W_editText.Enable = 'off';
+        handles.C1_editText.Enable = 'off';
+        handles.C2_editText.Enable = 'off';
+        handles.alpha_editText.Enable = 'off';
+        handles.manuEps_editText.Enable = 'off';
+        handles.manuMnPt_editText.Enable = 'on';
+        handles.epsCoef_editText.Enable = 'off';
         
     case 'PSO_pcm_radioBtn'
-        H.makeManu_pushBtn.Enable =  'on';
+        handles.makeManu_pushBtn.Enable =  'on';
         
-        H.particleNo_editText.Enable = 'on';
-        H.maxIter_editText.Enable = 'on';
-        H.W_editText.Enable = 'on';
-        H.C1_editText.Enable = 'on';
-        H.C2_editText.Enable = 'on';
-        H.alpha_editText.Enable = 'on';
-        H.manuEps_editText.Enable = 'off';
-        H.manuMnPt_editText.Enable = 'on';
-        H.epsCoef_editText.Enable = 'on';
+        handles.particleNo_editText.Enable = 'on';
+        handles.maxIter_editText.Enable = 'on';
+        handles.W_editText.Enable = 'on';
+        handles.C1_editText.Enable = 'on';
+        handles.C2_editText.Enable = 'on';
+        handles.alpha_editText.Enable = 'on';
+        handles.manuEps_editText.Enable = 'off';
+        handles.manuMnPt_editText.Enable = 'on';
+        handles.epsCoef_editText.Enable = 'on';
         
     case 'manu_pcm_radioBtn'
-        H.makeManu_pushBtn.Enable =  'off';
+        handles.makeManu_pushBtn.Enable =  'off';
         
-        H.particleNo_editText.Enable = 'off';
-        H.maxIter_editText.Enable = 'off';
-        H.W_editText.Enable = 'off';
-        H.C1_editText.Enable = 'off';
-        H.C2_editText.Enable = 'off';
-        H.alpha_editText.Enable = 'off';
-        H.manuEps_editText.Enable = 'on';
-        H.manuMnPt_editText.Enable = 'on';
-        H.epsCoef_editText.Enable = 'on';
+        handles.particleNo_editText.Enable = 'off';
+        handles.maxIter_editText.Enable = 'off';
+        handles.W_editText.Enable = 'off';
+        handles.C1_editText.Enable = 'off';
+        handles.C2_editText.Enable = 'off';
+        handles.alpha_editText.Enable = 'off';
+        handles.manuEps_editText.Enable = 'on';
+        handles.manuMnPt_editText.Enable = 'on';
+        handles.epsCoef_editText.Enable = 'on';
         
 end
 
-function hOact(hO, eventdata, H)
+function hOact(hObject, eventdata, handles)
 
-if H.startCond
-    SDCOR_InitParam_Act(hO,eventdata,H,0);
-    clearAxes_pushBtn_Callback(hO,eventdata,H);
-    mainButns_Act(hO,eventdata,H,0);
-    DBSCANparamCM_Act(hO,eventdata,H,0);
+if handles.startCond
+    SDCOR_InitParam_Act(hObject,eventdata,handles,0);
+    clearAxes_pushBtn_Callback(hObject,eventdata,handles);
+    mainButns_Act(hObject,eventdata,handles,0);
+    DBSCANparamCM_Act(hObject,eventdata,handles,0);
     
 else
-    SDCOR_InitParam_Act(hO,eventdata,H,1);
-    DBSCANparamCM_Act(hO,eventdata,H,1);
-    mainButns_Act(hO,eventdata,H,1);
+    SDCOR_InitParam_Act(hObject,eventdata,handles,1);
+    DBSCANparamCM_Act(hObject,eventdata,handles,1);
+    mainButns_Act(hObject,eventdata,handles,1);
     
 end
 
-function SDCOR_InitParam_Act(hO, eventdata, H, actCond)
+function SDCOR_InitParam_Act(hObject, eventdata, handles, actCond)
 
 if ~actCond
-    H.chunkSz_editText.Enable = 'off';
-    H.PCvarRat_editText.Enable = 'off';
-    H.alphaMemb_editText.Enable = 'off';
-    H.betaPrun_editText.Enable = 'off';
-    H.sampRate_editText.Enable = 'off';
-    H.totRun_editText.Enable = 'off';
-    H.blckSzlim_editText.Enable = 'off';
+    handles.chunkSz_editText.Enable = 'off';
+    handles.PCvarRat_editText.Enable = 'off';
+    handles.alphaMemb_editText.Enable = 'off';
+    handles.betaPrun_editText.Enable = 'off';
+    handles.sampRate_editText.Enable = 'off';
+    handles.totRun_editText.Enable = 'off';
+    handles.blckSzlim_editText.Enable = 'off';
     
 else
-    H.chunkSz_editText.Enable = 'on';
-    H.PCvarRat_editText.Enable = 'on';
-    H.alphaMemb_editText.Enable = 'on';
-    H.betaPrun_editText.Enable = 'on';
-    H.sampRate_editText.Enable = 'on';
-    H.totRun_editText.Enable = 'on';
-    H.blckSzlim_editText.Enable = 'on';
+    handles.chunkSz_editText.Enable = 'on';
+    handles.PCvarRat_editText.Enable = 'on';
+    handles.alphaMemb_editText.Enable = 'on';
+    handles.betaPrun_editText.Enable = 'on';
+    handles.sampRate_editText.Enable = 'on';
+    handles.totRun_editText.Enable = 'on';
+    handles.blckSzlim_editText.Enable = 'on';
     
 end
 
-function mainButns_Act(hO, eventdata, H, actCond)
+function mainButns_Act(hObject, eventdata, handles, actCond)
 
 if ~actCond
-    H.load_pushBtn.Enable = 'off';
-    H.start_pushBtn.Enable = 'off';
-    H.clearAxes_pushBtn.Enable = 'off';
-    H.saveWork_pushBtn.Enable = 'off';
-    H.loadWork_pushBtn.Enable = 'off';
+    handles.load_pushBtn.Enable = 'off';
+    handles.start_pushBtn.Enable = 'off';
+    handles.clearAxes_pushBtn.Enable = 'off';
+    handles.saveWork_pushBtn.Enable = 'off';
+    handles.loadWork_pushBtn.Enable = 'off';
 else
-    H.load_pushBtn.Enable = 'on';
-    H.start_pushBtn.Enable = 'on';
-    H.clearAxes_pushBtn.Enable = 'on';
-    H.saveWork_pushBtn.Enable = 'on';
-    H.loadWork_pushBtn.Enable = 'on';
+    handles.load_pushBtn.Enable = 'on';
+    handles.start_pushBtn.Enable = 'on';
+    handles.clearAxes_pushBtn.Enable = 'on';
+    handles.saveWork_pushBtn.Enable = 'on';
+    handles.loadWork_pushBtn.Enable = 'on';
 end
 
-function DBSCANparamCM_Act(hO, eventdata, H, actCond)
+function DBSCANparamCM_Act(hObject, eventdata, handles, actCond)
 
 if ~actCond
-    H.Kgraph_pcm_radioBtn.Enable = 'off';
-    H.PSO_pcm_radioBtn.Enable = 'off';
-    H.manu_pcm_radioBtn.Enable = 'off';
-    H.makeManu_pushBtn.Enable =  'off';
+    handles.Kgraph_pcm_radioBtn.Enable = 'off';
+    handles.PSO_pcm_radioBtn.Enable = 'off';
+    handles.manu_pcm_radioBtn.Enable = 'off';
+    handles.makeManu_pushBtn.Enable =  'off';
     
-    H.particleNo_editText.Enable = 'off';
-    H.maxIter_editText.Enable = 'off';
-    H.W_editText.Enable = 'off';
-    H.C1_editText.Enable = 'off';
-    H.C2_editText.Enable = 'off';
-    H.alpha_editText.Enable = 'off';
-    H.manuEps_editText.Enable = 'off';
-    H.manuMnPt_editText.Enable = 'off';
-    H.epsCoef_editText.Enable = 'off';
+    handles.particleNo_editText.Enable = 'off';
+    handles.maxIter_editText.Enable = 'off';
+    handles.W_editText.Enable = 'off';
+    handles.C1_editText.Enable = 'off';
+    handles.C2_editText.Enable = 'off';
+    handles.alpha_editText.Enable = 'off';
+    handles.manuEps_editText.Enable = 'off';
+    handles.manuMnPt_editText.Enable = 'off';
+    handles.epsCoef_editText.Enable = 'off';
 else
-    H.Kgraph_pcm_radioBtn.Enable = 'on';
-    H.PSO_pcm_radioBtn.Enable = 'on';
-    H.manu_pcm_radioBtn.Enable = 'on';
-    H.makeManu_pushBtn.Enable =  'on';
+    handles.Kgraph_pcm_radioBtn.Enable = 'on';
+    handles.PSO_pcm_radioBtn.Enable = 'on';
+    handles.manu_pcm_radioBtn.Enable = 'on';
+    handles.makeManu_pushBtn.Enable =  'on';
     
-    H.particleNo_editText.Enable = 'on';
-    H.maxIter_editText.Enable = 'on';
-    H.W_editText.Enable = 'on';
-    H.C1_editText.Enable = 'on';
-    H.C2_editText.Enable = 'on';
-    H.alpha_editText.Enable = 'on';
-    H.manuEps_editText.Enable = 'on';
-    H.manuMnPt_editText.Enable = 'on';
-    H.epsCoef_editText.Enable = 'on';
+    handles.particleNo_editText.Enable = 'on';
+    handles.maxIter_editText.Enable = 'on';
+    handles.W_editText.Enable = 'on';
+    handles.C1_editText.Enable = 'on';
+    handles.C2_editText.Enable = 'on';
+    handles.alpha_editText.Enable = 'on';
+    handles.manuEps_editText.Enable = 'on';
+    handles.manuMnPt_editText.Enable = 'on';
+    handles.epsCoef_editText.Enable = 'on';
 end
 
-function Kgraph_pcm_radioBtn_Callback(hO, eventdata, H)
+function Kgraph_pcm_radioBtn_Callback(hObject, eventdata, handles)
 
-H.manuEps_editText.String = '';
+handles.manuEps_editText.String = '';
 
-if isfield(H,'p') && ~isempty(H.p)
-    H.manuMnPt_editText.String = 10*H.p;
+if isfield(handles,'p') && ~isempty(handles.p)
+    handles.manuMnPt_editText.String = 10*handles.p;
     CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
     msgCont = '\fontsize{10} To avoid outliers, we set the {\it{MinPts}} quantity to {\bf{10{\cdot}p}}. You can change it at your will!';
     uiwait(msgbox(msgCont,'Alert!','Help',CreateStruct));
 end
 
-PCMact(hO,eventdata,H);
+PCMact(hObject,eventdata,handles);
    
-function PSO_pcm_radioBtn_Callback(hO,eventdata,H)
+function PSO_pcm_radioBtn_Callback(hObject,eventdata,handles)
 
-H.manuEps_editText.String = '';
+handles.manuEps_editText.String = '';
 
-if isfield(H,'p') && ~isempty(H.p)
-    H.manuMnPt_editText.String = 10*H.p;
+if isfield(handles,'p') && ~isempty(handles.p)
+    handles.manuMnPt_editText.String = 10*handles.p;
     CreateStruct.Interpreter = 'tex'; CreateStruct.WindowStyle = 'modal';
     msgCont = ['\fontsize{10} PSO searches in predetermined ranges by the user for finding the optimal {\it{Eps}} and {\it{MinPts}} ',...
         'quantities. The {\it{Eps}} range and the lower bound for the {\it{MinPts}} range are defined automatically; for the {\it{MinPts}} ',...
@@ -533,40 +526,49 @@ if isfield(H,'p') && ~isempty(H.p)
     uiwait(msgbox(msgCont,'Alert!','Help',CreateStruct));
 end
 
-PCMact(hO,eventdata,H);
+PCMact(hObject,eventdata,handles);
 
-function manu_pcm_radioBtn_Callback(hO,eventdata,H)
+function manu_pcm_radioBtn_Callback(hObject,eventdata,handles)
 
-PCMact(hO,eventdata,H);
+PCMact(hObject,eventdata,handles);
 
-function makeManu_pushBtn_Callback(hO,eventdata,H)
+function makeManu_pushBtn_Callback(hObject,eventdata,handles)
 
-if isfield(H,'paramSampDS') && ~isempty(H.paramSampDS)
-    H.manuEps_editText.String = num2str(H.paramSampDS(1));
-    H.manuMnPt_editText.String = num2str(H.paramSampDS(2));
+if isfield(handles,'paramSampDS') && ~isempty(handles.paramSampDS)
+    handles.manuEps_editText.String = num2str(handles.paramSampDS(1));
+    handles.manuMnPt_editText.String = num2str(handles.paramSampDS(2));
 else
     msgbox('Sorry! Nothing has been run to set for!','Failure','error');
 end
 
-function resetBtns_pushBtn_Callback(hO,eventdata,H)
+function resetBtns_pushBtn_Callback(hObject,eventdata,handles)
 
-H.startCond = 0; hOact(hO, eventdata, H);
-PCMact(hO,eventdata,H);
+handles.startCond = 0; hOact(hObject, eventdata, handles);
+PCMact(hObject,eventdata,handles);
 
-guidata(hO,H);
+guidata(hObject,handles);
 
-function blckSzlim_editText_Callback(hO,eventdata,H)
+function blckSzlim_editText_Callback(hObject,eventdata,handles)
 
-function blckSzlim_editText_CreateFcn(hO,eventdata,H)
+function blckSzlim_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
-function betaPrun_editText_Callback(hO,eventdata,H)
+function betaPrun_editText_Callback(hObject,eventdata,handles)
 
-function betaPrun_editText_CreateFcn(hO,eventdata,H)
+function betaPrun_editText_CreateFcn(hObject,eventdata,handles)
 
-if ispc && isequal(get(hO,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hO,'BackgroundColor','white');
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in nonUnifSamp_chckbx.
+function nonUnifSamp_chckbx_Callback(hObject, eventdata, handles)
+% hObject    handle to nonUnifSamp_chckbx (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of nonUnifSamp_chckbx
