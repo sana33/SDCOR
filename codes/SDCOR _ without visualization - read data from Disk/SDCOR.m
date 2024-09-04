@@ -164,6 +164,7 @@ function [] = SDCOR(hObject,handles)
                 % function does not support randperm() indexing
                 stepLeng = floor(1/handles.sampRate);
                 handles.sampInd = transpose(randi(stepLeng):stepLeng:handles.n);
+                handles.sampData = handles.labDS.X(handles.sampInd,:);
             
             else
                 MatFileNonUnifSamp(hObject, handles, 'X');
